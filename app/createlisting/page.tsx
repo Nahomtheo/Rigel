@@ -121,10 +121,32 @@ export default function CreateListingPage() {
     },
   });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + images.length > 10) {
       alert('Maximum 10 images allowed');
+      return;
+    }
+    const response = await fetch('http://localhost:3000/api/cloudflare-r2/upload', {
+      method: 'POST',
+     
+    });
+    const data = await response.json();
+    console.log('Upload URL response:', data);
+    const uploadURL=data.UploadUrl;
+    const key=data.key;
+    const uploadResponse =await fetch(uploadURL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': files[0]?.type || 'application/octet-stream',
+      },
+      body: files[0],
+    });
+    if (uploadResponse.ok) {      console.log('Image uploaded successfully to R2');
+      // You can now save the key to your database along with the listing
+    } else {
+      console.error('Failed to upload image to R2');
+      alert('Failed to upload image. Please try again.');
       return;
     }
 
