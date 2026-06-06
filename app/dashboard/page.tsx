@@ -22,6 +22,7 @@ import {
   Search
 } from 'lucide-react';
 import Image from 'next/image';
+import { body } from 'framer-motion/client';
 
 type Conversation = {
   _id: string;
@@ -74,32 +75,67 @@ export default function DashboardPage() {
     }
   };
   const uploadedImage = async (file: File) => {
-    try {
+  try {
+    const resp = await fetch(
+      "/api/cloudflare-r2/upload",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          files: [
+            {
+              name: file.name,
+              type: file.type,
+            },
+          ],
+        }),
+      }
+    );
+
+    const data = await resp.json();
+
+    const img = data.data[0];
+
+    const uploadResponse = await fetch(
+      img.UploadUrl,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
+      }
+    );
+
+    if (!uploadResponse.ok) {
+      throw new Error(
+        `Failed to upload ${file.name}`
+      );
+    }
+    setVerificationID({
+      url: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${img.key}`,
+      publicId: img.key,
+    })
+
+    return {
+      url: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${img.key}`,
+      publicId: img.key,
+    };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+  
+  
+
+
          
        
 
-          const formData = new FormData();
-          formData.append('file', file);
-          formData.append('upload_preset', 'ml_default'); // Configure this in Cloudinary
-          
-          const response = await fetch(
-            `https://api.cloudinary.com/v1_1/djwhv46pa/image/upload/`,
-            {
-              method: 'POST',
-              body: formData,
-            }
-          );
-          
-          const data = await response.json();
-          console.log('Cloudinary response:', data);
-          setVerificationID({ url: data.secure_url, publicId: data.public_id, });
-          return { url: data.secure_url, publicId: data.public_id };
-
-    } 
-      catch (error) {
-        console.error('Error uploading image:', error);
-      }
-  }
+      
   const onClickVerification= async ()=>{
     try {
     if(!verificationID.url || !typeofDocument){

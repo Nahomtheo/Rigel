@@ -76,20 +76,20 @@ export default function ListingCard({
   return (
     <Link
       href={`/listing/${id}`}
-      className="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300"
+      className="group block bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 animate-fade-in"
     >
       {/* Image Container */}
       <div className="relative aspect-[4/3] overflow-hidden">
        <ListingSlider images={images} />
         
         {/* Category Badge */}
-        <div className="absolute top-3 left-3 flex items-center space-x-2">
-          <span className={`${categoryColor} text-white px-3 py-1 rounded-full text-xs font-medium flex items-center`}>
+        <div className="absolute top-3 left-3 flex items-center space-x-2 z-10">
+          <span className={`${categoryColor} text-white px-3 py-1 rounded-full text-xs font-medium flex items-center shadow-md`}>
             <CategoryIcon className="w-3 h-3 mr-1" />
             {category.charAt(0).toUpperCase() + category.slice(1)}
           </span>
           {isElectric && (
-            <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
+            <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center shadow-md">
               <Zap className="w-3 h-3 mr-0.5" />
               Electric
             </span>
@@ -102,7 +102,7 @@ export default function ListingCard({
             e.preventDefault();
             setIsLiked(!isLiked);
           }}
-          className="absolute top-3 right-3 p-2 bg-white/90 rounded-full hover:bg-white transition-colors shadow-sm"
+          className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-gray-700/90 rounded-full hover:bg-white dark:hover:bg-gray-600 transition-all shadow-sm z-10 transform hover:scale-110 active:scale-95"
         >
           <Heart
             className={`w-4 h-4 transition-colors ${
@@ -118,23 +118,23 @@ export default function ListingCard({
       {/* Content */}
       <div className="p-4">
         <div className="mb-2">
-          <h3 className="font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {title}
           </h3>
           {subcategory && (
-            <p className="text-xs text-gray-500 mt-1 capitalize">
-              {subcategory.replace('_', ' ')}
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 capitalize">
+              {subcategory.replace("_", " ")}
             </p>
           )}
         </div>
 
         <div className="flex items-center justify-between">
           <div className="text-lg font-bold text-blue-600">
-            {price.toLocaleString()}{' '}
-            <span className="text-sm font-normal text-gray-500">ETB</span>
+            {price.toLocaleString()}{" "}
+            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">ETB</span>
           </div>
           
-          <div className="flex items-center space-x-3 text-xs text-gray-500">
+          <div className="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400">
             <span className="flex items-center">
               <Eye className="w-3 h-3 mr-1" />
               {views}
@@ -143,8 +143,8 @@ export default function ListingCard({
           </div>
         </div>
 
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <div className="flex items-center text-sm text-gray-500">
+        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
             <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
             <span className="truncate">{getLocationString()}</span>
           </div>

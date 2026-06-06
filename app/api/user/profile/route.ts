@@ -43,7 +43,7 @@ export async function PUT(req: Request) {
   const updatedUser = await User.findOneAndUpdate(
     { email: session.user.email },
     updateData,
-    { new: true, runValidators: true }
+    { returnDocument: "after", runValidators: true }
   );
 
   if (!updatedUser) {

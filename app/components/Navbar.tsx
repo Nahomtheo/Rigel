@@ -2,83 +2,161 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useState } from "react";
 import AnimatedLogo from "./AnimatedLogo";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+  const [open, setOpen] = useState(false);
+
+  const userName =
+    session?.user?.name ||
+    session?.user?.email?.split("@")[0] ||
+    "User";
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link 
-            href="/" 
-            className="flex items-center gap-3 group"
-          >
-            <AnimatedLogo  />
-            <span className="font-bold text-xl text-gray-900 tracking-tight group-hover:text-blue-600 transition-colors duration-300">Rigel</span>
-          </Link>
+    <nav className="sticky top-0 z-50 border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-gray-200 dark:border-gray-800">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
-          {/* Navigation */}
-          <div className="flex items-center gap-4">
-            {!session ? (
-              <>
-                <Link 
-                  href="/login" 
-                  className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/signup"
-                  className="bg-blue-600 text-white font-medium px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
-                >
-                  Sign Up
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link 
-                  href="/dashboard" 
-                  className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors hidden sm:block"
-                >
-                  Dashboard
-                </Link>
-                <Link 
-                  href="/userlisting" 
-                  className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors hidden sm:block"
-                >
-                  My Listings
-                </Link>
-                
-                {/* User Menu */}
-                <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-semibold">
-                        {session.user?.name?.charAt(0).toUpperCase() || session.user?.email?.charAt(0).toUpperCase() || 'U'}
-                      </span>
-                    </div>
-                    <span className="text-sm text-gray-700 font-medium max-w-[120px] truncate hidden md:block">
-                      {session.user?.name || session.user?.email?.split('@')[0]}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => signOut({ callbackUrl: '/' })}
-                    className="text-gray-500 hover:text-red-600 font-medium px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
-                    title="Logout"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                  </button>
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          <AnimatedLogo />
+          <span className="font-bold text-xl text-gray-900 dark:text-white">
+            Rigel
+          </span>
+        </Link>
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-5">
+
+          {!session ? (
+            <>
+              <Link
+                href="/login"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+              >
+                Login
+              </Link>
+
+              <Link
+                href="/signup"
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/dashboard"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+              >
+                Dashboard
+              </Link>
+
+              <Link
+                href="/userlisting"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+              >
+                Listings
+              </Link>
+
+              {/* 👤 User name */}
+              <div className="flex items-center gap-2 ml-2">
+                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">
+                  {userName.charAt(0).toUpperCase()}
                 </div>
-              </>
-            )}
+
+                <span className="text-gray-700 dark:text-gray-200 font-medium max-w-[120px] truncate">
+                  {userName}
+                </span>
+              </div>
+
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="text-red-500 hover:text-red-600 ml-2"
+              >
+                Logout
+              </button>
+            </>
+          )}
+
+          <ThemeToggle />
+        </div>
+
+        {/* Mobile Button */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden p-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200"
+        >
+          ☰
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      {open && (
+        <div className="md:hidden px-4 pb-4 space-y-3">
+
+          {!session ? (
+            <>
+              <Link onClick={() => setOpen(false)} href="/login" className="block text-gray-700 dark:text-gray-200">
+                Login
+              </Link>
+
+              <Link
+                onClick={() => setOpen(false)}
+                href="/signup"
+                className="block px-4 py-2 bg-blue-600 text-white rounded-lg"
+              >
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <>
+              {/* 👤 Mobile user */}
+              <div className="flex items-center gap-2 py-2">
+                <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                  {userName.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-gray-800 dark:text-gray-200 font-medium">
+                  {userName}
+                </span>
+              </div>
+
+              <Link
+                onClick={() => setOpen(false)}
+                href="/dashboard"
+                className="block text-gray-700 dark:text-gray-200"
+              >
+                Dashboard
+              </Link>
+
+              <Link
+                onClick={() => setOpen(false)}
+                href="/userlisting"
+                className="block text-gray-700 dark:text-gray-200"
+              >
+                Listings
+              </Link>
+
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  signOut({ callbackUrl: "/" });
+                }}
+                className="text-red-500"
+              >
+                Logout
+              </button>
+            </>
+          )}
+
+          <div className="pt-2">
+            <ThemeToggle />
           </div>
         </div>
-      </div>
+      )}
     </nav>
   );
 }

@@ -19,10 +19,12 @@ import {
   Fuel,
   Construction,
   Briefcase,
-  Heart
+  Heart,
+  Images
 } from 'lucide-react';
 import Image from 'next/image';
 import { ImageResponse } from 'next/server';
+import { body } from 'framer-motion/client';
 
 const categoryConfig = {
   car: {
@@ -121,41 +123,24 @@ export default function CreateListingPage() {
     },
   });
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length + images.length > 10) {
-      alert('Maximum 10 images allowed');
-      return;
-    }
-    const response = await fetch('http://localhost:3000/api/cloudflare-r2/upload', {
-      method: 'POST',
-     
-    });
-    const data = await response.json();
-    console.log('Upload URL response:', data);
-    const uploadURL=data.UploadUrl;
-    const key=data.key;
-    const uploadResponse =await fetch(uploadURL, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': files[0]?.type || 'application/octet-stream',
-      },
-      body: files[0],
-    });
-    if (uploadResponse.ok) {      console.log('Image uploaded successfully to R2');
-      // You can now save the key to your database along with the listing
-    } else {
-      console.error('Failed to upload image to R2');
-      alert('Failed to upload image. Please try again.');
-      return;
-    }
+  const handleImageChange = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const files = Array.from(e.target.files || []);
+
+  if (files.length + images.length > 10) {
+    alert("Maximum 10 images allowed");
+    return;
+  }
+
+  
 
     setImages(prev => [...prev, ...files]);
     
     // Create previews
     const newPreviews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(prev => [...prev, ...newPreviews]);
-  };
+   };
 
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
@@ -189,25 +174,61 @@ export default function CreateListingPage() {
 
     try {
       // Upload images to Cloudinary
-      const imagesObj = await Promise.all(
-        images.map(async (file) => {
-          const formData = new FormData();
-          formData.append('file', file);
-          formData.append('upload_preset', 'ml_default'); // Configure this in Cloudinary
-          
-          const response = await fetch(
-            `https://api.cloudinary.com/v1_1/djwhv46pa/image/upload`,
-            {
-              method: 'POST',
-              body: formData,
-            }
+      const resp= await fetch(
+    "/api/cloudflare-r2/upload",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        files:images.map((file:any) => ({
+          name: file.name,
+          type: file.type,
+        })),
+      }),
+    }
+  );
+
+  const data = await resp.json();
+
+  const allImg= await Promise.all(
+    data.data.map(
+      async (
+        img: {
+          UploadUrl: string;
+          key: string;
+        },
+        index: number
+      ) => {
+        const uploadResponse = await fetch(
+          img.UploadUrl,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type":
+                images[index].type,
+            },
+            body: images[index],
+          }
+        );
+
+        if (!uploadResponse.ok) {
+          throw new Error(
+            `Failed to upload ${images[index].name}`
           );
-          
-          const data = await response.json();
-          console.log('Cloudinary response:', data);
-          return { url: data.secure_url, publicId: data.public_id };
-        })
-      );
+        }
+
+        return {
+          url: `${process.env.NEXT_PUBLIC_R2_PUBLIC_URL}/${img.key}`,
+          publicid:img.key};
+      }
+    )
+  );
+
+  console.log("All uploads completed", allImg);
+      
+      
 
       // Generate search keywords
       const searchKeywords = generateSearchKeywords(formData);
@@ -221,7 +242,7 @@ export default function CreateListingPage() {
         body: JSON.stringify({
           ...formData,
           price: parseFloat(formData.price),
-          images: imagesObj,
+          images: allImg,
           searchKeywords,
         }),
       });
