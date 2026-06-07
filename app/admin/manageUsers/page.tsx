@@ -14,6 +14,8 @@ type AdminUser = {
 
 export default function UsersFilter() {
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
 
@@ -23,6 +25,9 @@ export default function UsersFilter() {
   const [banned, setBanned] = useState(false);
 
   const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    setError("");
+
     try {
       const params = new URLSearchParams();
 
@@ -51,10 +56,20 @@ export default function UsersFilter() {
 
       const data = await response.json();
 
-      setUsers(data);
+      if (!response.ok) {
+        setUsers([]);
+        setError(data?.error || "Failed to load users.");
+        return;
+      }
+
+      setUsers(Array.isArray(data) ? data : []);
 
     } catch (error) {
       console.log(error);
+      setUsers([]);
+      setError("Failed to load users.");
+    } finally {
+      setLoading(false);
     
     }
   }, [search, verified, premium, banned]);
@@ -142,6 +157,19 @@ export default function UsersFilter() {
           Users
         </h2>
 
+        {loading ? (
+          <div className="rounded-lg bg-slate-50 p-6 text-center text-slate-500">
+            Loading users...
+          </div>
+        ) : error ? (
+          <div className="rounded-lg border border-red-100 bg-red-50 p-6 text-center text-red-700">
+            {error}
+          </div>
+        ) : users.length === 0 ? (
+          <div className="rounded-lg bg-slate-50 p-6 text-center text-slate-500">
+            No users found.
+          </div>
+        ) : (
         <div className="space-y-4">
 
           {users.map((user) => (
@@ -185,6 +213,7 @@ export default function UsersFilter() {
           ))}
 
         </div>
+        )}
         
       </div>
     </div>

@@ -82,43 +82,47 @@ export default function ListingCard({
       <div className="relative aspect-[4/3] overflow-hidden">
        <ListingSlider images={images} />
         
-        {/* Category Badge */}
-        <div className="absolute top-3 left-3 flex items-center space-x-2 z-10">
-          <span className={`${categoryColor} text-white px-3 py-1 rounded-full text-xs font-medium flex items-center shadow-md`}>
-            <CategoryIcon className="w-3 h-3 mr-1" />
-            {category.charAt(0).toUpperCase() + category.slice(1)}
-          </span>
-          {isElectric && (
-            <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center shadow-md">
-              <Zap className="w-3 h-3 mr-0.5" />
-              Electric
+        {/* Badges and Like Button Container */}
+        <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-10">
+          {/* Category Badge */}
+          <div className="flex items-center space-x-2">
+            <span className={`${categoryColor} text-white px-3 py-1 rounded-full text-xs font-medium flex items-center shadow-md`}>
+              <CategoryIcon className="w-3 h-3 mr-1" />
+              {category.charAt(0).toUpperCase() + category.slice(1)}
             </span>
-          )}
-        </div>
+            {isElectric && (
+              <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center shadow-md">
+                <Zap className="w-3 h-3 mr-0.5" />
+                Electric
+              </span>
+            )}
+          </div>
 
-        {/* Like Button */}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            setIsLiked(!isLiked);
-          }}
-          className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-gray-700/90 rounded-full hover:bg-white dark:hover:bg-gray-600 transition-all shadow-sm z-10 transform hover:scale-110 active:scale-95"
-        >
-          <Heart
-            className={`w-4 h-4 transition-colors ${
-              isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400'
-            }`}
-          />
-        </button>
+          {/* Like Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setIsLiked(!isLiked);
+            }}
+            className="p-2 bg-white/90 dark:bg-gray-700/90 rounded-full hover:bg-white dark:hover:bg-gray-600 transition-all shadow-sm z-10 transform hover:scale-110 active:scale-95"
+            aria-label="Toggle like"
+          >
+            <Heart
+              className={`w-4 h-4 transition-colors ${
+                isLiked ? 'fill-red-500 text-red-500' : 'text-gray-400'
+              }`}
+            />
+          </button>
+        </div>
 
         {/* Overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        <div className="mb-2">
-          <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+      <div className="p-4 flex flex-col flex-1">
+        <div className="mb-2 flex-grow">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-lg">
             {title}
           </h3>
           {subcategory && (
@@ -128,8 +132,8 @@ export default function ListingCard({
           )}
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="text-lg font-bold text-blue-600">
+        <div className="flex items-center justify-between mt-auto pt-2">
+          <div className="text-xl font-bold text-blue-600 dark:text-blue-400">
             {price.toLocaleString()}{" "}
             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">ETB</span>
           </div>

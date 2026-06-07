@@ -5,10 +5,16 @@ import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import AnimatedLogo from "./AnimatedLogo";
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { getTranslation } from "@/lib/i18n";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const { currentLang } = useLanguage();
+
+  const t = (key: string) => getTranslation(currentLang, key);
 
   const userName =
     session?.user?.name ||
@@ -16,14 +22,14 @@ export default function Navbar() {
     "User";
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-gray-200 dark:border-gray-800">
+    <nav className="sticky top-0 z-50 border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-gray-200 dark:border-gray-800"> {/* Make Navbar visible on desktop */}
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <AnimatedLogo />
           <span className="font-bold text-xl text-gray-900 dark:text-white">
-            Rigel
+            {t("rigel")}
           </span>
         </Link>
 
@@ -34,32 +40,32 @@ export default function Navbar() {
             <>
               <Link
                 href="/login"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                Login
+                {t("login")}
               </Link>
 
               <Link
                 href="/signup"
                 className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
               >
-                Sign Up
+                {t("signUp")}
               </Link>
             </>
           ) : (
             <>
               <Link
                 href="/dashboard"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                Dashboard
+                {t("dashboard")}
               </Link>
 
               <Link
                 href="/userlisting"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                Listings
+                {t("listings")}
               </Link>
 
               {/* 👤 User name */}
@@ -75,13 +81,14 @@ export default function Navbar() {
 
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="text-red-500 hover:text-red-600 ml-2"
+                className="text-red-500 hover:text-red-600 ml-2 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
-                Logout
+                {t("logout")}
               </button>
             </>
           )}
 
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
 
@@ -100,8 +107,8 @@ export default function Navbar() {
 
           {!session ? (
             <>
-              <Link onClick={() => setOpen(false)} href="/login" className="block text-gray-700 dark:text-gray-200">
-                Login
+              <Link onClick={() => setOpen(false)} href="/login" className="block text-gray-700 dark:text-gray-200 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                {t("login")}
               </Link>
 
               <Link
@@ -109,7 +116,7 @@ export default function Navbar() {
                 href="/signup"
                 className="block px-4 py-2 bg-blue-600 text-white rounded-lg"
               >
-                Sign Up
+                {t("signUp")}
               </Link>
             </>
           ) : (
@@ -127,17 +134,17 @@ export default function Navbar() {
               <Link
                 onClick={() => setOpen(false)}
                 href="/dashboard"
-                className="block text-gray-700 dark:text-gray-200"
+                className="block text-gray-700 dark:text-gray-200 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
-                Dashboard
+                {t("dashboard")}
               </Link>
 
               <Link
                 onClick={() => setOpen(false)}
                 href="/userlisting"
-                className="block text-gray-700 dark:text-gray-200"
+                className="block text-gray-700 dark:text-gray-200 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
-                Listings
+                {t("listings")}
               </Link>
 
               <button
@@ -145,14 +152,15 @@ export default function Navbar() {
                   setOpen(false);
                   signOut({ callbackUrl: "/" });
                 }}
-                className="text-red-500"
+                className="text-red-500 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
-                Logout
+                {t("logout")}
               </button>
             </>
           )}
 
           <div className="pt-2">
+            <LanguageSwitcher />
             <ThemeToggle />
           </div>
         </div>

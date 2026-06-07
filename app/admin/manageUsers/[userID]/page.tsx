@@ -37,6 +37,8 @@ export default function EditUser() {
   const [ban, setBan] = useState(false);
   const [deletecontent, setDeleteContent] = useState(false);
   const [data, setData] = useState<AdminUser | null>(null);
+  const [fetching, setFetching] = useState(true);
+  const [error, setError] = useState("");
  
 
   const [showConfirm, setShowConfirm] = useState(false);
@@ -45,11 +47,21 @@ export default function EditUser() {
   
 
   const fetchUseer= useCallback(async()=>{
+    setFetching(true);
+    setError("");
+
     try {
       const res=await fetch(`/api/admin/allusers/${userID}`,{
         method:"GET",
       })
       const udata=await res.json()
+
+      if (!res.ok || !udata?._id) {
+        setData(null)
+        setError(udata?.message || udata?.error || "User does not exist.")
+        return
+      }
+
        setData(udata)
        setVerify(Boolean(udata?.isVerified))
        setBan(Boolean(udata?.isBanned))
@@ -57,6 +69,10 @@ export default function EditUser() {
       
     } catch (error) {
       console.log(error)
+      setData(null)
+      setError("Failed to load user.")
+    } finally {
+      setFetching(false)
     }
     
 
@@ -87,6 +103,13 @@ export default function EditUser() {
       });
 
       const ndata = await req.json();
+
+      if (!req.ok || !ndata?.user) {
+        setMessage(ndata?.message || ndata?.error || "User does not exist.");
+        setShowConfirm(false);
+        return;
+      }
+
       setData(ndata.user);
 
       setMessage(ndata.message || "User updated");

@@ -25,9 +25,7 @@ export async function GET(
     }
 
     // Increment view count
-    await Listing.findByIdAndUpdate(listingid.id, {
-      $inc: { views: 1 },
-    });
+    
 
     return NextResponse.json({
       success: true,
