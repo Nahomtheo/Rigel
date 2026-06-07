@@ -335,7 +335,7 @@ export default function HomePage() {
                     viewMode === 'list' ? 'w-48 flex-shrink-0' : 'aspect-[4/3]'
                   }`}>
                     
-                   <ListingSlider images={listing.images} /> 
+                   <ListingSlider images={listing.images as any} /> 
                     {listing.isElectric && (
                       <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
                         <Zap className="w-3 h-3 mr-1" />

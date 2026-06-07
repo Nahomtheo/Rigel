@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
-    const passwordResetExpires = Date.now() + 3600000; // 1 hour from now
+    const passwordResetExpires = Date.now() + 300000; // 1 hour from now
 
     user.otp = {
       code: passwordResetToken,
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       html: `
         <p>You requested a password reset. Click the link below to reset your password:</p>
         <p><a href="${resetUrl}">Reset your password</a></p>
-        <p>This link is valid for 1 hour.</p>
+        <p>This link is valid for 5 min.</p>
         <p>If you did not request this, please ignore this email.</p>
       `,
     });

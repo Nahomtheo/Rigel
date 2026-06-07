@@ -5,7 +5,7 @@ import {signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Verification({params}:{params:{id:string}}) {
+export default function Verification({params}:{params: Promise<{id:string}>}) {
   
 
 

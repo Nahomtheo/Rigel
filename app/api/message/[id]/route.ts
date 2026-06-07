@@ -3,7 +3,7 @@ import Message from "@/models/Message";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string } >}
 ) {
   await connectDB();
   const ID=(await params).id;

@@ -99,7 +99,7 @@ const ethiopianCities = {
   'Southern Nations, Nationalities, and Peoples': ['Arba Minch', 'Jinka', 'Turmi', 'Wolayita Sodo'],
 };
 
-export default function UpdateListingPage({ params }: { params: { id: string } }) {
+export default function UpdateListingPage({ params }: { params: Promise<{ id: string }> }) {
     
   const { data: session, status } = useSession();
   const router = useRouter();

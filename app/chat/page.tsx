@@ -7,11 +7,12 @@ import {
   MessageSquare, 
   Search, 
   Send, 
-  ArrowLeft, 
+  ArrowLeft,
+  Loader2, 
   User,
-  Loading,
   Package
 } from 'lucide-react';
+
 import Pusher from 'pusher-js';
 
 type Conversation = {
@@ -46,7 +47,7 @@ export default function ChatPage() {
     if (!session?.user?.email) return;
     setLoading(true);
     try {
-      const userId = session.user.id || session.user.email;
+      const userId = (session.user as any ).id || session.user.email;
       const res = await fetch(`/api/conversation?userId=${userId}`);
       const data = await res.json();
       setConversations(data);
@@ -64,7 +65,7 @@ export default function ChatPage() {
       setMessages(data);
       
       // Mark as read
-      const userId = session?.user?.id || session?.user?.email;
+      const userId = (session?.user as any ).id || session?.user?.email;
       await fetch('/api/conversation/read', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -76,12 +77,12 @@ export default function ChatPage() {
   };
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation || !session?.user?.id) return;
+    if (!newMessage.trim() || !selectedConversation || !(session?.user as any).id) return;
     
     const tempMessage: Message = {
       _id: Date.now().toString(),
       conversationId: selectedConversation._id,
-      senderId: session.user.id,
+      senderId: (session?.user as any).id,
       text: newMessage.trim(),
       createdAt: new Date().toISOString(),
     };
@@ -95,7 +96,7 @@ export default function ChatPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversationId: selectedConversation._id,
-          senderId: session.user.id,
+          senderId: (session?.user as any).id,
           text: tempMessage.text,
         }),
       });
@@ -181,7 +182,7 @@ export default function ChatPage() {
   };
 
   const getOtherUser = (conversation: Conversation) => {
-    const userId = session?.user?.id || session?.user?.email;
+    const userId = (session?.user as any)?.id || session?.user?.email;
     return conversation.members.find(m => m._id !== userId);
   };
 
@@ -265,7 +266,7 @@ export default function ChatPage() {
               <div className="flex-1 overflow-y-auto">
                 {loading ? (
                   <div className="flex items-center justify-center p-8">
-                    <Loading className="w-8 h-8 animate-spin text-blue-500" />
+                    <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
                   </div>
                 ) : filteredConversations.length === 0 ? (
                   <div className="flex items-center justify-center p-8">
@@ -278,7 +279,7 @@ export default function ChatPage() {
                 ) : (
                   filteredConversations.map((conversation) => {
                     const otherUser = getOtherUser(conversation);
-                    const unread = conversation.unreadCounts?.[session.user?.id || ''] || 0;
+                    const unread = conversation.unreadCounts?.[(session.user as any )?.id || ''] || 0;
                     const isSelected = selectedConversation?._id === conversation._id;
                     
                     return (
@@ -352,7 +353,7 @@ export default function ChatPage() {
                   {/* Messages */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
                     {messages.map((msg) => {
-                      const isOwnMessage = msg.senderId === session.user?.id;
+                      const isOwnMessage = msg.senderId === (session.user as any )?.id;
                       return (
                         <div
                           key={msg._id}
