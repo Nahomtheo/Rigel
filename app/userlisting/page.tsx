@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 export default async function Userlistings(){
     const session=await getServerSession(authOptions)
-    const ownerid= (session?.user as any).id
+    const ownerid= (session?.user as any)?.id
     if (!session){
         redirect("/login")
     }
