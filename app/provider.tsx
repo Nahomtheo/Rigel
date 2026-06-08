@@ -9,8 +9,8 @@ export default function Providers({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+   
       <SessionProvider>{children}</SessionProvider>
-    </ThemeProvider>
+  
   );
 }

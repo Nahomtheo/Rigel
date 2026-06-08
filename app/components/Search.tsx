@@ -1,6 +1,6 @@
 'use client';
 
-import ListingSlider from './components/Listingslider';
+import ListingSlider from './Listingslider';
 
 import { useState, useEffect, useCallback } from 'react';
 import {
@@ -97,7 +97,7 @@ interface Listing {
   views: number;
 }
 
-export default function HomePage() {
+export default function Searching() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -157,52 +157,14 @@ export default function HomePage() {
     }
     setCurrentPage(1);
   };
-
-  const getCategoryIcon = (category: string, isElectric: boolean) => {
-    if (isElectric) return <Zap className="w-4 h-4 text-green-500" />;
-
-    switch (category) {
-      case 'car':
-        return <Car className="w-4 h-4" />;
-      case 'rental':
-        return <Calendar className="w-4 h-4" />;
-      case 'housing':
-        return <Home className="w-4 h-4" />;
-      case 'clothes':
-        return <Shirt className="w-4 h-4" />;
-      default:
-        return <Grid className="w-4 h-4" />;
-    }
-  };
-
-  const getLocationString = (location: Listing['location']) => {
-    const parts = [];
-    if (location.subcity) parts.push(location.subcity);
-    if (location.city) parts.push(location.city);
-    return parts.join(', ') || location.region || 'Ethiopia';
-  };
-
-  return (
-    <motion.div
+  return(
+     <motion.div
       className="min-h-screen bg-gray-50"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white dark:from-gray-900 dark:to-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="text-center mb-10">
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
-              <span className="text-blue-200 dark:text-blue-400">Elite</span> Exchange
-            </h1>
-            <p className="text-lg md:text-xl text-blue-100 dark:text-gray-300 max-w-2xl mx-auto">
-              Discover, buy, sell, and rent cars, housing, clothes, and more across Ethiopia with ease.
-            </p>
-          </div>
-
-          {/* Search */}
-          <form
+                  <form
             onSubmit={handleSearch}
             className="max-w-4xl mx-auto bg-white dark:bg-gray-700 rounded-xl shadow-lg p-2"
           >
@@ -226,8 +188,6 @@ export default function HomePage() {
               </button>
             </div>
           </form>
-
-          {/* Categories */}
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             {categories.map((category) => {
               const Icon = category.icon;
@@ -237,8 +197,8 @@ export default function HomePage() {
                   onClick={() => handleCategorySelect(category.id)}
                   className={`flex flex-col items-center p-3 rounded-xl transition-all ${
                     selectedCategory === category.id
-                      ? 'bg-white text-blue-600'
-                      : 'bg-white/20 text-white'
+                      ? 'bg-gray text-blue-600'
+                      : 'bg-black/40 text-white'
                   }`}
                 >
                   <Icon className="w-7 h-7 mb-2" />
@@ -247,91 +207,9 @@ export default function HomePage() {
               );
             })}
           </div>
-        </div>
-      </div>
 
-      {/* Main */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              {selectedCategory &&
-                subcategories[selectedCategory as keyof typeof subcategories] && (
-                  <select
-                    value={selectedSubcategory}
-                    onChange={(e) => {
-                      setSelectedSubcategory(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="px-4 py-2 border rounded-lg"
-                  >
-                    {subcategories[selectedCategory as keyof typeof subcategories].map(
-                      (sub) => (
-                        <option key={sub.value} value={sub.value}>
-                          {sub.label}
-                        </option>
-                      )
-                    )}
-                  </select>
-                )}
-
-              <select
-                value={selectedRegion}
-                onChange={(e) => {
-                  setSelectedRegion(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="px-4 py-2 border rounded-lg"
-              >
-                {ethiopianRegions.map((region) => (
-                  <option key={region.value} value={region.value}>
-                    {region.label}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 border rounded-lg"
-              >
-                <option value="newest">Newest</option>
-                <option value="price-low">Low to High</option>
-                <option value="price-high">High to Low</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">
-                {listings.length} results
-              </span>
-
-              <div className="flex border rounded-lg overflow-hidden">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 ${
-                    viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : ''
-                  }`}
-                >
-                  <Grid className="w-4 h-4" />
-                </button>
-
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 ${
-                    viewMode === 'list' ? 'bg-blue-50 text-blue-600' : ''
-                  }`}
-                >
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Listings */}
-        {loading ? (
+          
+          {loading ? (
           <motion.div
             className="flex justify-center py-20"
             initial={{ opacity: 0 }}
@@ -374,7 +252,7 @@ export default function HomePage() {
                       {listing.price} ETB
                     </p>
                     <p className="text-sm text-gray-500">
-                      {getLocationString(listing.location)}
+                      
                     </p>
                   </div>
                 </Link>
@@ -382,7 +260,7 @@ export default function HomePage() {
             ))}
           </motion.div>
         )}
-      </div>
+
     </motion.div>
-  );
+  )
 }

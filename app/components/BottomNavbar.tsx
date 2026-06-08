@@ -20,7 +20,7 @@ export default function BottomNavbar() {
   const navItems = [
     { name: "Home", href: "/", icon: Home },
     { name: "Search", href: "/search", icon: Search }, // Assuming a search page or modal
-    { name: "Categories", href: "/categories", icon: LayoutGrid }, // Assuming a categories page
+    { name: "My listing", href: "/userlisting", icon: LayoutGrid }, // Assuming a categories page
     { name: "List", href: "/createlisting", icon: PlusSquare, authRequired: true },
     { name: "Inbox", href: "/inbox", icon: MessageSquareText, authRequired: true },
     { name: "Profile", href: "/dashboard", icon: User, authRequired: true },
