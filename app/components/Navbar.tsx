@@ -26,7 +26,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 mt-4">
           <AnimatedLogo />
           <span className="font-bold text-xl text-gray-900 dark:text-white">
             {t("rigel")}
