@@ -17,7 +17,7 @@ async function getListing(id: string) {
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const list = await params
   const ids=list.id.split('-').pop();
@@ -62,15 +62,13 @@ export async function generateMetadata({
 export default async function Page({
   params,
 }: {
-  params: { id: string };
+  params:Promise< { id: string }>;
 }) {
      const list = await params
   const ids=list.id.split('-').pop();
 
   if (!ids) {
-    return {
-      title: 'Listing not found',
-    };
+    return (<div> listing not found</div>)
   }
 
   const listing = await getListing(ids);

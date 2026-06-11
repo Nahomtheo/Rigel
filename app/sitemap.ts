@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
     },
     ...listings.map((listing) => ({
-      url: `https://rigelcars.com/listing/${slugify(listing.slug)}-${listing._id}`,
+      url: `https://rigelcars.com/listing/${listing.slug}-${listing._id}`,
       lastModified: listing.updatedAt,
     })),
   ];
