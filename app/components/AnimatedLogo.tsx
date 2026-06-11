@@ -116,7 +116,10 @@ export default function AnimatedLogo() {
         <Image
           src="/logorigel.png"
           alt="Rigel Logo"
-          fill
+
+          width={160}
+          height={50}
+
           priority
           className="
             object-contain

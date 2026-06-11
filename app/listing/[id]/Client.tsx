@@ -64,8 +64,9 @@ export default function ListingDetailPage({listings}:{listings:Listing}) {
   const [showPhone, setShowPhone] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-
-  setListing(params)
+useEffect(() => {
+  setListing(params);
+}, [params]);
 
   const handlePhoneReveal = () => {
     if (!session) {

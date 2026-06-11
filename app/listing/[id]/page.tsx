@@ -3,7 +3,7 @@ import ListingDetailPage from "./Client";
 // 🔥 Fetch function (server-only) yes
 async function getListing(id: string) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/listings/${id}`,
+    `${process.env.NEXTAUTH_URL}/api/listings/${id}`,
     {
       cache: "no-store",
     }
@@ -19,7 +19,8 @@ export async function generateMetadata({
 }: {
   params: { id: string };
 }) {
-  const listing = await getListing(params.id);
+  const paramsid=await params
+  const listing = await getListing(paramsid.id);
 
   if (!listing) {
     return {
@@ -55,7 +56,8 @@ export default async function Page({
 }: {
   params: { id: string };
 }) {
-  const listing = await getListing(params.id);
+  const paramid=await params
+  const listing = await getListing(paramid.id);
 
   if (!listing) {
     return (
