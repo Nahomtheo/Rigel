@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const ListingSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
+    slug:{type:String},
 
     description: { type: String },
 
@@ -53,6 +54,7 @@ const ListingSchema = new mongoose.Schema(
         publicId: String,
       },
     ],
+    
 
     specs: {
         type: Map,

@@ -1,6 +1,9 @@
 'use client';
 
 import ListingSlider from './components/Listingslider';
+import { slugify } from '@/lib/slugify';
+
+
 
 import { useState, useEffect, useCallback } from 'react';
 import {
@@ -359,7 +362,7 @@ export default function HomePage() {
                 transition={{ duration: 0.25 }}
               >
                 <Link
-                  href={`/listing/${listing._id}`}
+                  href={`/listing/${slugify(listing.title)}-${listing._id}`}
                   className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow ${
                     viewMode === 'list' ? 'flex' : ''
                   }`}

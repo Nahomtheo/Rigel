@@ -19,8 +19,16 @@ export async function generateMetadata({
 }: {
   params: { id: string };
 }) {
-  const paramsid=await params
-  const listing = await getListing(paramsid.id);
+  const list = await params
+  const ids=list.id.split('-').pop();
+
+  if (!ids) {
+    return {
+      title: 'Listing not found',
+    };
+  }
+
+  const listing = await getListing(ids);
 
   if (!listing) {
     return {
@@ -56,8 +64,16 @@ export default async function Page({
 }: {
   params: { id: string };
 }) {
-  const paramid=await params
-  const listing = await getListing(paramid.id);
+     const list = await params
+  const ids=list.id.split('-').pop();
+
+  if (!ids) {
+    return {
+      title: 'Listing not found',
+    };
+  }
+
+  const listing = await getListing(ids);
 
   if (!listing) {
     return (

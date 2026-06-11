@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
 import { connectDB } from '@/lib/db';
+import { slugify } from '@/lib/slugify';
 import Listing from '@/models/Listing';
 
 export async function POST(request: NextRequest) {
@@ -61,6 +62,7 @@ export async function POST(request: NextRequest) {
     // Create listing
     const listing = await Listing.create({
       title,
+      slug: `${slugify(title)}-${Date.now()}`,
       description,
       price,
       category,

@@ -40,6 +40,14 @@ interface Owner {
   showPhoneToNonPremium: boolean;
 }
 
+interface ImageType {
+  url: string;
+  publicId: string;
+}
+
+
+  
+
 interface Listing {
   _id: string;
   title: string;
@@ -49,7 +57,7 @@ interface Listing {
   subcategory: string;
   isElectric: boolean;
   location: Location;
-  images: string[];
+  images: ImageType[];
   owner: Owner;
   createdAt: string;
   views: number;
@@ -58,15 +66,14 @@ interface Listing {
 export default function ListingDetailPage({listings}:{listings:Listing}) {
   const params = listings;
   const { data: session } = useSession();
-  const [listing, setListing] = useState<Listing>(listings);
-  const [loading, setLoading] = useState(true);
+  const [listing, setListing] = useState<Listing>(params);
+  
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPhone, setShowPhone] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  console.log(params)
 
-useEffect(() => {
-  setListing(params);
-}, [params]);
+
 
   const handlePhoneReveal = () => {
     if (!session) {
@@ -115,13 +122,7 @@ useEffect(() => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+
 
   if (!listing) {
     return (
