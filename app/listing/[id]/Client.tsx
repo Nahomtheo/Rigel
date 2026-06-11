@@ -55,7 +55,7 @@ interface Listing {
   views: number;
 }
 
-export default function ListingDetailPage() {
+export default function ListingDetailPage({listingid}:{listingid:string}) {
   const params = useParams();
   const { data: session } = useSession();
   const [listing, setListing] = useState<Listing | null>(null);
