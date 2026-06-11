@@ -55,34 +55,17 @@ interface Listing {
   views: number;
 }
 
-export default function ListingDetailPage({listingid}:{listingid:string}) {
-  const params = listingid;
+export default function ListingDetailPage({listing}:{listing:Listing}) {
+  const params = listing;
   const { data: session } = useSession();
-  const [listing, setListing] = useState<Listing | null>(null);
+  const [listing, setListing] = useState<Listing>(listing);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPhone, setShowPhone] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-  useEffect(() => {
-    const fetchListing = async () => {
-      try {
-        const response = await fetch(`/api/listings/${params.id}`);
-        const data = await response.json();
-        if (data.success) {
-          setListing(data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching listing:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    if (params.id) {
-      fetchListing();
-    }
-  }, [params.id]);
+  setListing(params)
 
   const handlePhoneReveal = () => {
     if (!session) {
