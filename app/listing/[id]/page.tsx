@@ -1,6 +1,6 @@
 import ListingDetailPage from "./Client";
 
-// 🔥 Fetch function (server-only)
+// 🔥 Fetch function (server-only) yes
 async function getListing(id: string) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/listings/${id}`,
