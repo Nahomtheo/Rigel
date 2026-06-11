@@ -1,0 +1,13 @@
+# Robots.txt for SEO
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+Allow: /search
+Allow: /listings
+
+User-agent: Bingbot
+Allow: /search
+Allow: /listings
+
+Sitemap: https://rigelcars.com/sitemap.xml

@@ -66,6 +66,6 @@ export default async function Page({
   }
 
   return (
-    <ListingDetailPage listing={listing} />
+    <ListingDetailPage listings={listing} />
   );
 }
