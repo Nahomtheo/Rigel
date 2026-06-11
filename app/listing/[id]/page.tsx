@@ -29,5 +29,5 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 export default async function Page({ params }: { params: { id: string } }) {
   const listing = await getListing(params.id);
 
-  return <ListinDetailPage listingid={params.id} />;
+  return <ListingDetailPage listing={listing} />;
 }
