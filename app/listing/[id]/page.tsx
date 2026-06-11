@@ -1,6 +1,6 @@
 // app/listing/[id]/page.tsx
 
-import ListingClient from "./Client";
+import ListingDetailPage from "./Client";
 
 async function getListing(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/listings/${id}`, {
@@ -29,5 +29,5 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 export default async function Page({ params }: { params: { id: string } }) {
   const listing = await getListing(params.id);
 
-  return <ListingClient listing={listing} />;
+  return <ListinDetailPage listingid={params.id} />;
 }
