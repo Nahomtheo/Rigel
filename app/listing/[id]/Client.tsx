@@ -55,10 +55,10 @@ interface Listing {
   views: number;
 }
 
-export default function ListingDetailPage({listing}:{listing:Listing}) {
-  const params = listing;
+export default function ListingDetailPage({listings}:{listings:Listing}) {
+  const params = listings;
   const { data: session } = useSession();
-  const [listing, setListing] = useState<Listing>(listing);
+  const [listing, setListing] = useState<Listing>(listings);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPhone, setShowPhone] = useState(false);
