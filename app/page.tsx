@@ -126,7 +126,7 @@ export default function HomePage() {
       if (selectedSubcategory) params.append('subcategory', selectedSubcategory);
       if (selectedRegion) params.append('region', selectedRegion);
 
-      const response = await fetch(`/api/search?${params.toString()}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/search?${params.toString()}`);
       const data = await response.json();
 
       if (data.success) {
