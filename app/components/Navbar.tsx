@@ -4,167 +4,301 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import AnimatedLogo from "./AnimatedLogo";
-import ThemeToggle from "./ThemeToggle";
-import LanguageSwitcher from "./LanguageSwitcher";
-import { getTranslation } from "@/lib/i18n";
-import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
-  const { currentLang } = useLanguage();
-
-  const t = (key: string) => getTranslation(currentLang, key);
-
-  const userName =
-    session?.user?.name ||
-    session?.user?.email?.split("@")[0] ||
-    "User";
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-gray-200 dark:border-gray-800"> {/* Make Navbar visible on desktop */}
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <nav
+      className="
+      sticky top-0 z-50
+      overflow-hidden
+      border-b
+      border-[#C9A227]/30
+      bg-[#120B07]/90
+      backdrop-blur-xl
+      "
+    >
+
+      {/* Ethiopian Tilet Pattern */}
+      <div
+        className="
+        absolute inset-0
+        opacity-[0.12]
+        pointer-events-none
+        "
+        style={{
+          backgroundImage: `
+          linear-gradient(45deg,#C9A227 1px,transparent 1px),
+          linear-gradient(-45deg,#C9A227 1px,transparent 1px)
+          `,
+          backgroundSize:"28px 28px"
+        }}
+      />
+
+
+      <div className="
+      relative z-10
+      max-w-7xl
+      mx-auto
+      px-4
+      h-16
+      flex
+      items-center
+      justify-between
+      ">
+
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 mt-4">
-          <AnimatedLogo />
-          <span className="font-bold text-xl text-gray-900 dark:text-white">
-            {t("rigel")}
+
+        <Link 
+        href="/" 
+        className="
+        flex
+        items-center
+        gap-3
+        "
+        >
+
+          <div
+          className="
+          rounded-full
+          p-2
+          border
+          border-[#C9A227]/50
+          bg-black/30
+          mt-4
+          "
+          >
+            <AnimatedLogo />
+          </div>
+
+
+          <span
+          className="
+          font-serif
+          font-bold
+          text-xl
+          tracking-widest
+          bg-gradient-to-r
+          from-[#F5E6B8]
+          via-[#C9A227]
+          to-[#8B6B23]
+          text-transparent
+          bg-clip-text
+          "
+          >
+            Rigel
           </span>
+
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-5">
+
+
+
+        {/* Desktop */}
+
+        <div className="
+        hidden
+        md:flex
+        items-center
+        gap-6
+        ">
+
+
+          {[
+            ["Home","/"],
+            ["Search","/search"],
+            ["My listing","/createlisting"]
+          ].map(([name,path])=>(
+
+            <Link
+            key={path}
+            href={path}
+            className="
+            text-[#F5EFE6]
+            hover:text-[#C9A227]
+            transition
+            text-sm
+            font-medium
+            "
+            >
+              {name}
+            </Link>
+
+          ))}
+
+
 
           {!session ? (
-            <>
-              <Link
-                href="/login"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                {t("login")}
-              </Link>
 
-              <Link
-                href="/signup"
-                className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-              >
-                {t("signUp")}
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/dashboard"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                {t("dashboard")}
-              </Link>
+          <Link
+          href="/login"
+          className="
+          px-5
+          py-2
+          rounded-full
+          bg-[#C9A227]
+          text-black
+          font-semibold
+          hover:bg-[#e2bd42]
+          transition
+          "
+          >
+            Login
+          </Link>
 
-              <Link
-                href="/userlisting"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                {t("listings")}
-              </Link>
 
-              {/* 👤 User name */}
-              <div className="flex items-center gap-2 ml-2">
-                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">
-                  {userName.charAt(0).toUpperCase()}
-                </div>
+          ):(
 
-                <span className="text-gray-700 dark:text-gray-200 font-medium max-w-[120px] truncate">
-                  {userName}
-                </span>
-              </div>
+          <button
+          onClick={()=>signOut({callbackUrl:"/"})}
+          className="
+          px-5
+          py-2
+          rounded-full
+          bg-[#E8D49A]
+          text-[#120B07]
+          font-semibold
+          hover:bg-[#C9A227]
+          transition
+          "
+          >
+            Logout
+          </button>
 
-              <button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="text-red-500 hover:text-red-600 ml-2 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              >
-                {t("logout")}
-              </button>
-            </>
           )}
 
-          <LanguageSwitcher />
-          <ThemeToggle />
+
+
         </div>
 
-        {/* Mobile Button */}
+
+
+
+
+        {/* Mobile button */}
+
         <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden p-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200"
+
+        onClick={()=>setOpen(!open)}
+
+        className="
+        md:hidden
+        p-2
+        rounded-lg
+        border
+        border-[#C9A227]/50
+        text-[#C9A227]
+        bg-black/30
+        "
         >
+
           ☰
+
         </button>
+
+
+
       </div>
 
+
+
+
+
       {/* Mobile Menu */}
+
       {open && (
-        <div className="md:hidden px-4 pb-4 space-y-3">
 
-          {!session ? (
-            <>
-              <Link onClick={() => setOpen(false)} href="/login" className="block text-gray-700 dark:text-gray-200 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition">
-                {t("login")}
-              </Link>
+      <div
+      className="
+      relative
+      z-20
+      md:hidden
+      px-4
+      pb-5
+      bg-[#120B07]
+      border-t
+      border-[#C9A227]/20
+      "
+      >
 
-              <Link
-                onClick={() => setOpen(false)}
-                href="/signup"
-                className="block px-4 py-2 bg-blue-600 text-white rounded-lg"
-              >
-                {t("signUp")}
-              </Link>
-            </>
-          ) : (
-            <>
-              {/* 👤 Mobile user */}
-              <div className="flex items-center gap-2 py-2">
-                <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                  {userName.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-gray-800 dark:text-gray-200 font-medium">
-                  {userName}
-                </span>
-              </div>
+      {[
+        ["Home","/"],
+        ["Search","/search"],
+        ["My listing","/createlisting"]
+      ].map(([name,path])=>(
 
-              <Link
-                onClick={() => setOpen(false)}
-                href="/dashboard"
-                className="block text-gray-700 dark:text-gray-200 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              >
-                {t("dashboard")}
-              </Link>
+        <Link
+        key={path}
+        onClick={()=>setOpen(false)}
+        href={path}
+        className="
+        block
+        py-3
+        px-5
+        mt-3
+        rounded-full
+        text-[#F5EFE6]
+        hover:bg-[#C9A227]/20
+        hover:text-[#C9A227]
+        "
+        >
 
-              <Link
-                onClick={() => setOpen(false)}
-                href="/userlisting"
-                className="block text-gray-700 dark:text-gray-200 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              >
-                {t("listings")}
-              </Link>
+          {name}
 
-              <button
-                onClick={() => {
-                  setOpen(false);
-                  signOut({ callbackUrl: "/" });
-                }}
-                className="text-red-500 px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-              >
-                {t("logout")}
-              </button>
-            </>
-          )}
+        </Link>
 
-          <div className="pt-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
-          </div>
-        </div>
+      ))}
+
+
+
+      {!session ?
+
+      <Link
+      href="/login"
+      className="
+      block
+      mt-3
+      text-center
+      bg-[#C9A227]
+      text-black
+      py-3
+      rounded-full
+      font-bold
+      "
+      >
+        Login
+      </Link>
+
+      :
+
+      <button
+      onClick={()=>{
+        setOpen(false);
+        signOut({callbackUrl:"/"})
+      }}
+      className="
+      w-full
+      mt-3
+      bg-[#E8D49A]
+      text-black
+      py-3
+      rounded-full
+      font-bold
+      "
+      >
+        Logout
+      </button>
+
+      }
+
+
+      </div>
+
       )}
+
     </nav>
   );
 }

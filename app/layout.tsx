@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Provider from "./provider";
-import { LanguageProvider } from "./context/LanguageContext";
+
 import Navbar from "./components/Navbar";
 import BottomNavbar from "./components/BottomNavbar"; // Import the new BottomNavbar
 
@@ -26,9 +26,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
   
 }: Readonly<{
   children: React.ReactNode;
+  modal?: React.ReactNode;
   
 }>) {
   
@@ -40,13 +42,17 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col pb-16 md:pb-0"> {/* Add padding for bottom nav on mobile */}
        
-          <LanguageProvider>
+          
             <Provider>
            
               <Navbar />
               <main className="flex-1 w-full">
                 {children}
+                
               </main>
+
+            {modal}
+
               <footer className="border-t border-gray-200 bg-white dark:bg-gray-900 py-6 dark:border-gray-700 md:hidden md:block"> {/* Hide footer on mobile if bottom nav is present */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                   <p className="text-center text-gray-500 dark:text-gray-400 text-sm">
@@ -57,7 +63,7 @@ export default function RootLayout({
               <BottomNavbar /> {/* Add the BottomNavbar here */}
            
             </Provider>
-          </LanguageProvider>
+         
         
       </body>
     </html>

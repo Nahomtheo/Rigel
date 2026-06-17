@@ -5,7 +5,7 @@ import { slugify } from '@/lib/slugify';
 
 
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import {
   Search,
   MapPin,
@@ -16,10 +16,12 @@ import {
   Zap,
   Grid,
   List,
+  Globe,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+
 
 const categories = [
   { id: 'car', name: 'Cars', icon: Car, color: 'bg-blue-500' },
@@ -126,7 +128,7 @@ export default function HomePage() {
       if (selectedSubcategory) params.append('subcategory', selectedSubcategory);
       if (selectedRegion) params.append('region', selectedRegion);
 
-      const response = await fetch(`api/search?${params.toString()}`);
+      const response = await fetch(`/api/search?${params.toString()}`);
       const data = await response.json();
 
       if (data.success) {
@@ -193,66 +195,333 @@ export default function HomePage() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white dark:from-gray-900 dark:to-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-          <div className="text-center mb-10">
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
-              <span className="text-blue-200 dark:text-blue-400">Elite</span> Exchange
-            </h1>
-            <p className="text-lg md:text-xl text-blue-100 dark:text-gray-300 max-w-2xl mx-auto">
-              Discover, buy, sell, and rent cars, housing, clothes, and more across Ethiopia with ease.
-            </p>
-          </div>
+{/* Hero Section */}
+<section className="relative min-h-[90vh] overflow-hidden bg-[#120B07] text-white">
 
-          {/* Search */}
-          <form
-            onSubmit={handleSearch}
-            className="max-w-4xl mx-auto bg-white dark:bg-gray-700 rounded-xl shadow-lg p-2"
-          >
-            <div className="flex flex-col md:flex-row gap-2">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 dark:text-gray-300" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for cars, housing, clothes..."
-                  className="w-full pl-14 pr-4 py-3 rounded-lg text-gray-900 dark:text-white bg-transparent text-lg focus:outline-none"
-                />
-              </div>
+  {/* Ethiopian Tibeb Texture */}
+  <div
+    className="absolute inset-0 opacity-[0.12]"
+    style={{
+      backgroundImage: `
+      linear-gradient(45deg, transparent 48%, #C9A227 49%, transparent 52%),
+      linear-gradient(-45deg, transparent 48%, #C9A227 49%, transparent 52%),
+      radial-gradient(circle at 20px 20px,#C9A227 2px,transparent 2px)
+      `,
+      backgroundSize: "80px 80px",
+    }}
+  />
 
-              <button
-                type="submit"
-                className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                Search
-              </button>
-            </div>
-          </form>
+  {/* Dark Fabric Overlay */}
+  <div
+    className="absolute inset-0 opacity-30"
+    style={{
+      backgroundImage:
+        "url('https://www.transparenttextures.com/patterns/dark-mosaic.png')",
+    }}
+  />
 
-          {/* Categories */}
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            {categories.map((category) => {
-              const Icon = category.icon;
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => handleCategorySelect(category.id)}
-                  className={`flex flex-col items-center p-3 rounded-xl transition-all ${
-                    selectedCategory === category.id
-                      ? 'bg-white text-blue-600'
-                      : 'bg-white/20 text-white'
-                  }`}
-                >
-                  <Icon className="w-7 h-7 mb-2" />
-                  <span className="text-sm">{category.name}</span>
-                </button>
-              );
-            })}
-          </div>
+
+  {/* Background Image */}
+  <div className="absolute inset-0">
+    <div
+      className="h-full w-full bg-cover bg-center opacity-15"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2070')",
+      }}
+    />
+  </div>
+
+
+  {/* Ethiopian Green Yellow Red Glow */}
+  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1b120c]/80 to-[#120B07]" />
+
+
+  <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+
+
+    {/* Badge */}
+    <div className="text-center mb-10">
+
+      <span className="
+      inline-flex items-center
+      px-5 py-2
+      rounded-full
+      border border-[#C9A227]/40
+      bg-black/30
+      backdrop-blur-md
+      text-[#C9A227]
+      text-sm
+      tracking-[0.25em]
+      uppercase
+      ">
+        የኢትዮጵያ ፕሪሚየም ገበያ
+      </span>
+
+    </div>
+
+
+
+    {/* Heading */}
+    <div className="text-center max-w-4xl mx-auto">
+
+
+      <h1
+      className="
+      text-7xl md:text-9xl
+      font-black
+      tracking-tight
+      mb-6
+      bg-gradient-to-r
+      from-[#F5E6B8]
+      via-[#C9A227]
+      to-[#8B6B23]
+      text-transparent
+      bg-clip-text
+      "
+      >
+        RIGEL
+      </h1>
+
+
+      <p className="
+      text-3xl md:text-4xl
+      font-light
+      text-[#F5EFE6]
+      mb-3
+      ">
+        Find Your Next Home.
+      </p>
+
+
+      <p className="
+      text-3xl md:text-4xl
+      font-light
+      text-[#F5EFE6]
+      mb-8
+      ">
+        Drive Your Next Journey.
+      </p>
+
+
+
+      <p className="
+      text-gray-400
+      max-w-2xl
+      mx-auto
+      text-lg
+      leading-relaxed
+      ">
+        Buy, sell and rent homes, vehicles and more across Ethiopia
+        on one trusted platform.
+      </p>
+
+
+    </div>
+
+
+
+    {/* Search */}
+    <form
+    onSubmit={handleSearch}
+    className="
+    max-w-4xl mx-auto mt-12
+    bg-black/40
+    backdrop-blur-xl
+    border border-[#C9A227]/20
+    rounded-3xl
+    p-3
+    shadow-2xl
+    "
+    >
+
+      <div className="flex flex-col md:flex-row gap-3">
+
+
+        <div className="flex-1 relative">
+
+          <Search
+          className="
+          absolute left-4 top-1/2
+          -translate-y-1/2
+          text-[#C9A227]
+          "
+          />
+
+
+          <input
+          type="text"
+          value={searchQuery}
+          onChange={(e)=>setSearchQuery(e.target.value)}
+          placeholder="Search homes, cars, rentals..."
+          className="
+          w-full
+          bg-transparent
+          pl-12
+          py-4
+          text-white
+          placeholder:text-gray-500
+          outline-none
+          "
+          />
+
         </div>
+
+
+
+        <button
+        className="
+        px-10
+        py-4
+        rounded-2xl
+        bg-[#C9A227]
+        text-black
+        font-bold
+        hover:bg-[#e2bd42]
+        transition
+        "
+        >
+
+        Search
+
+        </button>
+
+
       </div>
 
+    </form>
+
+
+
+    {/* Stats */}
+
+    <div className="
+    mt-16
+    flex
+    flex-wrap
+    justify-center
+    gap-12
+    ">
+
+
+      {[
+        ["10K+","Listings"],
+        ["5K+","Verified Users"],
+        ["24/7","Support"]
+      ].map((item)=>(
+
+        <div key={item[1]} className="text-center">
+
+          <h3 className="
+          text-4xl
+          font-black
+          text-[#C9A227]
+          ">
+          {item[0]}
+          </h3>
+
+          <p className="text-gray-500">
+          {item[1]}
+          </p>
+
+        </div>
+
+      ))}
+
+
+    </div>
+
+
+
+
+    {/* Categories */}
+
+    <div className="
+    mt-16
+    grid
+    grid-cols-2
+    md:grid-cols-4
+    gap-5
+    ">
+
+
+    {categories.map((category)=>{
+
+      const Icon = category.icon;
+
+
+      return (
+
+      <button
+      key={category.id}
+      onClick={()=>handleCategorySelect(category.id)}
+      className={`
+      group
+      rounded-3xl
+      p-6
+      border
+      backdrop-blur-md
+      transition-all
+      
+      ${
+      selectedCategory===category.id
+      ?
+      "bg-[#C9A227] text-black border-[#C9A227]"
+      :
+      "bg-black/30 border-[#C9A227]/20 hover:border-[#C9A227]"
+      }
+      `}
+      >
+
+
+      <Icon
+      className="
+      w-10
+      h-10
+      mx-auto
+      mb-3
+      group-hover:scale-110
+      transition
+      "
+      />
+
+
+      <h3 className="font-semibold">
+      {category.name}
+      </h3>
+
+
+      </button>
+
+
+      )
+
+    })}
+
+
+    </div>
+
+
+
+  </div>
+
+
+
+  {/* Soft Fade */}
+  <div
+  className="
+  absolute
+  bottom-0
+  left-0
+  right-0
+  h-40
+  bg-gradient-to-t
+  from-[#F8F5EF]
+  to-transparent
+  "
+  />
+
+</section>
       {/* Main */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filters */}
