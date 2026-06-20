@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import CompressImage from '../../lib/imgcomprssion';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { 
@@ -134,7 +135,7 @@ export default function CreateListingPage() {
   }
 
   
-
+    await CompressImage(files);
     setImages(prev => [...prev, ...files]);
     
     // Create previews
