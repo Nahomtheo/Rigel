@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import Listing from '@/models/Listing';
+import User from "@/models/User"; // add this when you want to populate the owner field with user details
 
 export async function GET(request: NextRequest) {
   try {
