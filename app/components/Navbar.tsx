@@ -227,7 +227,7 @@ export default function Navbar() {
       {[
         ["Home","/"],
         ["Search","/search"],
-        ["My listing","/createlisting"]
+        ["My listing","/userlisting"]
       ].map(([name,path])=>(
 
         <Link

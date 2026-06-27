@@ -637,25 +637,44 @@ export default function HomePage() {
                 transition={{ duration: 0.25 }}
               >
                 <Link
-                  href={`/listing/${slugify(listing.title)}-${listing._id}`}
-                  className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow ${
-                    viewMode === 'list' ? 'flex' : ''
-                  }`}
-                >
-                  <div className="relative">
-                    <ListingSlider images={listing.images as any} />
-                  </div>
+  href={`/listing/${slugify(listing.title)}-${listing._id}`}
+  className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 ${
+    viewMode === "list"
+      ? "flex flex-col sm:flex-row"
+      : "block"
+  }`}
+>
 
-                  <div className="p-4 flex-1">
-                    <h3 className="font-semibold">{listing.title}</h3>
-                    <p className="text-blue-600 font-bold">
-                      {listing.price} ETB
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {getLocationString(listing.location)}
-                    </p>
-                  </div>
-                </Link>
+  {/* Image */}
+  <div
+    className={`relative ${
+      viewMode === "list"
+        ? "w-full sm:w-72 h-56 flex-shrink-0"
+        : "w-full"
+    }`}
+  >
+    <ListingSlider images={listing.images as any} />
+  </div>
+
+
+  {/* Content */}
+  <div className="p-4 flex-1">
+
+    <h3 className="font-semibold text-lg">
+      {listing.title}
+    </h3>
+
+    <p className="text-blue-600 font-bold mt-2">
+      {listing.price} ETB
+    </p>
+
+    <p className="text-sm text-gray-500 mt-1">
+      {getLocationString(listing.location)}
+    </p>
+
+  </div>
+
+</Link>
               </motion.div>
             ))}
           </motion.div>

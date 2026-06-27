@@ -61,18 +61,25 @@ export default function ListingSlider({
   const file = images[current];
   const isVideo = /\.(mp4|webm|ogg)$/i.test(file.url);
 
-  const handleDragEnd = (
-    _: any,
-    info: { offset: { x: number } }
-  ) => {
-    if (info.offset.x > 60) {
-      prev();
-      startAutoPlay();
-    } else if (info.offset.x < -60) {
-      next();
-      startAutoPlay();
-    }
-  };
+const handleDragEnd = (
+  _: any,
+  info: { 
+    offset: { x: number };
+    velocity: { x: number };
+  }
+) => {
+  const distance = info.offset.x;
+  const velocity = info.velocity.x;
+
+  if (distance < -80 || velocity < -500) {
+    next();
+    startAutoPlay();
+  } 
+  else if (distance > 80 || velocity > 500) {
+    prev();
+    startAutoPlay();
+  }
+};
 
   return (
     <div
@@ -81,29 +88,32 @@ export default function ListingSlider({
       className="group relative h-60 w-full overflow-hidden rounded-3xl bg-black shadow-2xl sm:h-72 md:h-80"
     >
       <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          onDragEnd={handleDragEnd}
-          initial={{
-            opacity: 0,
-            scale: 1.12,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1.05,
-          }}
-          exit={{
-            opacity: 0,
-            scale: 0.98,
-          }}
-          transition={{
-            duration: 1,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="absolute inset-0"
-        >
+      <motion.div
+  key={current}
+  drag="x"
+  dragConstraints={{ left: 0, right: 0 }}
+  dragElastic={0.2}
+  dragMomentum={false}
+  style={{ touchAction: "pan-y" }}
+  onDragEnd={handleDragEnd}
+  initial={{
+    opacity: 0,
+    scale: 1.12,
+  }}
+  animate={{
+    opacity: 1,
+    scale: 1.05,
+  }}
+  exit={{
+    opacity: 0,
+    scale: 0.98,
+  }}
+  transition={{
+    duration: 1,
+    ease: [0.22, 1, 0.36, 1],
+  }}
+  className="absolute inset-0 cursor-grab active:cursor-grabbing"
+>
           {isVideo ? (
             <video
               src={file.url}
