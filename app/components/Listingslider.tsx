@@ -271,6 +271,7 @@ dragElastic={0.25}
 onPointerDown={(e)=>{
 
 e.stopPropagation();
+stopAutoPlay();
 
 }}
 
@@ -282,7 +283,7 @@ onDragEnd={handleDragEnd}
 
 style={{
 
-touchAction:"none"
+touchAction: "pan-y"
 
 }}
 

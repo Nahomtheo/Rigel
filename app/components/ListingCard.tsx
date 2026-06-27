@@ -76,7 +76,7 @@ export default function ListingCard({
       {/* Image Container - Scaled & Pinched to absolute edges */}
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-xl flex-shrink-0 bg-transparent">
         {/* Forces slider elements to occupy full exact dimensional bounding box */}
-        <div className="absolute inset-0 w-full h-full [&>*]:h-full [&>*]:w-full">
+        <div className="absolute inset-0 w-full h-full [&>*]:h-full [&>*]:w-full" style={{ touchAction: 'pan-y' }}>
           <ListingSlider images={images} />
         </div>
         
