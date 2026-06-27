@@ -215,7 +215,7 @@ export default async function UserListing({
                 font-mono
                 "
               >
-                ...{item._id.slice(-6)}
+                Edit or Delete
               </span>
 
 
