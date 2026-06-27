@@ -1,8 +1,6 @@
 'use client';
 import { useState } from 'react';
 import ListingSlider from './Listingslider';
-import Image from 'next/image';
-import Link from 'next/link';
 import { MapPin, Heart, Zap, Car, Calendar, Home, Shirt } from 'lucide-react';
 
 interface ListingCardProps {
@@ -72,16 +70,16 @@ export default function ListingCard({
   };
 
   return (
-    <div className="flex flex-col w-full h-full justify-start items-stretch leading-none">
-      {/* Image Container - Scaled & Pinched to absolute edges */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-xl flex-shrink-0 bg-transparent">
-        {/* Forces slider elements to occupy full exact dimensional bounding box */}
-        <div className="absolute inset-0 w-full h-full [&>*]:h-full [&>*]:w-full" style={{ touchAction: 'pan-y' }}>
+    <div className="flex flex-col w-full h-full justify-start items-stretch leading-none group">
+      {/* Image Container */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-xl flex-shrink-0 bg-black">
+        {/* Wrapper allows the Slider to fully take up the 4:3 space */}
+        <div className="absolute inset-0 w-full h-full">
           <ListingSlider images={images} />
         </div>
         
         {/* Badges and Like Button Container */}
-        <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-10 leading-normal">
+        <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-30 leading-normal">
           {/* Category Badges */}
           <div className="flex items-center space-x-1.5">
             <span className={`${categoryColor} text-white px-2.5 py-1 rounded-full text-xs font-semibold flex items-center shadow-lg backdrop-blur-md`}>
@@ -100,9 +98,10 @@ export default function ListingCard({
           <button
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation(); // Prevents card link click
               setIsLiked(!isLiked);
             }}
-            className="p-2 bg-white/95 dark:bg-gray-800/95 rounded-full hover:bg-white dark:hover:bg-gray-700 transition-all shadow-md z-10 transform hover:scale-110 active:scale-95"
+            className="p-2 bg-white/95 dark:bg-gray-800/95 rounded-full hover:bg-white dark:hover:bg-gray-700 transition-all shadow-md transform hover:scale-110 active:scale-95"
             aria-label="Toggle like"
           >
             <Heart
@@ -114,12 +113,11 @@ export default function ListingCard({
         </div>
 
         {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
 
-      {/* Content - strictly bounds up to meet top element container */}
+      {/* Content */}
       <div className="p-4 flex flex-col flex-grow bg-white dark:bg-gray-950 rounded-b-xl justify-between leading-normal mt-0 border-t-0">
-        {/* Top Segment: Title and Subcategory */}
         <div className="mb-2">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-bold text-gray-900 dark:text-gray-50 line-clamp-1 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors text-base tracking-tight flex-1">
@@ -133,9 +131,7 @@ export default function ListingCard({
           </div>
         </div>
 
-        {/* Bottom Segment: Price, Date and Location Wrapper */}
         <div className="mt-auto space-y-2.5">
-          {/* Price & Date Row */}
           <div className="flex items-baseline justify-between">
             <div className="text-xl font-black text-amber-500 dark:text-amber-400 tracking-tight">
               {price.toLocaleString()}{" "}
@@ -143,13 +139,11 @@ export default function ListingCard({
                 ETB
               </span>
             </div>
-            
             <div className="text-[11px] font-medium text-gray-400 dark:text-gray-500">
               {formatDate(createdAt)}
             </div>
           </div>
 
-          {/* Location Row */}
           <div className="pt-2 border-t border-gray-100 dark:border-gray-900">
             <div className="flex items-center text-xs font-medium text-gray-500 dark:text-gray-400">
               <MapPin className="w-3.5 h-3.5 mr-1 text-gray-400 dark:text-gray-500 flex-shrink-0" />
