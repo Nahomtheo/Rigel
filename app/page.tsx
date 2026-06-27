@@ -1,6 +1,7 @@
 'use client';
 
 import ListingSlider from './components/Listingslider';
+import ListingCard from './components/ListingCard';
 import { slugify } from '@/lib/slugify';
 
 
@@ -610,75 +611,65 @@ export default function HomePage() {
 
         {/* Listings */}
         {loading ? (
-          <motion.div
-            className="flex justify-center py-20"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
-          </motion.div>
-        ) : listings.length === 0 ? (
-          <div className="text-center py-20">No listings found</div>
-        ) : (
-          <motion.div
-            layout
-            className={`grid gap-6 ${
-              viewMode === 'grid'
-                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-                : 'grid-cols-1'
-            }`}
-          >
-            {listings.map((listing) => (
-              <motion.div
-                key={listing._id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.25 }}
-              >
-                <Link
-  href={`/listing/${slugify(listing.title)}-${listing._id}`}
-  className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 ${
-    viewMode === "list"
-      ? "flex flex-col sm:flex-row"
-      : "block"
-  }`}
->
-
-  {/* Image */}
-  <div
-    className={`relative ${
-      viewMode === "list"
-        ? "w-full sm:w-72 h-56 flex-shrink-0"
-        : "w-full"
+  <motion.div
+    className="flex justify-center py-20"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+  >
+    {/* Premium Amber Spinner to match the theme */}
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500" />
+  </motion.div>
+) : listings.length === 0 ? (
+  <div className="text-center py-20 font-medium text-gray-500 dark:text-gray-400">
+    No listings found
+  </div>
+) : (
+  <motion.div
+    layout
+    className={`grid gap-6 ${
+      viewMode === 'grid'
+        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+        : 'grid-cols-1'
     }`}
   >
-    <ListingSlider images={listing.images as any} />
-  </div>
+    {listings.map((listing) => (
+      <motion.div
+        key={listing._id}
+        layout
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
+        className="group"
+      >
+        <Link
+          href={`/listing/${slugify(listing.title)}-${listing._id}`}
+          className={`relative bg-neutral-50 dark:bg-zinc-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-amber-100/30 dark:border-amber-950/20 ${
+            viewMode === "list" ? "flex flex-col sm:flex-row" : "block"
+          }`}
+        >
+          {/* Traditional Accent Pattern Overlay (Habesha Tibeb subtle top border indicator) */}
+          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-600 via-yellow-500 to-emerald-600 opacity-80 z-20" />
+          
+          {/* Subtle traditional diamond watermark/tint background effect */}
+          <div className="absolute inset-0 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.02] dark:opacity-[0.03] pointer-events-none" />
 
-
-  {/* Content */}
-  <div className="p-4 flex-1">
-
-    <h3 className="font-semibold text-lg">
-      {listing.title}
-    </h3>
-
-    <p className="text-blue-600 font-bold mt-2">
-      {listing.price} ETB
-    </p>
-
-    <p className="text-sm text-gray-500 mt-1">
-      {getLocationString(listing.location)}
-    </p>
-
-  </div>
-
-</Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
+          {/* Listing Card Core Component */}
+          <ListingCard 
+            id={listing._id}
+            title={listing.title}
+            price={listing.price}
+            category={listing.category}
+            subcategory={listing.subcategory}
+            isElectric={listing.isElectric}
+            location={listing.location}
+            images={listing.images}
+            createdAt={listing.createdAt}
+          />
+        </Link>
+      </motion.div>
+    ))}
+  </motion.div>
+)}
       </div>
     </motion.div>
   );
