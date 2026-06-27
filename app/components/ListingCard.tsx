@@ -72,13 +72,16 @@ export default function ListingCard({
   };
 
   return (
-    <div className="flex flex-col h-full w-full">
-      {/* Image Container */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-xl flex-shrink-0">
-        <ListingSlider images={images} />
+    <div className="flex flex-col w-full h-full justify-start items-stretch leading-none">
+      {/* Image Container - Scaled & Pinched to absolute edges */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-xl flex-shrink-0 bg-transparent">
+        {/* Forces slider elements to occupy full exact dimensional bounding box */}
+        <div className="absolute inset-0 w-full h-full [&>*]:h-full [&>*]:w-full">
+          <ListingSlider images={images} />
+        </div>
         
         {/* Badges and Like Button Container */}
-        <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-10">
+        <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-10 leading-normal">
           {/* Category Badges */}
           <div className="flex items-center space-x-1.5">
             <span className={`${categoryColor} text-white px-2.5 py-1 rounded-full text-xs font-semibold flex items-center shadow-lg backdrop-blur-md`}>
@@ -114,8 +117,8 @@ export default function ListingCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
-      {/* Content */}
-      <div className="p-4 flex flex-col flex-grow justify-between bg-white dark:bg-gray-950 rounded-b-xl">
+      {/* Content - strictly bounds up to meet top element container */}
+      <div className="p-4 flex flex-col flex-grow bg-white dark:bg-gray-950 rounded-b-xl justify-between leading-normal mt-0 border-t-0">
         {/* Top Segment: Title and Subcategory */}
         <div className="mb-2">
           <div className="flex items-start justify-between gap-2">

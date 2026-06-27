@@ -632,42 +632,40 @@ export default function HomePage() {
         : 'grid-cols-1'
     }`}
   >
-    {listings.map((listing) => (
-      <motion.div
-        key={listing._id}
-        layout
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.25 }}
-        className="group"
-      >
-        <Link
-          href={`/listing/${slugify(listing.title)}-${listing._id}`}
-          className={`relative bg-neutral-50 dark:bg-zinc-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-amber-100/30 dark:border-amber-950/20 ${
-            viewMode === "list" ? "flex flex-col sm:flex-row" : "block"
-          }`}
-        >
-          {/* Traditional Accent Pattern Overlay (Habesha Tibeb subtle top border indicator) */}
-          <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-600 via-yellow-500 to-emerald-600 opacity-80 z-20" />
-          
-          {/* Subtle traditional diamond watermark/tint background effect */}
-          <div className="absolute inset-0 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px] opacity-[0.02] dark:opacity-[0.03] pointer-events-none" />
+   {listings.map((listing) => (
+  <motion.div
+    key={listing._id}
+    layout
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.25 }}
+    
+    className="group flex flex-col h-full" 
+  >
+    <Link
+      href={`/listing/${slugify(listing.title)}-${listing._id}`}
+  
+      className={`relative bg-neutral-50 dark:bg-zinc-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-amber-100/30 dark:border-amber-950/20 flex flex-1 w-full ${
+        viewMode === "list" ? "flex-col sm:flex-row" : "flex-col h-full"
+      }`}
+    >
+      
 
-          {/* Listing Card Core Component */}
-          <ListingCard 
-            id={listing._id}
-            title={listing.title}
-            price={listing.price}
-            category={listing.category}
-            subcategory={listing.subcategory}
-            isElectric={listing.isElectric}
-            location={listing.location}
-            images={listing.images}
-            createdAt={listing.createdAt}
-          />
-        </Link>
-      </motion.div>
-    ))}
+      {/* Listing Card Core Component */}
+      <ListingCard 
+        id={listing._id}
+        title={listing.title}
+        price={listing.price}
+        category={listing.category}
+        subcategory={listing.subcategory}
+        isElectric={listing.isElectric}
+        location={listing.location}
+        images={listing.images}
+        createdAt={listing.createdAt}
+      />
+    </Link>
+  </motion.div>
+))}
   </motion.div>
 )}
       </div>
