@@ -126,10 +126,14 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Search error:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to search listings' },
-      { status: 500 }
-    );
-  }
+  console.error("Search error:", error);
+
+  return NextResponse.json(
+    {
+      success:false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    },
+    {status:500}
+  );
+}
 }

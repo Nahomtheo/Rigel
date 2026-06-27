@@ -131,7 +131,11 @@ export default function HomePage() {
       const response = await fetch(`/api/search?${params.toString()}`,{
         cache:"no-store"
       });
+        if (!response.ok) {
+  throw new Error(`Search failed: ${response.status}`);}
       const data = await response.json();
+    
+
 
       if (data.success) {
         setListings(data.data.listings);

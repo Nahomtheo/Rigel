@@ -1,6 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+
+import { useRouter } from 'next/navigation';
+
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { 
@@ -16,7 +20,8 @@ import {
   Fuel,
   Zap,
   Lock,
-  Crown
+  Crown,
+  MessageSquareText
 } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -72,6 +77,31 @@ export default function ListingDetailPage({listings}:{listings:Listing}) {
   const [showPhone, setShowPhone] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   console.log(params)
+
+
+
+const router = useRouter();
+
+const startChat  = async () => {
+  if (!session) {
+    router.push('/login');
+    return;
+  }
+  const response = await fetch('/api/conversation', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ sellerId: listing.owner._id, buyerId: (session.user as any ).id , listingId: listing._id }),
+  });
+ const data = await response.json();
+  if (response.ok) {
+    router.push(`/chat/${data.conversationId}`);
+  } else {
+    console.error('Failed to start chat:', data.message);
+  }
+  
+};
 
 
 
@@ -297,6 +327,13 @@ export default function ListingDetailPage({listings}:{listings:Listing}) {
 
               {/* Phone Number with Conditional Display */}
               <div className="space-y-3">
+                <button
+                  onClick={startChat}
+                  className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  <MessageSquareText className="w-5 h-5" />
+                  <span>Start Chat</span>
+                </button>
                 {showPhone ? (
                   <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-3">
                     <div className="flex items-center space-x-2">
@@ -309,6 +346,8 @@ export default function ListingDetailPage({listings}:{listings:Listing}) {
                     >
                       Call Now
                     </a>
+                  
+              
                   </div>
                 ) : (
                   <button
