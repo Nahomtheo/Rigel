@@ -2,12 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Play,
-  Images,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Images } from "lucide-react";
 
 type ImageType = {
   url: string;
@@ -30,11 +25,7 @@ const slideVariants = {
   }),
 };
 
-export default function ListingSlider({
-  images,
-}: {
-  images: ImageType[];
-}) {
+export default function ListingSlider({ images }: { images: ImageType[] }) {
   const [[page, direction], setPage] = useState([0, 0]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -60,11 +51,11 @@ export default function ListingSlider({
   useEffect(() => {
     startAutoPlay();
     return () => stopAutoPlay();
-  }, [images.length, page]); // Triggers auto-play refresh accurately
+  }, [images.length, page]);
 
   if (!images?.length) {
     return (
-      <div className="flex h-64 w-full items-center justify-center rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500">
+      <div className="flex h-full w-full items-center justify-center rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500">
         No Media
       </div>
     );
@@ -75,7 +66,7 @@ export default function ListingSlider({
 
   const handleDragEnd = (
     _: any,
-    info: { 
+    info: {
       offset: { x: number };
       velocity: { x: number };
     }
@@ -83,10 +74,10 @@ export default function ListingSlider({
     const distance = info.offset.x;
     const velocity = info.velocity.x;
 
-    // Thresholds for triggering the slide
-    if (distance < -50 || velocity < -400) {
+    // Fixed threshold configurations to catch casual mobile swipes easily
+    if (distance < -30 || velocity < -250) {
       navigate(1);
-    } else if (distance > 50 || velocity > 400) {
+    } else if (distance > 30 || velocity > 250) {
       navigate(-1);
     }
   };
@@ -95,9 +86,9 @@ export default function ListingSlider({
     <div
       onMouseEnter={stopAutoPlay}
       onMouseLeave={startAutoPlay}
-      className="group relative h-60 w-full overflow-hidden rounded-3xl bg-black shadow-2xl sm:h-72 md:h-80"
+
+      className="group relative h-full w-full overflow-hidden rounded-t-xl bg-black shadow-2xl"
     >
-      {/* mode="popLayout" keeps the exiting element positioned fine without waiting */}
       <AnimatePresence initial={false} custom={direction} mode="popLayout">
         <motion.div
           key={page}
@@ -108,12 +99,12 @@ export default function ListingSlider({
           exit="exit"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.7}
+          dragElastic={0.2} // Reduced resistance so dragging matches finger tracking instantly
           onDragEnd={handleDragEnd}
           style={{ touchAction: "pan-y" }}
           transition={{
-            x: { type: "spring", stiffness: 300, damping: 30 },
-            opacity: { duration: 0.2 },
+            x: { type: "spring", stiffness: 350, damping: 32 },
+            opacity: { duration: 0.15 },
           }}
           className="absolute inset-0 cursor-grab active:cursor-grabbing w-full h-full"
         >
@@ -131,7 +122,7 @@ export default function ListingSlider({
             />
           )}
 
-          {/* Luxury overlays */}
+          {/* Overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-black/10 pointer-events-none" />
         </motion.div>
