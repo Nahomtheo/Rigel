@@ -6,7 +6,8 @@ import { slugify } from "@/lib/slugify";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   await connectDB();
 
-  const listings = await Listing.find({}, "_id updatedAt");
+  // Change "title" to whatever your field is actually named in MongoDB (e.g., title, name, model)
+  const listings = await Listing.find({}, "_id title updatedAt");
 
   return [
     {
@@ -14,7 +15,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
     },
     ...listings.map((listing) => ({
-      url: `https://rigelcars.com/listing/${listing.slug}-${listing._id}`,
+      // Wrap that fetched field inside your slugify helper function
+      url: `https://rigelcars.com/listing/${slugify(listing.title)}-${listing._id}`,
       lastModified: listing.updatedAt,
     })),
   ];
