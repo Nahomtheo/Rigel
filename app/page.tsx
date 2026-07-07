@@ -1,28 +1,21 @@
 'use client';
 
-import ListingSlider from './components/Listingslider';
 import ListingCard from './components/ListingCard';
 import { slugify } from '@/lib/slugify';
 
-
-
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Search,
-  MapPin,
   Car,
   Home,
   Shirt,
   Calendar,
-  Zap,
   Grid,
   List,
-  Globe,
+  SlidersHorizontal,
 } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-
+import { motion, AnimatePresence } from 'framer-motion';
 
 const categories = [
   { id: 'car', name: 'Cars', icon: Car, color: 'bg-blue-500' },
@@ -103,6 +96,33 @@ interface Listing {
   views: number;
 }
 
+const scrollFadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { type: 'spring', stiffness: 60, damping: 15 } 
+  }
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { type: 'spring', stiffness: 100, damping: 15 } 
+  },
+  exit: { opacity: 0, transition: { duration: 0.2 } }
+};
+
 export default function HomePage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -129,14 +149,13 @@ export default function HomePage() {
       if (selectedSubcategory) params.append('subcategory', selectedSubcategory);
       if (selectedRegion) params.append('region', selectedRegion);
 
-      const response = await fetch(`/api/search?${params.toString()}`,{
-        cache:"no-store"
+      const response = await fetch(`/api/search?${params.toString()}`, {
+        cache: "no-store"
       });
-        if (!response.ok) {
-  throw new Error(`Search failed: ${response.status}`);}
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.status}`);
+      }
       const data = await response.json();
-    
-
 
       if (data.success) {
         setListings(data.data.listings);
@@ -170,504 +189,304 @@ export default function HomePage() {
     setCurrentPage(1);
   };
 
-  const getCategoryIcon = (category: string, isElectric: boolean) => {
-    if (isElectric) return <Zap className="w-4 h-4 text-green-500" />;
-
-    switch (category) {
-      case 'car':
-        return <Car className="w-4 h-4" />;
-      case 'rental':
-        return <Calendar className="w-4 h-4" />;
-      case 'housing':
-        return <Home className="w-4 h-4" />;
-      case 'clothes':
-        return <Shirt className="w-4 h-4" />;
-      default:
-        return <Grid className="w-4 h-4" />;
-    }
-  };
-
-  const getLocationString = (location: Listing['location']) => {
-    const parts = [];
-    if (location.subcity) parts.push(location.subcity);
-    if (location.city) parts.push(location.city);
-    return parts.join(', ') || location.region || 'Ethiopia';
-  };
-
   return (
     <motion.div
-      className="min-h-screen bg-gray-50"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="min-h-screen bg-[#fcfbfa]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
     >
       {/* Hero Section */}
-{/* Hero Section */}
-<section className="relative min-h-[90vh] overflow-hidden bg-[#120B07] text-white">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-[#161204] via-[#0c0a03] to-[#040401] text-white">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#C9A227]/10 blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-[-5%] right-[-5%] w-[45%] h-[45%] rounded-full bg-[#a38031]/10 blur-[130px] pointer-events-none" />
 
-  {/* Ethiopian Tibeb Texture */}
-  <div
-    className="absolute inset-0 opacity-[0.12]"
-    style={{
-      backgroundImage: `
-      linear-gradient(45deg, transparent 48%, #C9A227 49%, transparent 52%),
-      linear-gradient(-45deg, transparent 48%, #C9A227 49%, transparent 52%),
-      radial-gradient(circle at 20px 20px,#C9A227 2px,transparent 2px)
-      `,
-      backgroundSize: "80px 80px",
-    }}
-  />
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `
+            linear-gradient(45deg, transparent 48%, #C9A227 49%, transparent 52%),
+            linear-gradient(-45deg, transparent 48%, #C9A227 49%, transparent 52%),
+            radial-gradient(circle at 20px 20px,#C9A227 2px,transparent 2px)
+            `,
+            backgroundSize: "60px 60px",
+          }}
+        />
 
-  {/* Dark Fabric Overlay */}
-  <div
-    className="absolute inset-0 opacity-30"
-    style={{
-      backgroundImage:
-        "url('https://www.transparenttextures.com/patterns/dark-mosaic.png')",
-    }}
-  />
+        <div
+          className="absolute inset-0 opacity-15 pointer-events-none mix-blend-color-dodge"
+          style={{
+            backgroundImage: "url('https://www.transparenttextures.com/patterns/dark-mosaic.png')",
+          }}
+        />
 
-
-  {/* Background Image */}
-  <div className="absolute inset-0">
-    <div
-      className="h-full w-full bg-cover bg-center opacity-15"
-      style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2070')",
-      }}
-    />
-  </div>
-
-
-  {/* Ethiopian Green Yellow Red Glow */}
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1b120c]/80 to-[#120B07]" />
-
-
-  <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
-
-
-    {/* Badge */}
-    <div className="text-center mb-10">
-
-      <span className="
-      inline-flex items-center
-      px-5 py-2
-      rounded-full
-      border border-[#C9A227]/40
-      bg-black/30
-      backdrop-blur-md
-      text-[#C9A227]
-      text-sm
-      tracking-[0.25em]
-      uppercase
-      ">
-        የኢትዮጵያ ፕሪሚየም ገበያ
-      </span>
-
-    </div>
-
-
-
-    {/* Heading */}
-    <div className="text-center max-w-4xl mx-auto">
-
-
-      <h1
-      className="
-      text-7xl md:text-9xl
-      font-black
-      tracking-tight
-      mb-6
-      bg-gradient-to-r
-      from-[#F5E6B8]
-      via-[#C9A227]
-      to-[#8B6B23]
-      text-transparent
-      bg-clip-text
-      "
-      >
-        RIGEL
-      </h1>
-
-
-      <p className="
-      text-3xl md:text-4xl
-      font-light
-      text-[#F5EFE6]
-      mb-3
-      ">
-        Find Your Next Home.
-      </p>
-
-
-      <p className="
-      text-3xl md:text-4xl
-      font-light
-      text-[#F5EFE6]
-      mb-8
-      ">
-        Drive Your Next Journey.
-      </p>
-
-
-
-      <p className="
-      text-gray-400
-      max-w-2xl
-      mx-auto
-      text-lg
-      leading-relaxed
-      ">
-        Buy, sell and rent homes, vehicles and more across Ethiopia
-        on one trusted platform.
-      </p>
-
-
-    </div>
-
-
-
-    {/* Search */}
-    <form
-    onSubmit={handleSearch}
-    className="
-    max-w-4xl mx-auto mt-12
-    bg-black/40
-    backdrop-blur-xl
-    border border-[#C9A227]/20
-    rounded-3xl
-    p-3
-    shadow-2xl
-    "
-    >
-
-      <div className="flex flex-col md:flex-row gap-3">
-
-
-        <div className="flex-1 relative">
-
-          <Search
-          className="
-          absolute left-4 top-1/2
-          -translate-y-1/2
-          text-[#C9A227]
-          "
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="h-full w-full bg-cover bg-center opacity-[0.08] mix-blend-luminosity"
+            style={{
+              backgroundImage: "url('https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2070')",
+            }}
           />
-
-
-          <input
-          type="text"
-          value={searchQuery}
-          onChange={(e)=>setSearchQuery(e.target.value)}
-          placeholder="Search homes, cars, rentals..."
-          className="
-          w-full
-          bg-transparent
-          pl-12
-          py-4
-          text-white
-          placeholder:text-gray-500
-          outline-none
-          "
-          />
-
         </div>
 
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-[#040401] pointer-events-none" />
 
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20 lg:py-28">
+          <motion.div 
+            variants={scrollFadeUp as any}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-20px" }}
+            className="text-center mb-8"
+          >
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full border border-[#C9A227]/30 bg-[#1a1506]/60 backdrop-blur-md text-[#e0bd4c] text-xs tracking-[0.25em] uppercase font-medium shadow-lg shadow-black/40">
+              የኢትዮጵያ ፕሪሚየም ገበያ
+            </span>
+          </motion.div>
 
-        <button
-        className="
-        px-10
-        py-4
-        rounded-2xl
-        bg-[#C9A227]
-        text-black
-        font-bold
-        hover:bg-[#e2bd42]
-        transition
-        "
+          <motion.div 
+            variants={scrollFadeUp as any}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <h1 className="text-7xl md:text-9xl font-black tracking-tight mb-6 bg-gradient-to-r from-[#fffbf2] via-[#e5c158] to-[#ab8837] text-transparent bg-clip-text drop-shadow-sm">
+              RIGEL
+            </h1>
+            <p className="text-2xl md:text-4xl font-light text-[#f3efe6] mb-3 tracking-wide">
+              Find Your Next Home. Drive Your Next Journey.
+            </p>
+            <p className="text-neutral-400 max-w-xl mx-auto text-sm md:text-base font-light tracking-normal opacity-80 leading-relaxed">
+              Buy, sell and rent homes, vehicles and luxury items across Ethiopia on one single ecosystem.
+            </p>
+          </motion.div>
+
+          <motion.form
+            variants={scrollFadeUp as any}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            onSubmit={handleSearch}
+            className="max-w-3xl mx-auto mt-12 bg-[#120f06]/50 backdrop-blur-xl border border-neutral-800/60 hover:border-[#C9A227]/40 transition-all duration-500 rounded-2xl p-2.5 shadow-2xl shadow-black/80"
+          >
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#e5c158]" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search premium properties, luxury fleets..."
+                  className="w-full bg-transparent pl-12 pr-4 py-3.5 text-white placeholder:text-neutral-500 text-sm outline-none"
+                />
+              </div>
+              <button className="px-9 py-3.5 rounded-xl bg-gradient-to-r from-[#C9A227] to-[#bfa142] text-neutral-950 font-bold text-sm hover:brightness-110 active:scale-[0.98] transition shadow-lg shadow-yellow-950/40">
+                Search
+              </button>
+            </div>
+          </motion.form>
+
+          <motion.div 
+            variants={scrollFadeUp as any}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            className="mt-16 flex flex-wrap justify-center gap-10 md:gap-20"
+          >
+            {[
+              ["10K+", "Listings"],
+              ["5K+", "Verified Users"],
+              ["24/7", "Premium Support"]
+            ].map((item) => (
+              <div key={item[1]} className="text-center group">
+                <h3 className="text-4xl font-extrabold text-[#e5c158] tracking-tight group-hover:scale-105 transition-transform duration-300">
+                  {item[0]}
+                </h3>
+                <p className="text-neutral-500 text-xs tracking-wider uppercase mt-1.5 font-medium">
+                  {item[1]}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+
+          <motion.div 
+            variants={scrollFadeUp as any}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto"
+          >
+            {categories.map((category) => {
+              const Icon = category.icon;
+              const isSelected = selectedCategory === category.id;
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategorySelect(category.id)}
+                  className={`group relative rounded-2xl p-5 border text-center transition-all duration-300 overflow-hidden ${
+                    isSelected
+                      ? "bg-gradient-to-b from-[#C9A227] to-[#bfa142] text-neutral-950 border-[#C9A227] shadow-xl shadow-yellow-950/30 font-bold scale-[1.02]"
+                      : "bg-[#141107]/40 border-neutral-800/60 hover:bg-[#1a160a]/60 hover:border-neutral-700 text-neutral-300"
+                  }`}
+                >
+                  <Icon className={`w-6 h-6 mx-auto mb-2 transition-transform duration-300 group-hover:scale-110 ${isSelected ? "text-neutral-950" : "text-[#e5c158]"}`} />
+                  <span className="text-xs font-semibold uppercase tracking-wider block">{category.name}</span>
+                </button>
+              );
+            })}
+          </motion.div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#fcfbfa] to-transparent pointer-events-none select-none" />
+      </section>
+
+      {/* Modern Dynamic Listing Matrix Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 bg-gradient-to-t from-[#040401] to-transparent" >
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-20px" }}
+          transition={{ type: 'spring', stiffness: 50 }}
+          className="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-100 p-4 mb-12 shadow-md shadow-neutral-100 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-4 z-40"
         >
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-50 rounded-xl text-neutral-500 text-xs font-medium border border-neutral-100">
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Filters</span>
+            </div>
 
-        Search
-
-        </button>
-
-
-      </div>
-
-    </form>
-
-
-
-    {/* Stats */}
-
-    <div className="
-    mt-16
-    flex
-    flex-wrap
-    justify-center
-    gap-12
-    ">
-
-
-      {[
-        ["10K+","Listings"],
-        ["5K+","Verified Users"],
-        ["24/7","Support"]
-      ].map((item)=>(
-
-        <div key={item[1]} className="text-center">
-
-          <h3 className="
-          text-4xl
-          font-black
-          text-[#C9A227]
-          ">
-          {item[0]}
-          </h3>
-
-          <p className="text-gray-500">
-          {item[1]}
-          </p>
-
-        </div>
-
-      ))}
-
-
-    </div>
-
-
-
-
-    {/* Categories */}
-
-    <div className="
-    mt-16
-    grid
-    grid-cols-2
-    md:grid-cols-4
-    gap-5
-    ">
-
-
-    {categories.map((category)=>{
-
-      const Icon = category.icon;
-
-
-      return (
-
-      <button
-      key={category.id}
-      onClick={()=>handleCategorySelect(category.id)}
-      className={`
-      group
-      rounded-3xl
-      p-6
-      border
-      backdrop-blur-md
-      transition-all
-      
-      ${
-      selectedCategory===category.id
-      ?
-      "bg-[#C9A227] text-black border-[#C9A227]"
-      :
-      "bg-black/30 border-[#C9A227]/20 hover:border-[#C9A227]"
-      }
-      `}
-      >
-
-
-      <Icon
-      className="
-      w-10
-      h-10
-      mx-auto
-      mb-3
-      group-hover:scale-110
-      transition
-      "
-      />
-
-
-      <h3 className="font-semibold">
-      {category.name}
-      </h3>
-
-
-      </button>
-
-
-      )
-
-    })}
-
-
-    </div>
-
-
-
-  </div>
-
-
-
-  {/* Soft Fade */}
-  <div
-  className="
-  absolute
-  bottom-0
-  left-0
-  right-0
-  h-40
-  bg-gradient-to-t
-  from-[#F8F5EF]
-  to-transparent
-  "
-  />
-
-</section>
-      {/* Main */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              {selectedCategory &&
-                subcategories[selectedCategory as keyof typeof subcategories] && (
-                  <select
-                    value={selectedSubcategory}
-                    onChange={(e) => {
-                      setSelectedSubcategory(e.target.value);
-                      setCurrentPage(1);
-                    }}
-                    className="px-4 py-2 border rounded-lg"
-                  >
-                    {subcategories[selectedCategory as keyof typeof subcategories].map(
-                      (sub) => (
-                        <option key={sub.value} value={sub.value}>
-                          {sub.label}
-                        </option>
-                      )
-                    )}
-                  </select>
-                )}
-
+            {selectedCategory && subcategories[selectedCategory as keyof typeof subcategories] && (
               <select
-                value={selectedRegion}
+                value={selectedSubcategory}
                 onChange={(e) => {
-                  setSelectedRegion(e.target.value);
+                  setSelectedSubcategory(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="px-4 py-2 border rounded-lg"
+                className="px-3 py-2 border border-neutral-200 rounded-xl bg-white text-xs font-medium text-neutral-700 outline-none hover:border-neutral-300 transition cursor-pointer shadow-sm"
               >
-                {ethiopianRegions.map((region) => (
-                  <option key={region.value} value={region.value}>
-                    {region.label}
+                {subcategories[selectedCategory as keyof typeof subcategories].map((sub) => (
+                  <option key={sub.value} value={sub.value}>
+                    {sub.label}
                   </option>
                 ))}
               </select>
+            )}
 
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 border rounded-lg"
+            <select
+              value={selectedRegion}
+              onChange={(e) => {
+                setSelectedRegion(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-3 py-2 border border-neutral-200 rounded-xl bg-white text-xs font-medium text-neutral-700 outline-none hover:border-neutral-300 transition cursor-pointer shadow-sm"
+            >
+              {ethiopianRegions.map((region) => (
+                <option key={region.value} value={region.value}>
+                  {region.label}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-2 border border-neutral-200 rounded-xl bg-white text-xs font-medium text-neutral-700 outline-none hover:border-neutral-300 transition cursor-pointer shadow-sm"
+            >
+              <option value="newest">Sort: Newest</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+          </div>
+
+          <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto border-t md:border-t-0 pt-3 md:pt-0 border-neutral-100">
+            <span className="text-xs font-medium text-neutral-500">
+              Found <strong className="text-neutral-900 font-bold">{listings.length}</strong> luxurious matches
+            </span>
+
+            <div className="flex p-0.5 border border-neutral-200 rounded-xl bg-neutral-50/50">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-1.5 rounded-lg transition-all ${
+                  viewMode === 'grid' ? 'bg-white text-amber-600 shadow-sm border border-neutral-100' : 'text-neutral-400 hover:text-neutral-600'
+                }`}
               >
-                <option value="newest">Newest</option>
-                <option value="price-low">Low to High</option>
-                <option value="price-high">High to Low</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">
-                {listings.length} results
-              </span>
-
-              <div className="flex border rounded-lg overflow-hidden">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 ${
-                    viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : ''
-                  }`}
-                >
-                  <Grid className="w-4 h-4" />
-                </button>
-
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 ${
-                    viewMode === 'list' ? 'bg-blue-50 text-blue-600' : ''
-                  }`}
-                >
-                  <List className="w-4 h-4" />
-                </button>
-              </div>
+                <Grid className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-1.5 rounded-lg transition-all ${
+                  viewMode === 'list' ? 'bg-white text-amber-600 shadow-sm border border-neutral-100' : 'text-neutral-400 hover:text-gray-600'
+                }`}
+              >
+                <List className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Listings */}
         {loading ? (
-  <motion.div
-    className="flex justify-center py-20"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-  >
-    {/* Premium Amber Spinner to match the theme */}
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500" />
-  </motion.div>
-) : listings.length === 0 ? (
-  <div className="text-center py-20 font-medium text-gray-500 dark:text-gray-400">
-    No listings found
-  </div>
-) : (
-  <motion.div
-    layout
-    className={`grid gap-6 ${
-      viewMode === 'grid'
-        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-        : 'grid-cols-1'
-    }`}
-  >
-   {listings.map((listing) => (
-  <motion.div
-    key={listing._id}
-    layout
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.25 }}
-    
-    className="group flex flex-col h-full" 
-  >
-    <Link
-      href={`/listing/${slugify(listing.title)}-${listing._id}`}
-  
-      className={`relative bg-neutral-50 dark:bg-zinc-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-amber-100/30 dark:border-amber-950/20 flex flex-1 w-full ${
-        viewMode === "list" ? "flex-col sm:flex-row" : "flex-col h-full"
-      }`}
-    >
-      
-
-      {/* Listing Card Core Component */}
-      <ListingCard 
-        id={listing._id}
-        title={listing.title}
-        price={listing.price}
-        category={listing.category}
-        subcategory={listing.subcategory}
-        isElectric={listing.isElectric}
-        location={listing.location}
-        images={listing.images}
-        createdAt={listing.createdAt}
-      />
-    </Link>
-  </motion.div>
-))}
-  </motion.div>
-)}
+          <div className="flex flex-col items-center justify-center py-36 space-y-4">
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 rounded-full border-4 border-neutral-100"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-t-amber-500 animate-spin"></div>
+            </div>
+            <p className="text-xs text-neutral-400 animate-pulse font-medium tracking-wider uppercase">Curating Marketplace...</p>
+          </div>
+        ) : listings.length === 0 ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-24 bg-white border border-dashed border-neutral-200 rounded-3xl max-w-xl mx-auto p-8 shadow-sm"
+          >
+            <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto text-amber-600 mb-4">
+              <SlidersHorizontal className="w-5 h-5" />
+            </div>
+            <h3 className="text-base font-bold text-neutral-900 mb-1">No Premium Matches Found</h3>
+            <p className="text-xs text-neutral-500 max-w-xs mx-auto">We couldn't discover exact choices fitting your filters. Try adjusting keywords or region configurations.</p>
+          </motion.div>
+        ) : (
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              variants={containerVariants as any}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-40px" }}
+              className={`grid gap-6 ${
+                viewMode === 'grid'
+                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                  : 'grid-cols-1'
+              }`}
+            >
+              {listings.map((listing) => (
+                <motion.div
+                  key={listing._id}
+                  variants={cardVariants as any}
+                  exit="exit"
+                  layout
+                  className="group bg-white dark:bg-gray-950 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-amber-500/5 transition-all duration-300 border border-neutral-100 dark:border-neutral-900"
+                >
+                  <Link
+                    href={`/listing/${slugify(listing.title)}-${listing._id}`}
+                    className="block w-full h-full"
+                  >
+                    <ListingCard
+                      id={listing._id}
+                      title={listing.title}
+                      price={listing.price}
+                      category={listing.category}
+                      subcategory={listing.subcategory}
+                      isElectric={listing.isElectric}
+                      location={listing.location}
+                      images={listing.images}
+                      createdAt={listing.createdAt}
+                      viewMode={viewMode}
+                    />
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        )}
       </div>
     </motion.div>
   );
