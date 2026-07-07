@@ -7,22 +7,19 @@ type ImageType = {
   url: string;
   publicId: string;
 };
-
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? "100%" : "-100%",
     opacity: 0,
-    scale: 1.05,
   }),
   center: {
     x: 0,
     opacity: 1,
-    scale: 1,
   },
   exit: (direction: number) => ({
-    x: direction < 0 ? "100%" : "-100%",
+    // This ensures the exiting image leaves in the direction the new one is coming from
+    x: direction > 0 ? "-100%" : "100%", 
     opacity: 0,
-    scale: 1.05,
   })
 };
 
@@ -85,7 +82,7 @@ export default function ListingSlider({ images }: { images: ImageType[] }) {
       onTouchEnd={startAutoPlay}
       className="group/slider relative h-full w-full overflow-hidden rounded-t-xl bg-black"
     >
-      <AnimatePresence initial={false} custom={direction} mode="wait">
+      <AnimatePresence initial={false} custom={direction} mode="popLayout">
         <motion.div
           key={page}
           custom={direction}
