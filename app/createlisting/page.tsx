@@ -49,6 +49,8 @@ const categoryConfig = {
       { value: 'business_vehicle', label: 'Business Vehicle' },
       { value: 'daily_rental', label: 'Daily Rental' },
       { value: 'luxury_rental', label: 'Luxury Rental' },
+     {value:'housing', label: 'House/appartama/land' },
+    {value:'cloth',label: 'Bridal/Costume' },
     ],
   },
   housing: {

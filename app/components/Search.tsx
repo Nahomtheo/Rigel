@@ -42,6 +42,8 @@ const subcategories = {
     { value: 'business_vehicle', label: 'Business' },
     { value: 'daily_rental', label: 'Daily Rental' },
     { value: 'luxury_rental', label: 'Luxury' },
+  {value:'housing', label: 'House/appartama/land' },
+    {value:'cloth',label: 'Bridal/Costume' },
   ],
   housing: [
     { value: '', label: 'All Housing' },
