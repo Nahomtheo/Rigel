@@ -124,7 +124,7 @@ export default function ListingSlider({ images }: { images: ImageType[] }) {
   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
   draggable={false}
   className="object-cover select-none"
-  priority={current === 0}
+  loading="lazy"
 />
     )}
   </motion.div>
