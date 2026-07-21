@@ -1,6 +1,8 @@
 'use client';
 
 import ListingSlider from './Listingslider';
+import { slugify } from '@/lib/slugify';
+import ListingCard from './ListingCard';
 
 import { useState, useEffect, useCallback } from 'react';
 import {
@@ -16,7 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 const categories = [
   { id: 'car', name: 'Cars', icon: Car, color: 'bg-blue-500' },
@@ -42,8 +44,8 @@ const subcategories = {
     { value: 'business_vehicle', label: 'Business' },
     { value: 'daily_rental', label: 'Daily Rental' },
     { value: 'luxury_rental', label: 'Luxury' },
-  {value:'housing', label: 'House/appartama/land' },
-    {value:'cloth',label: 'Bridal/Costume' },
+    { value: 'housing', label: 'House/appartama/land' },
+    { value: 'cloth', label: 'Bridal/Costume' },
   ],
   housing: [
     { value: '', label: 'All Housing' },
@@ -76,6 +78,17 @@ const ethiopianRegions = [
   { value: 'Sidama', label: 'Sidama' },
   { value: 'Southern Nations, Nationalities, and Peoples', label: 'SNNP' },
 ];
+
+// Framer Motion card animation variants
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.3 } 
+  },
+  exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
+};
 
 interface Listing {
   _id: string;
@@ -159,110 +172,109 @@ export default function Searching() {
     }
     setCurrentPage(1);
   };
-  return(
-     <motion.div
+
+  return (
+    <motion.div
       className="min-h-screen bg-gray-50"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
     >
-                  <form
-            onSubmit={handleSearch}
-            className="max-w-4xl mx-auto bg-white dark:bg-gray-700 rounded-xl shadow-lg p-2"
-          >
-            <div className="flex flex-col md:flex-row gap-2">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 dark:text-gray-300" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for cars, housing, clothes..."
-                  className="w-full pl-14 pr-4 py-3 rounded-lg text-gray-900 dark:text-white bg-transparent text-lg focus:outline-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                Search
-              </button>
-            </div>
-          </form>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            {categories.map((category) => {
-              const Icon = category.icon;
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => handleCategorySelect(category.id)}
-                  className={`flex flex-col items-center p-3 rounded-xl transition-all ${
-                    selectedCategory === category.id
-                      ? 'bg-gray text-blue-600'
-                      : 'bg-black/40 text-white'
-                  }`}
-                >
-                  <Icon className="w-7 h-7 mb-2" />
-                  <span className="text-sm">{category.name}</span>
-                </button>
-              );
-            })}
+      <form
+        onSubmit={handleSearch}
+        className="max-w-4xl mx-auto bg-white dark:bg-gray-700 rounded-xl shadow-lg p-2"
+      >
+        <div className="flex flex-col md:flex-row gap-2">
+          <div className="flex-1 relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 dark:text-gray-300" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for cars, housing, clothes..."
+              className="w-full pl-14 pr-4 py-3 rounded-lg text-gray-900 dark:text-white bg-transparent text-lg focus:outline-none"
+            />
           </div>
 
-          
-          {loading ? (
-          <motion.div
-            className="flex justify-center py-20"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+          <button
+            type="submit"
+            className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
           >
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
-          </motion.div>
-        ) : listings.length === 0 ? (
-          <div className="text-center py-20">No listings found</div>
-        ) : (
-          <motion.div
-            layout
-            className={`grid gap-6 ${
-              viewMode === 'grid'
-                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-                : 'grid-cols-1'
-            }`}
-          >
-            {listings.map((listing) => (
-              <motion.div
-                key={listing._id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.25 }}
+            Search
+          </button>
+        </div>
+      </form>
+
+      <div className="mt-10 flex flex-wrap justify-center gap-4">
+        {categories.map((category) => {
+          const Icon = category.icon;
+          return (
+            <button
+              key={category.id}
+              onClick={() => handleCategorySelect(category.id)}
+              className={`flex flex-col items-center p-3 rounded-xl transition-all ${
+                selectedCategory === category.id
+                  ? 'bg-gray text-blue-600'
+                  : 'bg-black/40 text-white'
+              }`}
+            >
+              <Icon className="w-7 h-7 mb-2" />
+              <span className="text-sm">{category.name}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {loading ? (
+        <motion.div
+          className="flex justify-center py-20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+        </motion.div>
+      ) : listings.length === 0 ? (
+        <div className="text-center py-20">No listings found</div>
+      ) : (
+        <motion.div
+          layout
+          initial="hidden"
+          animate="visible"
+          className={`grid gap-6 ${
+            viewMode === 'grid'
+              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+              : 'grid-cols-1'
+          }`}
+        >
+          {listings.map((listing) => (
+            <motion.div
+              key={listing._id}
+              variants={cardVariants}
+              exit="exit"
+              layout
+              className="group bg-white dark:bg-gray-950 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-amber-500/5 transition-all duration-300 border border-neutral-100 dark:border-neutral-900"
+            >
+              <Link
+                href={`/listing/${slugify(listing.title)}-${listing._id}`}
+                className="block w-full h-full"
               >
-                <Link
-                  href={`/listing/${listing._id}`}
-                  className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow ${
-                    viewMode === 'list' ? 'flex' : ''
-                  }`}
-                >
-                  <div className="relative">
-                    <ListingSlider images={listing.images as any} />
-                  </div>
-
-                  <div className="p-4 flex-1">
-                    <h3 className="font-semibold">{listing.title}</h3>
-                    <p className="text-blue-600 font-bold">
-                      {listing.price} ETB
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      
-                    </p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-
+                <ListingCard
+                  id={listing._id}
+                  title={listing.title}
+                  price={listing.price}
+                  category={listing.category}
+                  subcategory={listing.subcategory}
+                  isElectric={listing.isElectric}
+                  location={listing.location}
+                  images={listing.images}
+                  createdAt={listing.createdAt}
+                  viewMode={viewMode}
+                />
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
     </motion.div>
-  )
+  );
 }
