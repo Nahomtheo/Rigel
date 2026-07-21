@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Play, Images } from "lucide-react";
+import Image from "next/image";
 
 type ImageType = {
   url: string;
@@ -116,7 +117,7 @@ export default function ListingSlider({ images }: { images: ImageType[] }) {
     {isVideo ? (
       <video src={file.url} controls className="h-full w-full object-cover pointer-events-auto" />
     ) : (
-      <img src={file.url} alt="listing" draggable={false} className="h-full w-full object-cover select-none" />
+      <Image src={file.url} alt="listing" draggable={false} className="h-full w-full object-cover select-none " loading="lazy" />
     )}
   </motion.div>
 </AnimatePresence>
