@@ -117,7 +117,15 @@ export default function ListingSlider({ images }: { images: ImageType[] }) {
     {isVideo ? (
       <video src={file.url} controls className="h-full w-full object-cover pointer-events-auto" />
     ) : (
-      <Image src={file.url} alt="listing" draggable={false} className="h-full w-full object-cover select-none " loading="lazy" />
+          <Image
+  src={file.url}
+  alt="listing"
+  fill
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+  draggable={false}
+  className="object-cover select-none"
+  priority={current === 0}
+/>
     )}
   </motion.div>
 </AnimatePresence>

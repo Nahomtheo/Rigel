@@ -3,6 +3,7 @@ import { useState } from 'react';
 import ListingSlider from './Listingslider';
 import { MapPin, Heart, Zap, Car, Calendar, Home, Shirt } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface ListingCardProps {
   id: string;
