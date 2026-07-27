@@ -19,16 +19,16 @@ export default function BottomNavbar() {
 
   const navItems = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Search", href: "/search", icon: Search }, // Assuming a search page or modal
-    { name: "My listing", href: "/userlisting", icon: LayoutGrid ,authRequired: true }, // Assuming a categories page
+    { name: "Search", href: "/search", icon: Search },
+    { name: "My listing", href: "/userlisting", icon: LayoutGrid, authRequired: true },
     { name: "List", href: "/createlisting", icon: PlusSquare, authRequired: true },
     { name: "Inbox", href: "/chat", icon: MessageSquareText, authRequired: true },
     { name: "Profile", href: "/dashboard", icon: User, authRequired: true },
   ];
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg md:hidden">
-      <div className="flex h-16 items-center justify-around">
+    <nav className="fixed inset-x-0 bottom-0 z-50 bg-[#18130e] border-t border-amber-900/30 shadow-2xl md:hidden">
+      <div className="flex h-16 items-center justify-around px-2">
         {navItems.map((item) => {
           // Only render authRequired items if session exists
           if (item.authRequired && !session) {
@@ -42,14 +42,14 @@ export default function BottomNavbar() {
               key={item.name}
               href={item.href}
               className={clsx(
-                "flex flex-col items-center justify-center gap-1 text-xs font-medium transition-colors",
+                "flex flex-col items-center justify-center gap-1 text-xs font-medium py-1 px-2 rounded-lg transition-all",
                 isActive
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  ? "text-amber-400 font-semibold"
+                  : "text-stone-400 hover:text-amber-200 hover:bg-[#211a14]"
               )}
             >
-              <Icon className="w-6 h-6" />
-              <span className="sr-only sm:not-sr-only">{item.name}</span>
+              <Icon className={clsx("w-5 h-5", isActive ? "text-amber-400" : "text-stone-400")} />
+              <span className="sr-only sm:not-sr-only text-[10px] sm:text-xs">{item.name}</span>
             </Link>
           );
         })}
