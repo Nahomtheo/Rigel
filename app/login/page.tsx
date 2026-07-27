@@ -3,61 +3,97 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Check if an error was passed in the URL (e.g., from Google auth redirect error)
+  const urlError = searchParams.get("error");
 
   async function handleGoogleLogin() {
-  if (loading) return;
-  setLoading(true);
-  await signIn("google", { callbackUrl: "/dashboard" });
-}
+    if (loading) return;
+    setLoading(true);
+    setErrorMessage(null);
+    await signIn("google", { callbackUrl: "/dashboard" });
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
-    setLoading(true);
 
-    await signIn("credentials", {
+    setLoading(true);
+    setErrorMessage(null);
+
+    const res = await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/dashboard",
+      redirect: false, // Prevents automatic redirect on failure
     });
+
+    if (res?.error) {
+      // Custom message for invalid credentials
+      if (res.error === "CredentialsSignin") {
+        setErrorMessage("Invalid email or password. Please try again.");
+      } else {
+        setErrorMessage(res.error);
+      }
+      setLoading(false);
+    } else if (res?.ok) {
+      // Redirect manually upon success
+      router.push(res.url || "/dashboard");
+      router.refresh();
+    }
   }
-  console.log(process.env.GOOGLE_CLIENT_ID)
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4 py-12">
+    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4 py-12 text-stone-100">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl mb-4 shadow-lg">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-amber-500 to-amber-700 rounded-xl mb-4 shadow-lg border border-amber-500/30">
+            <svg className="w-6 h-6 text-stone-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
-          <p className="text-gray-500 mt-2">Sign in to your account to continue</p>
+          <h2 className="text-2xl font-bold text-amber-50">Welcome back</h2>
+          <p className="text-stone-400 mt-2">Sign in to your account to continue</p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <div className="bg-[#18130e] border border-amber-900/30 rounded-xl shadow-xl p-8">
+          
+          {/* Error Alert Box */}
+          {(errorMessage || urlError) && (
+            <div className="mb-5 p-3.5 bg-red-950/40 border border-red-900/50 rounded-lg text-red-300 text-sm flex items-center gap-2">
+              <svg className="w-5 h-5 flex-shrink-0 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{errorMessage || "An error occurred while signing in. Please try again."}</span>
+            </div>
+          )}
+
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-amber-200/80 mb-2">
                 Email address
               </label>
               <div className="relative">
-                <svg className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <input
                   type="email"
                   placeholder="you@example.com"
-                  className="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-3 text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  className="w-full bg-[#211a14] border border-amber-900/30 rounded-lg pl-10 pr-4 py-3 text-stone-100 placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
@@ -66,23 +102,24 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-amber-200/80 mb-2">
                 Password
               </label>
               <div className="relative">
-                <svg className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
                 <input
                   type="password"
                   placeholder="••••••••"
-                  className="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-3 text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  className="w-full bg-[#211a14] border border-amber-900/30 rounded-lg pl-10 pr-4 py-3 text-stone-100 placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
               <div className="text-right text-sm mt-2">
-                <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-700">
+                <Link href="/forgot-password" className="font-medium text-amber-400 hover:text-amber-300 transition-colors">
                   Forgot password?
                 </Link>
               </div>
@@ -92,11 +129,11 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 font-bold py-3 rounded-lg hover:from-amber-400 hover:to-amber-500 transition-all shadow-md shadow-amber-950/40 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin w-5 h-5 text-stone-950" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
@@ -111,18 +148,19 @@ export default function LoginPage() {
           {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+              <div className="w-full border-t border-amber-900/30" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">Or continue with</span>
+              <span className="px-4 bg-[#18130e] text-stone-400">Or continue with</span>
             </div>
           </div>
 
           {/* Google Sign In */}
           <button
             type="button"
-            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-            className="w-full flex items-center justify-center gap-3 border border-gray-200 bg-white text-gray-700 font-medium py-3 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all"
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 border border-amber-900/30 bg-[#211a14] text-stone-200 font-medium py-3 rounded-lg hover:bg-[#282018] hover:border-amber-900/50 transition-all disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -135,9 +173,9 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-gray-500 text-sm mt-6">
+        <p className="text-center text-stone-400 text-sm mt-6">
           Don't have an account?{" "}
-          <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link href="/signup" className="text-amber-400 hover:text-amber-300 font-medium transition-colors">
             Sign up
           </Link>
         </p>
