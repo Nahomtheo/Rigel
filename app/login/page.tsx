@@ -8,25 +8,49 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleGoogleLogin() {
     if (loading) return;
+    setError("");
     setLoading(true);
-    await signIn("google", { callbackUrl: "/dashboard" });
+    try {
+      const res = await signIn("google", { callbackUrl: "/dashboard", redirect: false });
+      if (res?.error) {
+        setError("Failed to sign in with Google. Please try again.");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
+    setError("");
     setLoading(true);
 
-    await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/dashboard",
-    });
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false, // Prevents automatic redirect on error so we can capture and display the error
+      });
+
+      if (res?.error) {
+        // NextAuth returns "CredentialsSignin" or specific error message for invalid email/password
+        setError("Invalid email or password. Please check your credentials and try again.");
+      } else if (res?.ok) {
+        window.location.href = res.url || "/dashboard";
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   }
-  console.log(process.env.GOOGLE_CLIENT_ID);
 
   return (
     <div className="min-h-[calc(100vh-200px)] bg-[#18130e] text-stone-100 flex items-center justify-center px-4 py-12">
@@ -45,6 +69,16 @@ export default function LoginPage() {
         {/* Form Card */}
         <div className="bg-[#211a14] rounded-xl shadow-2xl border border-amber-900/30 p-8">
           <form onSubmit={handleLogin} className="space-y-5">
+            {/* Error Message Alert */}
+            {error && (
+              <div className="bg-red-950/60 border border-red-800/80 text-red-300 px-4 py-3 rounded-lg text-sm flex items-start gap-3">
+                <svg className="w-5 h-5 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{error}</span>
+              </div>
+            )}
+
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-amber-200/80 mb-2">
@@ -58,7 +92,10 @@ export default function LoginPage() {
                   type="email"
                   placeholder="you@example.com"
                   className="w-full bg-[#18130e] border border-amber-900/30 rounded-lg pl-10 pr-4 py-3 text-stone-100 placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError("");
+                  }}
                   required
                 />
               </div>
@@ -77,7 +114,10 @@ export default function LoginPage() {
                   type="password"
                   placeholder="••••••••"
                   className="w-full bg-[#18130e] border border-amber-900/30 rounded-lg pl-10 pr-4 py-3 text-stone-100 placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) setError("");
+                  }}
                   required
                 />
               </div>
