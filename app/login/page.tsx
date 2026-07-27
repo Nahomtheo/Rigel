@@ -3,57 +3,33 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // Check if an error was passed in the URL (e.g., from Google auth redirect error)
-  const urlError = searchParams.get("error");
 
   async function handleGoogleLogin() {
     if (loading) return;
     setLoading(true);
-    setErrorMessage(null);
     await signIn("google", { callbackUrl: "/dashboard" });
   }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
-
     setLoading(true);
-    setErrorMessage(null);
 
-    const res = await signIn("credentials", {
+    await signIn("credentials", {
       email,
       password,
-      redirect: false, // Prevents automatic redirect on failure
+      callbackUrl: "/dashboard",
     });
-
-    if (res?.error) {
-      // Custom message for invalid credentials
-      if (res.error === "CredentialsSignin") {
-        setErrorMessage("Invalid email or password. Please try again.");
-      } else {
-        setErrorMessage(res.error);
-      }
-      setLoading(false);
-    } else if (res?.ok) {
-      // Redirect manually upon success
-      router.push(res.url || "/dashboard");
-      router.refresh();
-    }
   }
+  console.log(process.env.GOOGLE_CLIENT_ID);
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4 py-12 text-stone-100">
+    <div className="min-h-[calc(100vh-200px)] bg-[#18130e] text-stone-100 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
@@ -67,18 +43,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-[#18130e] border border-amber-900/30 rounded-xl shadow-xl p-8">
-          
-          {/* Error Alert Box */}
-          {(errorMessage || urlError) && (
-            <div className="mb-5 p-3.5 bg-red-950/40 border border-red-900/50 rounded-lg text-red-300 text-sm flex items-center gap-2">
-              <svg className="w-5 h-5 flex-shrink-0 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{errorMessage || "An error occurred while signing in. Please try again."}</span>
-            </div>
-          )}
-
+        <div className="bg-[#211a14] rounded-xl shadow-2xl border border-amber-900/30 p-8">
           <form onSubmit={handleLogin} className="space-y-5">
             {/* Email */}
             <div>
@@ -92,8 +57,7 @@ export default function LoginPage() {
                 <input
                   type="email"
                   placeholder="you@example.com"
-                  className="w-full bg-[#211a14] border border-amber-900/30 rounded-lg pl-10 pr-4 py-3 text-stone-100 placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
-                  value={email}
+                  className="w-full bg-[#18130e] border border-amber-900/30 rounded-lg pl-10 pr-4 py-3 text-stone-100 placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
@@ -112,8 +76,7 @@ export default function LoginPage() {
                 <input
                   type="password"
                   placeholder="••••••••"
-                  className="w-full bg-[#211a14] border border-amber-900/30 rounded-lg pl-10 pr-4 py-3 text-stone-100 placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
-                  value={password}
+                  className="w-full bg-[#18130e] border border-amber-900/30 rounded-lg pl-10 pr-4 py-3 text-stone-100 placeholder-stone-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
@@ -151,7 +114,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-amber-900/30" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-[#18130e] text-stone-400">Or continue with</span>
+              <span className="px-4 bg-[#211a14] text-stone-400">Or continue with</span>
             </div>
           </div>
 
@@ -159,8 +122,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-3 border border-amber-900/30 bg-[#211a14] text-stone-200 font-medium py-3 rounded-lg hover:bg-[#282018] hover:border-amber-900/50 transition-all disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 border border-amber-900/30 bg-[#18130e] text-stone-200 font-medium py-3 rounded-lg hover:bg-[#282018] hover:border-amber-900/50 transition-all"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
