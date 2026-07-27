@@ -199,13 +199,13 @@ export default function ChatPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-[#0d0a08] text-stone-100">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Please sign in</h1>
-          <p className="text-gray-600">You need to be signed in to view your messages</p>
+          <h1 className="text-2xl font-bold text-amber-50 mb-2">Please sign in</h1>
+          <p className="text-amber-200/60">You need to be signed in to view your messages</p>
           <button 
             onClick={() => router.push('/login')}
-            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="mt-4 px-6 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 font-bold rounded-lg hover:from-amber-400 hover:to-amber-500 shadow-md shadow-amber-950/40"
           >
             Sign In
           </button>
@@ -215,28 +215,28 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0d0a08] text-stone-100">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-[#18130e] border-b border-amber-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               {selectedConversation && (
                 <button
                   onClick={() => setSelectedConversation(null)}
-                  className="md:hidden p-2 text-gray-500 hover:text-gray-700"
+                  className="md:hidden p-2 text-stone-400 hover:text-amber-200"
                 >
                   <ArrowLeft className="w-5 h-5" />
                 </button>
               )}
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-amber-50">
                 {selectedConversation ? getOtherUser(selectedConversation)?.name || 'Chat' : 'Messages'}
               </h1>
             </div>
             <div className="flex items-center space-x-4">
               <button 
                 onClick={() => router.push('/dashboard')}
-                className="px-4 py-2 text-gray-600 hover:text-gray-900"
+                className="px-4 py-2 text-stone-300 hover:text-amber-300 font-medium transition-colors"
               >
                 Dashboard
               </button>
@@ -246,19 +246,19 @@ export default function ChatPage() {
       </header>
 
       <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden" style={{ height: 'calc(100vh - 140px)' }}>
+        <div className="bg-[#18130e] rounded-xl border border-amber-900/30 shadow-xl overflow-hidden" style={{ height: 'calc(100vh - 140px)' }}>
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
             {/* Conversations List */}
-            <div className={`border-r border-gray-200 ${selectedConversation ? 'hidden md:block' : 'block'} md:col-span-1 flex flex-col`}>
-              <div className="p-4 border-b border-gray-200">
+            <div className={`border-r border-amber-900/30 ${selectedConversation ? 'hidden md:block' : 'block'} md:col-span-1 flex flex-col bg-[#18130e]`}>
+              <div className="p-4 border-b border-amber-900/30">
                 <div className="relative">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-stone-500" />
                   <input
                     type="text"
                     placeholder="Search messages..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-9 pr-4 py-2 bg-[#211a14] border border-amber-900/30 rounded-lg text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                   />
                 </div>
               </div>
@@ -266,14 +266,14 @@ export default function ChatPage() {
               <div className="flex-1 overflow-y-auto">
                 {loading ? (
                   <div className="flex items-center justify-center p-8">
-                    <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                    <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
                   </div>
                 ) : filteredConversations.length === 0 ? (
                   <div className="flex items-center justify-center p-8">
-                    <div className="text-center text-gray-500">
-                      <MessageSquare className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                      <p>No messages yet</p>
-                      <p className="text-sm mt-1">Start a conversation from a listing</p>
+                    <div className="text-center text-stone-400">
+                      <MessageSquare className="w-12 h-12 mx-auto mb-2 text-stone-600" />
+                      <p className="text-stone-300">No messages yet</p>
+                      <p className="text-sm mt-1 text-stone-500">Start a conversation from a listing</p>
                     </div>
                   </div>
                 ) : (
@@ -286,37 +286,37 @@ export default function ChatPage() {
                       <div
                         key={conversation._id}
                         onClick={() => setSelectedConversation(conversation)}
-                        className={`p-4 border-b border-gray-100 cursor-pointer transition-colors ${
-                          isSelected ? 'bg-blue-50' : 'hover:bg-gray-50'
+                        className={`p-4 border-b border-amber-900/20 cursor-pointer transition-colors ${
+                          isSelected ? 'bg-amber-500/15 border-l-4 border-l-amber-500' : 'hover:bg-[#211a14]'
                         }`}
                       >
                         <div className="flex items-start space-x-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-medium flex-shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-amber-800 flex items-center justify-center text-amber-50 font-semibold flex-shrink-0 border border-amber-500/30">
                             {otherUser?.name?.charAt(0) || 'U'}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex justify-between items-start">
-                              <p className="font-medium text-gray-900 truncate">
+                              <p className="font-medium text-amber-100 truncate">
                                 {otherUser?.name || 'Unknown User'}
                               </p>
                               {conversation.lastMessageAt && (
-                                <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
+                                <span className="text-xs text-stone-500 flex-shrink-0 ml-2">
                                   {formatTime(conversation.lastMessageAt)}
                                 </span>
                               )}
                             </div>
                             {conversation.listingId && (
-                              <div className="flex items-center text-xs text-blue-600 truncate mt-0.5">
+                              <div className="flex items-center text-xs text-amber-400 truncate mt-0.5">
                                 <Package className="w-3 h-3 mr-1" />
                                 <span className="truncate">{conversation.listingId.title}</span>
                               </div>
                             )}
-                            <p className="text-sm text-gray-500 truncate mt-0.5">
+                            <p className="text-sm text-stone-400 truncate mt-0.5">
                               {conversation.lastMessage || 'No messages yet'}
                             </p>
                           </div>
                           {unread > 0 && (
-                            <div className="bg-blue-500 text-white text-xs min-w-5 h-5 rounded-full flex items-center justify-center px-1.5 flex-shrink-0">
+                            <div className="bg-amber-500 text-stone-950 font-bold text-xs min-w-5 h-5 rounded-full flex items-center justify-center px-1.5 flex-shrink-0 shadow-sm">
                               {unread}
                             </div>
                           )}
@@ -329,20 +329,20 @@ export default function ChatPage() {
             </div>
 
             {/* Chat Area */}
-            <div className={`col-span-1 md:col-span-2 flex flex-col ${!selectedConversation ? 'hidden md:flex' : 'flex'}`}>
+            <div className={`col-span-1 md:col-span-2 flex flex-col ${!selectedConversation ? 'hidden md:flex' : 'flex'} bg-[#0d0a08]`}>
               {selectedConversation ? (
                 <>
                   {/* Chat Header */}
-                  <div className="p-4 border-b border-gray-200 flex items-center space-x-3 bg-white">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-medium">
+                  <div className="p-4 border-b border-amber-900/30 flex items-center space-x-3 bg-[#18130e]">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-amber-800 flex items-center justify-center text-amber-50 font-semibold border border-amber-500/30">
                       {getOtherUser(selectedConversation)?.name?.charAt(0) || 'U'}
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-amber-100">
                         {getOtherUser(selectedConversation)?.name || 'Unknown User'}
                       </p>
                       {selectedConversation.listingId && (
-                        <p className="text-xs text-blue-600 flex items-center">
+                        <p className="text-xs text-amber-400 flex items-center">
                           <Package className="w-3 h-3 mr-1" />
                           {selectedConversation.listingId.title}
                         </p>
@@ -351,7 +351,7 @@ export default function ChatPage() {
                   </div>
 
                   {/* Messages */}
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#0d0a08]">
                     {messages.map((msg) => {
                       const isOwnMessage = msg.senderId === (session.user as any )?.id;
                       return (
@@ -360,14 +360,14 @@ export default function ChatPage() {
                           className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
                         >
                           <div
-                            className={`max-w-[70%] px-4 py-2 rounded-lg ${
+                            className={`max-w-[70%] px-4 py-2 rounded-xl shadow-md ${
                               isOwnMessage
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-white text-gray-900 border border-gray-200'
+                                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 font-medium'
+                                : 'bg-[#18130e] text-stone-100 border border-amber-900/30'
                             }`}
                           >
                             <p className="text-sm">{msg.text}</p>
-                            <p className={`text-xs mt-1 ${isOwnMessage ? 'text-blue-100' : 'text-gray-400'}`}>
+                            <p className={`text-xs mt-1 ${isOwnMessage ? 'text-stone-900/80 font-normal' : 'text-stone-400'}`}>
                               {formatTime(msg.createdAt)}
                             </p>
                           </div>
@@ -378,7 +378,7 @@ export default function ChatPage() {
                   </div>
 
                   {/* Input Area */}
-                  <div className="p-4 border-t border-gray-200 bg-white">
+                  <div className="p-4 border-t border-amber-900/30 bg-[#18130e]">
                     <div className="flex space-x-2">
                       <input
                         type="text"
@@ -386,12 +386,12 @@ export default function ChatPage() {
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                         placeholder="Type a message..."
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-4 py-2 bg-[#211a14] border border-amber-900/30 rounded-lg text-stone-100 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                       />
                       <button
                         onClick={sendMessage}
                         disabled={!newMessage.trim()}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
+                        className="px-5 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 font-bold rounded-lg hover:from-amber-400 hover:to-amber-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1 shadow-md shadow-amber-950/40"
                       >
                         <Send className="w-4 h-4" />
                         <span>Send</span>
@@ -400,11 +400,11 @@ export default function ChatPage() {
                   </div>
                 </>
               ) : (
-                <div className="flex-1 flex items-center justify-center bg-gray-50">
-                  <div className="text-center text-gray-500">
-                    <MessageSquare className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                    <p className="text-lg font-medium">Select a conversation</p>
-                    <p className="text-sm mt-1">Choose a message thread to start chatting</p>
+                <div className="flex-1 flex items-center justify-center bg-[#0d0a08]">
+                  <div className="text-center text-stone-400">
+                    <MessageSquare className="w-16 h-16 mx-auto mb-4 text-stone-600" />
+                    <p className="text-lg font-medium text-amber-100">Select a conversation</p>
+                    <p className="text-sm mt-1 text-stone-400">Choose a message thread to start chatting</p>
                   </div>
                 </div>
               )}
