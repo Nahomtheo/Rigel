@@ -4,11 +4,17 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 
+type AuthMode = "login" | "forgot";
+
 export default function LoginPage() {
+  const [mode, setMode] = useState<AuthMode>("login");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   async function handleGoogleLogin() {
     if (loading) return;
@@ -16,9 +22,15 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    await signIn("google", {
-      callbackUrl: "/dashboard",
-    });
+    try {
+      await signIn("google", {
+        callbackUrl: "/dashboard",
+      });
+    } catch (error) {
+      console.error("Google login error:", error);
+      setError("Unable to continue with Google. Please try again.");
+      setLoading(false);
+    }
   }
 
   async function handleLogin(e: React.FormEvent) {
@@ -27,6 +39,7 @@ export default function LoginPage() {
     if (loading) return;
 
     setError("");
+    setMessage("");
     setLoading(true);
 
     try {
@@ -52,6 +65,270 @@ export default function LoginPage() {
       setLoading(false);
     }
   }
+
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (loading) return;
+
+    setError("");
+    setMessage("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(
+          data.error || "Something went wrong. Please try again."
+        );
+        return;
+      }
+
+      setMessage(
+        data.message ||
+          "If an account exists with this email, a password reset link has been sent."
+      );
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      setError("Unable to send reset link. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function switchToForgotPassword() {
+    setError("");
+    setMessage("");
+    setMode("forgot");
+  }
+
+  function switchToLogin() {
+    setError("");
+    setMessage("");
+    setMode("login");
+  }
+
+  /* =========================================================
+     FORGOT PASSWORD
+  ========================================================= */
+
+  if (mode === "forgot") {
+    return (
+      <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl mb-4 shadow-lg">
+              <svg
+                className="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+            </div>
+
+            <h2 className="text-2xl font-bold text-gray-900">
+              Forgot your password?
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Enter your email and we'll send you a reset link.
+            </p>
+          </div>
+
+          {/* Card */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+            <form
+              onSubmit={handleForgotPassword}
+              className="space-y-5"
+            >
+              {/* Email */}
+              <div>
+                <label
+                  htmlFor="forgot-email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Email address
+                </label>
+
+                <div className="relative">
+                  <svg
+                    className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+
+                  <input
+                    id="forgot-email"
+                    type="email"
+                    value={email}
+                    placeholder="you@example.com"
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={loading}
+                    className="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-3 text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  />
+                </div>
+              </div>
+
+              {/* Success */}
+              {message && (
+                <div
+                  role="status"
+                  className="relative flex items-start rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
+                >
+                  <svg
+                    className="w-5 h-5 flex-shrink-0 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+
+                  <span>{message}</span>
+                </div>
+              )}
+
+              {/* Error */}
+              {error && (
+                <div
+                  role="alert"
+                  className="relative flex items-start rounded-lg border border-red-200 bg-red-50 px-4 py-3 pr-10 text-sm text-red-700"
+                >
+                  <svg
+                    className="w-5 h-5 flex-shrink-0 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v4m0 4h.01M10.29 3.86l-8.82 15a2 2 0 001.71 3h17.64a2 2 0 001.71-3l-8.82-15z"
+                    />
+                  </svg>
+
+                  <span>{error}</span>
+
+                  <button
+                    type="button"
+                    onClick={() => setError("")}
+                    className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-md text-red-500 hover:bg-red-100 hover:text-red-700"
+                    aria-label="Dismiss error"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 6l12 12M18 6L6 18"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <svg
+                      className="animate-spin w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l-3 2.647z"
+                      />
+                    </svg>
+
+                    Sending...
+                  </>
+                ) : (
+                  "Send Reset Link"
+                )}
+              </button>
+
+              {/* Back */}
+              <button
+                type="button"
+                onClick={switchToLogin}
+                className="w-full text-sm font-medium text-blue-600 hover:text-blue-700 py-2"
+              >
+                ← Back to sign in
+              </button>
+            </form>
+          </div>
+
+          {/* Signup */}
+          <p className="text-center text-gray-500 text-sm mt-6">
+            Don't have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  /* =========================================================
+     LOGIN
+  ========================================================= */
 
   return (
     <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4 py-12">
@@ -86,7 +363,6 @@ export default function LoginPage() {
 
         {/* Form Card */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-
           <form onSubmit={handleLogin} className="space-y-5">
 
             {/* Email */}
@@ -154,25 +430,28 @@ export default function LoginPage() {
                 />
               </div>
 
+              {/* IMPORTANT:
+                  This no longer uses <Link>.
+                  It switches the same modal to forgot-password.
+              */}
               <div className="text-right text-sm mt-2">
-                <Link
-                  href="/forgot-password"
+                <button
+                  type="button"
+                  onClick={switchToForgotPassword}
                   className="font-medium text-blue-600 hover:text-blue-700"
                 >
                   Forgot password?
-                </Link>
+                </button>
               </div>
             </div>
 
-            {/* Error Message */}
+            {/* Error */}
             {error && (
               <div
                 role="alert"
                 className="relative flex items-start rounded-lg border border-red-200 bg-red-50 px-4 py-3 pr-10 text-sm text-red-700"
               >
                 <div className="flex items-start gap-2">
-
-                  {/* Error Icon */}
                   <svg
                     className="w-5 h-5 flex-shrink-0 mt-0.5"
                     fill="none"
@@ -183,14 +462,13 @@ export default function LoginPage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M12 9v4m0 4h.01M10.29 3.86l-8.82 15a2 2 0 001.71 3h17.64a2 2 0 001.71-3l-8.82-15a2 2 0 00-3.42 0z"
+                      d="M12 9v4m0 4h.01M10.29 3.86l-8.82 15a2 2 0 001.71 3h17.64a2 2 0 001.71-3l-8.82-15z"
                     />
                   </svg>
 
                   <span>{error}</span>
                 </div>
 
-                {/* X Button */}
                 <button
                   type="button"
                   onClick={() => setError("")}
@@ -239,7 +517,7 @@ export default function LoginPage() {
                     <path
                       className="opacity-75"
                       fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l-3-2.647z"
                     />
                   </svg>
 
@@ -264,7 +542,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Google Sign In */}
+          {/* Google */}
           <button
             type="button"
             onClick={handleGoogleLogin}
