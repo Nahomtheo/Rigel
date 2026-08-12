@@ -31,14 +31,14 @@ export const authOptions: NextAuthOptions = {
         await connectDB();
 
         const user = await User.findOne({ email: credentials?.email });
-        if (!user) throw new Error("User not found");
+        if (!user) return null;
 
         const isValid = await bcrypt.compare(
           credentials!.password,
           user.password
         );
 
-        if (!isValid) throw new Error("Invalid password");
+        if (!isValid) return null;
 
         return {
           id: user._id.toString(),
