@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 
 
 import { useRouter } from 'next/navigation';
@@ -26,6 +27,8 @@ import {
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
+const MapView = dynamic(() => import('../../components/MapView'), { ssr: false });
+
 interface Location {
   city: string;
   region: string;
@@ -33,6 +36,8 @@ interface Location {
   woreda: string;
   landmark: string;
   country: string;
+  lat?: number;
+  lng?: number;
 }
 
 interface Owner {
@@ -288,6 +293,9 @@ const startChat  = async () => {
                   <h3 className="font-medium text-gray-900 mb-1">Location</h3>
                   <p className="text-gray-600">{getLocationString()}</p>
                 </div>
+              </div>
+              <div className="mt-4">
+                <MapView listings={[listing]} height="h-56" />
               </div>
             </div>
 

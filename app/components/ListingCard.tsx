@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import ListingSlider from './Listingslider';
-import { MapPin, Heart, Zap, Car, Calendar, Home, Shirt } from 'lucide-react';
+import { MapPin, Heart, Zap, Car, Calendar, Home, Shirt, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -12,6 +12,7 @@ interface ListingCardProps {
   category: string;
   subcategory?: string;
   isElectric?: boolean;
+  isFeatured?: boolean;
   location: {
     city: string;
     region: string;
@@ -52,6 +53,7 @@ export default function ListingCard({
   category,
   subcategory,
   isElectric,
+  isFeatured,
   location,
   images,
   viewMode = 'grid',
@@ -92,18 +94,25 @@ export default function ListingCard({
     >
       {/* Image / Slider Container */}
       <div 
+      
         className={`relative overflow-hidden flex-shrink-0 bg-black transition-all duration-300 ${
           isListView 
             ? 'aspect-[4/3] w-full sm:w-64 sm:aspect-auto sm:h-full rounded-t-xl sm:rounded-tr-none sm:rounded-l-xl' 
             : 'aspect-[4/3] w-full rounded-t-xl'
         }`}
       >
-        <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 w-full h-full" >
           <ListingSlider images={images} />
         </div>
         
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start z-30 leading-normal">
           <div className="flex items-center space-x-1.5">
+            {isFeatured && (
+              <span className="bg-amber-400 text-amber-950 px-2 py-1 rounded-full text-xs font-bold flex items-center shadow-lg backdrop-blur-md">
+                <Star className="w-3 h-3 mr-0.5 fill-current" />
+                Featured
+              </span>
+            )}
             <span className={`${categoryColor} text-white px-2.5 py-1 rounded-full text-xs font-semibold flex items-center shadow-lg backdrop-blur-md`}>
               <CategoryIcon className="w-3 h-3 mr-1" />
               {category.charAt(0).toUpperCase() + category.slice(1)}

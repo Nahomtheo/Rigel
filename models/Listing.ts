@@ -18,7 +18,7 @@ const ListingSchema = new mongoose.Schema(
         // Car subcategories
         'sedan', 'suv', 'truck', 'motorcycle', 'electric', 'hybrid',
         // Rental subcategories
-        'wedding_car', 'construction_vehicle', 'business_vehicle', 'daily_rental', 'luxury_rental',
+        'wedding_car', 'construction_vehicle', 'business_vehicle', 'daily_rental', 'luxury_rental', 'housing',
         // Housing subcategories
         'apartment', 'house', 'office', 'land',
         // Clothes subcategories
@@ -77,7 +77,7 @@ const ListingSchema = new mongoose.Schema(
 
     isFeatured: {
   type: Boolean,
-  default: true,
+  default: false,
 }
   },
   { timestamps: true }

@@ -87,17 +87,17 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Sorting
-    let sortOption: any  = { createdAt: -1 }; // Default: newest first
+    // Sorting - featured listings always come first
+    let sortOption: any  = { isFeatured: -1, createdAt: -1 }; // Default: newest first
     switch (sort) {
       case 'price-low':
-        sortOption = { price: 1 };
+        sortOption = { isFeatured: -1, price: 1 };
         break;
       case 'price-high':
-        sortOption = { price: -1 };
+        sortOption = { isFeatured: -1, price: -1 };
         break;
       case 'oldest':
-        sortOption = { createdAt: 1 };
+        sortOption = { isFeatured: -1, createdAt: 1 };
         break;
     }
 

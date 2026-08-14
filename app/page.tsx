@@ -1,6 +1,8 @@
 'use client';
 
 import ListingCard from './components/ListingCard';
+import AdBanner from './components/AdBanner';
+import Pagination from './components/Pagination';
 import { slugify } from '@/lib/slugify';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -84,6 +86,7 @@ interface Listing {
   category: string;
   subcategory: string;
   isElectric: boolean;
+  isFeatured: boolean;
   location: {
     city: string;
     region: string;
@@ -142,7 +145,7 @@ export default function HomePage() {
     try {
       const params = new URLSearchParams({
         page: currentPage.toString(),
-        limit: '12',
+        limit: '13',
         sort: sortBy,
       });
 
@@ -189,6 +192,11 @@ export default function HomePage() {
       setSelectedSubcategory('');
     }
     setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -426,6 +434,8 @@ export default function HomePage() {
           </div>
         </motion.div>
 
+        <AdBanner />
+
         {loading ? (
           <div className="flex flex-col items-center justify-center py-36 space-y-4">
             <div className="relative w-12 h-12">
@@ -478,6 +488,7 @@ export default function HomePage() {
                       category={listing.category}
                       subcategory={listing.subcategory}
                       isElectric={listing.isElectric}
+                      isFeatured={listing.isFeatured}
                       location={listing.location}
                       images={listing.images}
                       createdAt={listing.createdAt}
@@ -489,6 +500,12 @@ export default function HomePage() {
             </motion.div>
           </AnimatePresence>
         )}
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </motion.div>
   );

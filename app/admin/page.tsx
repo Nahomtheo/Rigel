@@ -8,6 +8,7 @@ import {
   ClipboardList,
   CreditCard,
   FileWarning,
+  Image as ImageIcon,
   Megaphone,
   RefreshCw,
   Settings,
@@ -31,6 +32,7 @@ export default async  function AdminDashboard() {
   const quickActions = [
     { label: "Manage Users", href: "/admin/manageUsers", icon: Users },
     { label: "Manage Listings", href: "/admin/manageListings", icon: ClipboardList },
+    { label: "Manage Ads", href: "/admin/ads", icon: ImageIcon },
     { label: "Reports", href: "/admin/reports", icon: FileWarning },
     { label: "Verification Requests", href: "/admin/verificationRequests", icon: BadgeCheck },
     { label: "Payments", href: "/admin/payments", icon: CreditCard },

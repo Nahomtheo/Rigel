@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import CompressImage from '../../lib/imgcomprssion';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -17,6 +18,11 @@ import {
   KeyRound,
 } from 'lucide-react';
 import Image from 'next/image';
+
+const MapLocationPicker = dynamic(
+  () => import('../components/MapLocationPicker'),
+  { ssr: false }
+);
 
 const categoryConfig = {
   car: {
@@ -114,6 +120,8 @@ export default function CreateListingPage() {
       subcity: '',
       woreda: '',
       landmark: '',
+      lat: null as number | null,
+      lng: null as number | null,
     },
   });
 
@@ -487,6 +495,27 @@ export default function CreateListingPage() {
                   placeholder="e.g., Near Friendship Mall, Opposite to Bank"
                   className="w-full px-4 py-3 bg-[#211a14] border border-amber-900/30 text-stone-100 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all placeholder:text-stone-500"
                 />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-amber-200/80 mb-2">
+                  Pin exact location <span className="text-stone-500">(optional)</span>
+                </label>
+                <MapLocationPicker
+                  lat={formData.location.lat}
+                  lng={formData.location.lng}
+                  onChange={(lat, lng) =>
+                    setFormData(prev => ({
+                      ...prev,
+                      location: { ...prev.location, lat, lng },
+                    }))
+                  }
+                />
+                <p className="mt-2 text-xs text-stone-500">
+                  {formData.location.lat && formData.location.lng
+                    ? `Selected: ${formData.location.lat.toFixed(5)}, ${formData.location.lng.toFixed(5)}`
+                    : 'Click on the map to drop a pin for your exact location.'}
+                </p>
               </div>
             </div>
           </div>

@@ -28,10 +28,15 @@ export default function ListingActions({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update listing");
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || `Failed to update listing (${response.status})`);
       }
 
       router.refresh();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to update listing";
+      alert(message);
+      console.error(message);
     } finally {
       setLoading(null);
     }

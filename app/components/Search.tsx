@@ -1,10 +1,13 @@
 'use client';
 
 import ListingSlider from './Listingslider';
+import AdBanner from './AdBanner';
+import Pagination from './Pagination';
 import { slugify } from '@/lib/slugify';
 import ListingCard from './ListingCard';
 
 import { useState, useEffect, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import {
   Search,
   MapPin,
@@ -15,10 +18,13 @@ import {
   Zap,
   Grid,
   List,
+  Map,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, Variants } from 'framer-motion';
+
+const MapView = dynamic(() => import('./MapView'), { ssr: false });
 
 const categories = [
   { id: 'car', name: 'Cars', icon: Car, color: 'bg-blue-500' },
@@ -98,6 +104,7 @@ interface Listing {
   category: string;
   subcategory: string;
   isElectric: boolean;
+  isFeatured: boolean;
   location: {
     city: string;
     region: string;
@@ -121,6 +128,7 @@ export default function Searching() {
   const [selectedRegion, setSelectedRegion] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showMap, setShowMap] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -171,6 +179,11 @@ export default function Searching() {
       setSelectedSubcategory('');
     }
     setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -225,6 +238,61 @@ export default function Searching() {
         })}
       </div>
 
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+        <span className="text-sm font-medium text-neutral-500">
+          Found <strong className="text-neutral-900 font-bold">{listings.length}</strong> listings
+        </span>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowMap((prev) => !prev)}
+            className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold border transition-all ${
+              showMap
+                ? 'bg-amber-500 text-white border-amber-500'
+                : 'bg-white text-neutral-600 border-neutral-200 hover:border-amber-300'
+            }`}
+          >
+            <Map className="w-4 h-4" />
+            {showMap ? 'Hide Map' : 'Show Map'}
+          </button>
+
+          <div className="flex p-0.5 border border-neutral-200 rounded-xl bg-neutral-50/50">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-lg transition-all ${
+                viewMode === 'grid' ? 'bg-white text-amber-600 shadow-sm border border-neutral-100' : 'text-neutral-400 hover:text-neutral-600'
+              }`}
+            >
+              <Grid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded-lg transition-all ${
+                viewMode === 'list' ? 'bg-white text-amber-600 shadow-sm border border-neutral-100' : 'text-neutral-400 hover:text-gray-600'
+              }`}
+            >
+              <List className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {showMap && listings.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          transition={{ duration: 0.3 }}
+          className="mt-6 overflow-hidden"
+        >
+          <MapView listings={listings} />
+        </motion.div>
+      )}
+
+      <div className="mt-8">
+        <AdBanner />
+      </div>
+
       {loading ? (
         <motion.div
           className="flex justify-center py-20"
@@ -265,6 +333,7 @@ export default function Searching() {
                   category={listing.category}
                   subcategory={listing.subcategory}
                   isElectric={listing.isElectric}
+                  isFeatured={listing.isFeatured}
                   location={listing.location}
                   images={listing.images}
                   createdAt={listing.createdAt}
@@ -275,6 +344,12 @@ export default function Searching() {
           ))}
         </motion.div>
       )}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </motion.div>
   );
 }
