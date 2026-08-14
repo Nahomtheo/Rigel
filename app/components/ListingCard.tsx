@@ -147,17 +147,17 @@ export default function ListingCard({
 
       {/* Content Side */}
       <div 
-        className={`p-5 flex flex-col flex-grow bg-white dark:bg-gray-950 justify-between leading-normal mt-0 border-t-0 border-l-0 ${
+        className={`p-5 flex flex-col flex-grow bg-[#0c0a03]/60 backdrop-blur-md justify-between leading-normal mt-0 border-t-0 border-l-0 ${
           isListView ? 'rounded-b-xl sm:rounded-bl-none sm:rounded-r-xl' : 'rounded-b-xl'
         }`}
       >
         <motion.div variants={childVariants as any} className="mb-2">
           <div className="flex items-start justify-between gap-4">
-            <h3 className="font-bold text-gray-900 dark:text-gray-50 line-clamp-2 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors text-base md:text-lg tracking-tight flex-1">
+            <h3 className="font-bold text-neutral-100 line-clamp-2 group-hover:text-[#e0bd4c] transition-colors text-base md:text-lg tracking-tight flex-1">
               {title}
             </h3>
             {subcategory && (
-              <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider bg-amber-50/50 dark:bg-amber-950/30 px-1.5 py-0.5 rounded whitespace-nowrap self-start mt-1">
+              <span className="text-[10px] font-bold text-[#e0bd4c] uppercase tracking-wider bg-[#C9A227]/10 px-1.5 py-0.5 rounded whitespace-nowrap self-start mt-1">
                 {subcategory.replace("_", " ")}
               </span>
             )}
@@ -166,20 +166,20 @@ export default function ListingCard({
 
         <div className="mt-auto space-y-3.5">
           <motion.div variants={childVariants as any} className="flex items-baseline justify-between">
-            <div className="text-xl md:text-2xl font-black text-amber-500 dark:text-amber-400 tracking-tight">
+            <div className="text-xl md:text-2xl font-black text-[#e0bd4c] tracking-tight">
               {price.toLocaleString()}{" "}
-              <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-0.5">
+              <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider ml-0.5">
                 ETB
               </span>
             </div>
-            <div className="text-[11px] font-medium text-gray-400 dark:text-gray-500">
+            <div className="text-[11px] font-medium text-neutral-500">
               {formatDate(createdAt)}
             </div>
           </motion.div>
 
-          <motion.div variants={childVariants as any} className="pt-2 border-t border-gray-100 dark:border-gray-900">
-            <div className="flex items-center text-xs font-medium text-gray-500 dark:text-gray-400">
-              <MapPin className="w-3.5 h-3.5 mr-1 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+          <motion.div variants={childVariants as any} className="pt-2 border-t border-neutral-800">
+            <div className="flex items-center text-xs font-medium text-neutral-400">
+              <MapPin className="w-3.5 h-3.5 mr-1 text-neutral-500 flex-shrink-0" />
               <span className="truncate">{getLocationString()}</span>
             </div>
           </motion.div>
