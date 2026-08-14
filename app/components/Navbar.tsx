@@ -110,7 +110,7 @@ export default function Navbar() {
           {[
             ["Home","/"],
             ["Search","/search"],
-            ["My listing","/createlisting"]
+            ["Add Listing","/createlisting"]
           ].map(([name,path])=>(
 
             <Link
@@ -128,6 +128,24 @@ export default function Navbar() {
             </Link>
 
           ))}
+
+          {session && (
+            <Link
+              href="/userlisting"
+              className="
+              inline-flex
+              items-center
+              gap-1.5
+              text-[#F5EFE6]
+              hover:text-[#C9A227]
+              transition
+              text-sm
+              font-medium
+              "
+            >
+              My Listings
+            </Link>
+          )}
 
 
 
@@ -227,7 +245,7 @@ export default function Navbar() {
       {[
         ["Home","/"],
         ["Search","/search"],
-        ["My listing","/userlisting"]
+        ["Add Listing","/createlisting"]
       ].map(([name,path])=>(
 
         <Link
@@ -251,6 +269,25 @@ export default function Navbar() {
         </Link>
 
       ))}
+
+      {session && (
+        <Link
+        onClick={()=>setOpen(false)}
+        href="/userlisting"
+        className="
+        block
+        py-3
+        px-5
+        mt-3
+        rounded-full
+        text-[#F5EFE6]
+        hover:bg-[#C9A227]/20
+        hover:text-[#C9A227]
+        "
+        >
+          My Listings
+        </Link>
+      )}
 
 
 

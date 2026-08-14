@@ -32,14 +32,17 @@ export default async function UserListing({
 
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10 pt-4">
 
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#C9A227]/30 bg-[#1a1506]/60 text-[#e0bd4c] text-[10px] tracking-[0.25em] uppercase font-medium">
+            Your Inventory · የእኔ ዝርዝር
+          </span>
+          <h1 className="mt-3 font-serif text-3xl sm:text-4xl font-bold text-neutral-100 tracking-tight">
             Your Listings
           </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="text-neutral-500 mt-2 text-sm">
             Manage and review all your posted listings
           </p>
         </div>
@@ -52,16 +55,15 @@ export default async function UserListing({
           items-center
           justify-center
           gap-2
-          bg-blue-600
-          text-white
-          font-medium
+          bg-[#C9A227]
+          text-black
+          font-bold
           px-5
           py-2.5
-          rounded-lg
-          hover:bg-blue-700
+          rounded-full
+          hover:bg-[#e2bd42]
           transition-all
-          shadow-sm
-          hover:shadow-md
+          shadow-lg shadow-[#C9A227]/25
           hover:-translate-y-0.5
           w-fit
           "
@@ -100,20 +102,20 @@ export default async function UserListing({
         items-center
         justify-center
         py-20
-        bg-white
-        rounded-xl
+        bg-[#0c0a03]/40
+        rounded-3xl
         border
-        border-gray-100
-        shadow-sm
+        border-dashed
+        border-neutral-800
         ">
 
 
-          <p className="text-lg font-medium text-gray-900">
+          <p className="text-lg font-medium text-neutral-200">
             No listings found
           </p>
 
 
-          <p className="text-gray-500 text-sm mt-1 mb-4">
+          <p className="text-neutral-500 text-sm mt-1 mb-4">
             Start by creating your first listing
           </p>
 
@@ -121,10 +123,7 @@ export default async function UserListing({
           <Link
             href="/createlisting"
             className="
-            text-blue-600
-            hover:text-blue-700
-            font-medium
-            text-sm
+            inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#C9A227] text-black font-bold text-sm hover:bg-[#e2bd42] transition-colors
             "
           >
             Create a listing →
@@ -153,15 +152,18 @@ export default async function UserListing({
             key={item._id}
             className="
             group
-            bg-white
-            rounded-xl
+            bg-[#0c0a03]/60
+            rounded-2xl
             border
-            border-gray-100
+            border-neutral-800/70
             shadow-sm
             overflow-visible
-            hover:shadow-lg
-            transition-shadow
+            hover:shadow-lg hover:shadow-[#C9A227]/10
+            hover:border-[#C9A227]/30
+            transition-colors
             duration-300
+            mb-8
+
             "
           >
 
@@ -181,6 +183,8 @@ export default async function UserListing({
 
               isElectric={item.isElectric}
 
+              isFeatured={item.isFeatured}
+
               location={item.location}
 
               images={item.images}
@@ -188,9 +192,6 @@ export default async function UserListing({
               createdAt={item.createdAt}
 
             />
-
-
-
 
             {/* Action Bar */}
             <div
@@ -201,24 +202,21 @@ export default async function UserListing({
               justify-between
               px-3
               py-2
-              bg-gray-50
+              bg-[#120f06]/60
               border-t
-              border-gray-100
+              border-neutral-800
+              rounded-b-2xl
               "
             >
-
-
               <span
                 className="
                 text-xs
-                text-gray-400
+                text-neutral-500
                 font-mono
                 "
               >
                 Edit or Delete
               </span>
-
-
 
               <ListingActionMenu
 
