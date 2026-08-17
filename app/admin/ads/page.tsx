@@ -178,7 +178,7 @@ export default function ManageAdsPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Special offer from XYZ Motors"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-transparent focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -190,7 +190,7 @@ export default function ManageAdsPage() {
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
                 placeholder="https://..."
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-transparent focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
