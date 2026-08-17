@@ -48,7 +48,7 @@ export default function ListingSlider({ images }: { images: ImageType[] }) {
     if (images.length <= 1) return;
     intervalRef.current = setInterval(() => {
       navigate(page + 1, 1);
-    }, 3000); // 3 seconds timer
+    }, 5000); // 3 seconds timer
   };
 
   useEffect(() => {
