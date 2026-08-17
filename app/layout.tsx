@@ -5,6 +5,7 @@ import Provider from "./provider";
 
 import Navbar from "./components/Navbar";
 import BottomNavbar from "./components/BottomNavbar";
+import AiChatWidget from "./components/AiChatWidget";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -65,6 +66,9 @@ export default function RootLayout({
 
           {/* Mobile Tab Navigation bar */}
           <BottomNavbar />
+
+          {/* AI Assistant Chat Widget */}
+          <AiChatWidget />
         </Provider>
       </body>
     </html>

@@ -75,10 +75,21 @@ const ListingSchema = new mongoose.Schema(
       default: "approved",
     },
 
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    ratingCount: {
+      type: Number,
+      default: 0,
+    },
+
     isFeatured: {
-  type: Boolean,
-  default: false,
-}
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

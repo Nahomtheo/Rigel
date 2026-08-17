@@ -6,8 +6,6 @@ import dynamic from 'next/dynamic';
 
 import { useRouter } from 'next/navigation';
 
-import { useParams } from 'next/navigation';
-import Image from 'next/image';
 import { 
   MapPin, 
   Phone, 
@@ -22,7 +20,8 @@ import {
   Zap,
   Lock,
   Crown,
-  MessageSquareText
+  MessageSquareText,
+  Star
 } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -71,6 +70,17 @@ interface Listing {
   owner: Owner;
   createdAt: string;
   views: number;
+  averageRating: number;
+  ratingCount: number;
+}
+
+interface RatingItem {
+  _id: string;
+  rating: number;
+  comment: string;
+  userName: string;
+  userImage: string | null;
+  createdAt: string;
 }
 
 export default function ListingDetailPage({listings}:{listings:Listing}) {
@@ -81,6 +91,12 @@ export default function ListingDetailPage({listings}:{listings:Listing}) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showPhone, setShowPhone] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [ratings, setRatings] = useState<RatingItem[]>([]);
+  const [userRating, setUserRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [ratingComment, setRatingComment] = useState('');
+  const [isSubmittingRating, setIsSubmittingRating] = useState(false);
+  const [ratingError, setRatingError] = useState('');
   console.log(params)
 
 
@@ -106,6 +122,84 @@ const startChat  = async () => {
     console.error('Failed to start chat:', data.message);
   }
   
+};
+
+const fetchRatings = async () => {
+  try {
+    const res = await fetch(`/api/listings/${listing._id}/ratings`);
+    const data = await res.json();
+    if (data.success) {
+      setRatings(data.data.ratings);
+    }
+  } catch {
+    console.error('Failed to fetch ratings');
+  }
+};
+
+useEffect(() => {
+  let cancelled = false;
+  const load = async () => {
+    try {
+      const res = await fetch(`/api/listings/${listing._id}/ratings`);
+      const data = await res.json();
+      if (!cancelled && data.success) {
+        setRatings(data.data.ratings);
+      }
+    } catch {
+      // ignore
+    }
+  };
+  load();
+  return () => { cancelled = true; };
+}, [listing._id]);
+
+const submitRating = async () => {
+  if (!session) {
+    router.push('/login');
+    return;
+  }
+  if (userRating === 0) {
+    setRatingError('Please select a star rating');
+    return;
+  }
+
+  setIsSubmittingRating(true);
+  setRatingError('');
+
+  try {
+    const res = await fetch(`/api/listings/${listing._id}/rate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rating: userRating, comment: ratingComment }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      setRatingError(data.error || 'Failed to submit rating');
+      return;
+    }
+
+    setListing((prev) => ({
+      ...prev,
+      averageRating:
+        prev.ratingCount === 0
+          ? userRating
+          : Math.round(
+              ((prev.averageRating * prev.ratingCount + userRating) /
+                (prev.ratingCount + 1)) *
+                10
+            ) / 10,
+      ratingCount: prev.ratingCount + (data.data._id ? 1 : 0),
+    }));
+
+    setRatingComment('');
+    setUserRating(0);
+    fetchRatings();
+  } catch {
+    setRatingError('Failed to submit rating');
+  } finally {
+    setIsSubmittingRating(false);
+  }
 };
 
 
@@ -282,6 +376,13 @@ const startChat  = async () => {
                   <Eye className="w-4 h-4 mr-1" />
                   {listing.views || 0} views
                 </span>
+                <span className="flex items-center">
+                  <Star className="w-4 h-4 mr-1 text-yellow-400 fill-yellow-400" />
+                  {listing.averageRating > 0 ? listing.averageRating.toFixed(1) : 'New'}
+                  {listing.ratingCount > 0 && (
+                    <span className="ml-1 text-gray-400">({listing.ratingCount})</span>
+                  )}
+                </span>
               </div>
             </div>
 
@@ -304,6 +405,97 @@ const startChat  = async () => {
               <h3 className="font-medium text-gray-900 mb-2">Description</h3>
               <p className="text-gray-600 whitespace-pre-line">{listing.description}</p>
             </div>
+
+            {/* Rate This Listing */}
+            <div className="bg-white rounded-xl p-4 shadow-sm">
+              <h3 className="font-medium text-gray-900 mb-3">Rate This Listing</h3>
+              <div className="flex items-center gap-1 mb-3">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    onClick={() => {
+                      setUserRating(star);
+                      setRatingError('');
+                    }}
+                    className="p-0.5 transition-transform hover:scale-110"
+                  >
+                    <Star
+                      className={`w-7 h-7 transition-colors ${
+                        star <= (hoverRating || userRating)
+                          ? 'text-yellow-400 fill-yellow-400'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  </button>
+                ))}
+                {userRating > 0 && (
+                  <span className="ml-2 text-sm text-gray-500">{userRating}/5</span>
+                )}
+              </div>
+              <textarea
+                value={ratingComment}
+                onChange={(e) => setRatingComment(e.target.value)}
+                placeholder="Leave a comment (optional)..."
+                rows={2}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 outline-none focus:ring-1 focus:ring-blue-500 resize-none mb-3"
+              />
+              {ratingError && (
+                <p className="text-sm text-red-500 mb-2">{ratingError}</p>
+              )}
+              <button
+                onClick={submitRating}
+                disabled={isSubmittingRating || userRating === 0}
+                className="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm font-medium hover:bg-yellow-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                {isSubmittingRating ? 'Submitting...' : 'Submit Rating'}
+              </button>
+            </div>
+
+            {/* Reviews */}
+            {ratings.length > 0 && (
+              <div className="bg-white rounded-xl p-4 shadow-sm">
+                <h3 className="font-medium text-gray-900 mb-3">
+                  Reviews ({listing.ratingCount})
+                </h3>
+                <div className="space-y-3">
+                  {ratings.map((r) => (
+                    <div key={r._id} className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-7 h-7 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                          {r.userImage ? (
+                            <img src={r.userImage} alt={r.userName} className="w-full h-full object-cover" />
+                          ) : (
+                            <User className="w-full h-full p-1 text-gray-400" />
+                          )}
+                        </div>
+                        <span className="text-sm font-medium text-gray-900">{r.userName}</span>
+                        <div className="flex items-center gap-0.5">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star
+                              key={s}
+                              className={`w-3.5 h-3.5 ${
+                                s <= r.rating
+                                  ? 'text-yellow-400 fill-yellow-400'
+                                  : 'text-gray-200'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs text-gray-400">
+                          {new Date(r.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      {r.comment && (
+                        <p className="text-sm text-gray-600 ml-9">{r.comment}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Owner Info & Phone */}
             <div className="bg-white rounded-xl p-4 shadow-sm">

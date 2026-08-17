@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { 
   User, 
   Phone, 
@@ -449,7 +449,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               
-              <button className="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-red-900/50 text-red-400 bg-red-950/20 rounded-lg hover:bg-red-900/30 transition-colors text-sm font-medium">
+              <button onClick={() => signOut({callbackUrl:"/"})} className="w-full flex items-center justify-center space-x-2 px-4 py-2 border border-red-900/50 text-red-400 bg-red-950/20 rounded-lg hover:bg-red-900/30 transition-colors text-sm font-medium">
                 <LogOut className="w-4 h-4" />
                 <span>Sign Out</span>
               </button>
