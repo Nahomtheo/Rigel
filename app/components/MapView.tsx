@@ -1,6 +1,7 @@
 'use client';
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useEffect, useMemo } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Link from 'next/link';
@@ -32,6 +33,20 @@ const markerIcon = (featured: boolean) =>
     popupAnchor: [0, -30],
   });
 
+function FitToMarkers({ points }: { points: [number, number][] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (points.length === 1) {
+      map.setView(points[0], 15);
+    } else if (points.length > 1) {
+      map.fitBounds(L.latLngBounds(points), { padding: [48, 48], maxZoom: 15 });
+    }
+  }, [map, points]);
+
+  return null;
+}
+
 export default function MapView({
   listings,
   height = 'h-[420px]',
@@ -39,27 +54,37 @@ export default function MapView({
   listings: MapListing[];
   height?: string;
 }) {
-  const markers = listings.map((listing) => {
-    const coords = getLocationCoordinates(listing.location);
-    return { listing, coords };
-  });
+  const markers = useMemo(
+    () =>
+      listings.map((listing) => {
+        const coords = getLocationCoordinates(listing.location);
+        return { listing, coords };
+      }),
+    [listings]
+  );
+
+  const points = useMemo(
+    () => markers.map(({ coords }) => [coords.lat, coords.lng] as [number, number]),
+    [markers]
+  );
 
   const center: [number, number] =
-    markers.length > 0
-      ? [markers[0].coords.lat, markers[0].coords.lng]
-      : [DEFAULT_COORDINATES.lat, DEFAULT_COORDINATES.lng];
+    points.length > 0 ? points[0] : [DEFAULT_COORDINATES.lat, DEFAULT_COORDINATES.lng];
 
   return (
     <MapContainer
       center={center}
-      zoom={markers.length > 0 ? 5 : 6}
+      zoom={12}
       className={`${height} w-full rounded-2xl z-0`}
       scrollWheelZoom
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.google.com/maps">Google Maps</a>'
+        url="https://mt{s}.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}"
+        subdomains={['0', '1', '2', '3']}
+        maxZoom={20}
       />
+      <FitToMarkers points={points} />
       {markers.map(({ listing, coords }) => (
         <Marker
           key={listing._id}

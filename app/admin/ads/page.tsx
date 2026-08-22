@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Plus, Trash2, Power, ExternalLink } from "lucide-react";
+import LogoLoader from "@/app/components/LogoLoader";
 
 type Ad = {
   _id: string;
@@ -251,9 +252,7 @@ export default function ManageAdsPage() {
           </div>
 
           {loading ? (
-            <div className="px-5 py-10 text-center text-sm text-slate-500">
-              Loading ads...
-            </div>
+            <LogoLoader label="Loading..." fullScreen={false} />
           ) : ads.length === 0 ? (
             <div className="px-5 py-10 text-center text-sm text-slate-500">
               No ads yet. Create your first ad poster above.

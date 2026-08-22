@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Pusher from "pusher-js";
+import LogoLoader from "./LogoLoader";
 
 type Message = {
   _id: string;
@@ -141,14 +142,7 @@ export default function Chat({
    
 
   if (loading) {
-    return (
-      <div className="p-5">
-        Loading chat...
-
-      </div>
-      
-    );
-    
+    return <LogoLoader label="Loading..." />;
   }
  
 

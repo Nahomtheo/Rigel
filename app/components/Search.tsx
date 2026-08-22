@@ -23,7 +23,6 @@ import {
   PackageSearch,
   ChevronDown,
   RotateCcw,
-  Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -249,7 +248,6 @@ export default function Searching() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-12">
           <div className="flex flex-col items-center text-center">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C9A227]/30 bg-[#1a1506]/60 backdrop-blur-md text-[#e0bd4c] text-[10px] sm:text-xs tracking-[0.25em] uppercase font-medium">
-              <Sparkles className="w-3.5 h-3.5" />
               Discover · ፈልግ
             </span>
 

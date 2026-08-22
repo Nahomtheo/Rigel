@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Sparkles, ArrowLeft, Trash2 } from "lucide-react";
+import { Send, ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Message {
   role: "user" | "assistant";
@@ -47,22 +48,35 @@ export default function AiAssistantPage() {
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [...messages, userMessage].map((m) => ({
-            role: m.role === "assistant" ? "assistant" : "user",
-            content: m.content,
-          })),
-        }),
+        body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Failed to get response");
+      if (!res.ok || !res.body) throw new Error("Failed to get response");
 
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.reply },
+        { role: "assistant", content: "" },
       ]);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+
+      while (!done) {
+        const { value, done: finished } = await reader.read();
+        done = finished;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          setMessages((prev) => {
+            const next = [...prev];
+            const last = next[next.length - 1];
+            if (last?.role === "assistant") {
+              next[next.length - 1] = { ...last, content: last.content + chunk };
+            }
+            return next;
+          });
+        }
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -99,8 +113,14 @@ export default function AiAssistantPage() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#C9A227] to-[#a8841a] flex items-center justify-center">
-                <Sparkles className="w-4.5 h-4.5 text-neutral-950" />
+              <div className="w-9 h-9 rounded-full bg-neutral-900 border border-[#C9A227]/30 overflow-hidden flex items-center justify-center">
+                <Image
+                  src="/logorigel.png"
+                  alt="Rigel Assistant"
+                  width={36}
+                  height={36}
+                  className="w-full h-full object-contain p-1"
+                />
               </div>
               <div>
                 <h1 className="text-base font-bold text-neutral-50">
@@ -142,7 +162,8 @@ export default function AiAssistantPage() {
             </div>
           ))}
 
-          {isLoading && (
+          {isLoading &&
+            messages[messages.length - 1]?.role === "user" && (
             <div className="flex justify-start">
               <div className="bg-neutral-800/50 border border-neutral-700/40 rounded-2xl rounded-bl-md px-5 py-3.5">
                 <div className="flex items-center gap-2">

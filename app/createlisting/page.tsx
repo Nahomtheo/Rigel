@@ -18,6 +18,7 @@ import {
   KeyRound,
 } from 'lucide-react';
 import Image from 'next/image';
+import LogoLoader from '../components/LogoLoader';
 
 const MapLocationPicker = dynamic(
   () => import('../components/MapLocationPicker'),
@@ -276,11 +277,7 @@ export default function CreateListingPage() {
   };
 
   if (status === 'loading') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0d0a08]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400"></div>
-      </div>
-    );
+    return <LogoLoader label="Loading..." />;
   }
 
   return (

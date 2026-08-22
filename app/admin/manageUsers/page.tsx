@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import LogoLoader from "@/app/components/LogoLoader";
 
 type AdminUser = {
   _id: string;
@@ -158,9 +159,7 @@ export default function UsersFilter() {
         </h2>
 
         {loading ? (
-          <div className="rounded-lg bg-slate-50 p-6 text-center text-slate-500">
-            Loading users...
-          </div>
+          <LogoLoader label="Loading..." fullScreen={false} />
         ) : error ? (
           <div className="rounded-lg border border-red-100 bg-red-50 p-6 text-center text-red-700">
             {error}

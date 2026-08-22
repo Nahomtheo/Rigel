@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Pusher from "pusher-js";
+import LogoLoader from "../components/LogoLoader";
 
 type Conversation = {
   _id: string;
@@ -72,11 +73,7 @@ export default function InboxPage() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="p-5">
-        <p>Loading...</p>
-      </div>
-    );
+    return <LogoLoader label="Loading..." />;
   }
 
   return (

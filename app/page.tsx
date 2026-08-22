@@ -16,7 +16,6 @@ import {
   List,
   SlidersHorizontal,
   Star,
-  Sparkles,
   ArrowRight,
   BadgeCheck,
   Headphones,
@@ -400,7 +399,6 @@ export default function HomePage() {
           className="flex flex-wrap items-center justify-center gap-2.5"
         >
           <span className="inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase text-neutral-500 font-medium mr-1">
-            <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
             Trending
           </span>
           {popularTags.map((tag) => (
@@ -493,7 +491,6 @@ export default function HomePage() {
           className="text-center mb-8"
         >
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#C9A227]/30 bg-[#1a1506]/60 text-[#e0bd4c] text-[10px] tracking-[0.25em] uppercase font-medium">
-            <Sparkles className="w-3 h-3" />
             Marketplace · ገበያ
           </span>
           <h2 className="mt-3 font-serif text-3xl sm:text-4xl font-bold text-neutral-100">
@@ -671,7 +668,6 @@ export default function HomePage() {
             className="text-center mb-14"
           >
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#C9A227]/30 bg-[#1a1506]/60 text-[#e0bd4c] text-[10px] tracking-[0.25em] uppercase font-medium">
-              <Sparkles className="w-3 h-3" />
               Simple · ቀላል
             </span>
             <h2 className="mt-3 font-serif text-3xl sm:text-4xl font-bold text-neutral-100">

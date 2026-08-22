@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { runAgent } from "@/lib/ai/agent";
+import { runAgentStream } from "@/lib/ai/agent";
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,11 +29,33 @@ export async function POST(req: NextRequest) {
       })
     );
 
-    const reply = await runAgent(chatMessages);
+    const encoder = new TextEncoder();
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        try {
+          for await (const chunk of runAgentStream(chatMessages)) {
+            controller.enqueue(encoder.encode(chunk));
+          }
+        } catch (error) {
+          console.error("AI chat error:", error);
+          controller.enqueue(
+            encoder.encode(
+              "\n\nSorry, something went wrong. Please try again."
+            )
+          );
+        } finally {
+          controller.close();
+        }
+      },
+    });
 
-    return new Response(JSON.stringify({ reply }), {
+    return new Response(stream, {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Accel-Buffering": "no",
+      },
     });
   } catch (error) {
     console.error("AI chat error:", error);

@@ -18,10 +18,10 @@ import {
   Calendar,
   Loader2,
   ChevronLeft,
-  Sparkles,
   Trash2,
 } from 'lucide-react';
 import Image from 'next/image';
+import LogoLoader from '@/app/components/LogoLoader';
 
 const MapLocationPicker = dynamic(
   () => import('@/app/components/MapLocationPicker'),
@@ -319,14 +319,7 @@ export default function UpdateListingPage({ params }: { params: Promise<{ id: st
   };
 
   if (status === 'loading' || dataLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#040401] gap-4">
-        <Loader2 className="w-10 h-10 text-[#C9A227] animate-spin" />
-        <p className="text-xs text-neutral-500 animate-pulse font-medium tracking-wider uppercase">
-          Loading Listing...
-        </p>
-      </div>
-    );
+    return <LogoLoader label="Loading..." />;
   }
 
   const totalImages = images.length + existingImages.length;
@@ -346,7 +339,6 @@ export default function UpdateListingPage({ params }: { params: Promise<{ id: st
 
           <div className="mt-4">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#C9A227]/30 bg-[#1a1506]/60 text-[#e0bd4c] text-[10px] tracking-[0.25em] uppercase font-medium">
-              <Sparkles className="w-3 h-3" />
               Edit · ማስተካከል
             </span>
             <h1 className="mt-3 font-serif text-3xl sm:text-4xl font-bold text-neutral-100">

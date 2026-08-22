@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Message {
   role: "user" | "assistant";
@@ -59,14 +60,32 @@ export default function AiChatWidget() {
         }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Failed to get response");
+      if (!res.ok || !res.body) throw new Error("Failed to get response");
 
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.reply },
+        { role: "assistant", content: "" },
       ]);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+
+      while (!done) {
+        const { value, done: finished } = await reader.read();
+        done = finished;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          setMessages((prev) => {
+            const next = [...prev];
+            const last = next[next.length - 1];
+            if (last?.role === "assistant") {
+              next[next.length - 1] = { ...last, content: last.content + chunk };
+            }
+            return next;
+          });
+        }
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -113,8 +132,14 @@ export default function AiChatWidget() {
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-800 bg-[#141107]/60">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#C9A227] to-[#a8841a] flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-neutral-950" />
+                <div className="w-8 h-8 rounded-full bg-neutral-900 border border-[#C9A227]/30 overflow-hidden flex items-center justify-center">
+                  <Image
+                    src="/logorigel.png"
+                    alt="Rigel Assistant"
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-contain p-0.5"
+                  />
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-neutral-50">Rigel Assistant</h3>
@@ -147,7 +172,7 @@ export default function AiChatWidget() {
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed ${
+                    className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed whitespace-pre-line ${
                       msg.role === "user"
                         ? "bg-[#C9A227] text-neutral-950 rounded-br-md"
                         : "bg-neutral-800/60 text-neutral-200 rounded-bl-md border border-neutral-700/50"
@@ -158,7 +183,8 @@ export default function AiChatWidget() {
                 </div>
               ))}
 
-              {isLoading && (
+              {isLoading &&
+                messages[messages.length - 1]?.role === "user" && (
                 <div className="flex justify-start">
                   <div className="bg-neutral-800/60 border border-neutral-700/50 rounded-2xl rounded-bl-md px-4 py-3">
                     <div className="flex items-center gap-1.5">

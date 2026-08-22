@@ -3,17 +3,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { 
-  MessageSquare, 
-  Search, 
-  Send, 
+import {
+  MessageSquare,
+  Search,
+  Send,
   ArrowLeft,
-  Loader2, 
   User,
   Package
 } from 'lucide-react';
 
 import Pusher from 'pusher-js';
+import LogoLoader from '../components/LogoLoader';
 
 type Conversation = {
   _id: string;
@@ -266,7 +266,7 @@ export default function ChatPage() {
               <div className="flex-1 overflow-y-auto">
                 {loading ? (
                   <div className="flex items-center justify-center p-8">
-                    <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
+                    <LogoLoader label="Loading..." fullScreen={false} />
                   </div>
                 ) : filteredConversations.length === 0 ? (
                   <div className="flex items-center justify-center p-8">
