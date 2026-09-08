@@ -117,7 +117,7 @@ export default function Navbar() {
       </header>
 
       {/* Mobile Menu Dropdown */}
-```tsx
+
 {open && (
   <div className="fixed top-20 left-4 right-4 z-[60] md:hidden overflow-hidden border border-[#C9A227]/30 bg-[#120B07]/95 backdrop-blur-xl rounded-2xl p-5 shadow-2xl">
 
