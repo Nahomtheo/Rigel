@@ -117,67 +117,73 @@ export default function Navbar() {
       </header>
 
       {/* Mobile Menu Dropdown */}
-      {open && (
-        <div className="fixed top-20 right-4 left-4 z-40 md:hidden relative overflow-hidden border border-[#C9A227]/30 bg-[#120B07]/95 backdrop-blur-xl rounded-2xl p-5 shadow-2xl">
-          {/* Ethiopian Tilet Pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.12] pointer-events-none"
-            style={{
-              backgroundImage: `
-                linear-gradient(45deg,#C9A227 1px,transparent 1px),
-                linear-gradient(-45deg,#C9A227 1px,transparent 1px)
-              `,
-              backgroundSize: "28px 28px",
-            }}
-          />
+```tsx
+{open && (
+  <div className="fixed top-20 left-4 right-4 z-[60] md:hidden overflow-hidden border border-[#C9A227]/30 bg-[#120B07]/95 backdrop-blur-xl rounded-2xl p-5 shadow-2xl">
 
-          <div className="relative z-10 flex flex-col space-y-2">
-            {[
-              ["Home", "/"],
-              ["Search", "/search"],
-              ["Add Listing", "/createlisting"],
-            ].map(([name, path]) => (
-              <Link
-                key={path}
-                onClick={() => setOpen(false)}
-                href={path}
-                className="block py-2.5 px-4 rounded-xl text-[#F5EFE6] hover:bg-[#C9A227]/20 hover:text-[#C9A227]"
-              >
-                {name}
-              </Link>
-            ))}
+    {/* Ethiopian Tilet Pattern */}
+    <div
+      className="absolute inset-0 opacity-[0.12] pointer-events-none"
+      style={{
+        backgroundImage: `
+          linear-gradient(45deg,#C9A227 1px,transparent 1px),
+          linear-gradient(-45deg,#C9A227 1px,transparent 1px)
+        `,
+        backgroundSize: "28px 28px",
+      }}
+    />
 
-            {session && (
-              <Link
-                onClick={() => setOpen(false)}
-                href="/userlisting"
-                className="block py-2.5 px-4 rounded-xl text-[#F5EFE6] hover:bg-[#C9A227]/20 hover:text-[#C9A227]"
-              >
-                My Listings
-              </Link>
-            )}
+    {/* Menu Items */}
+    <div className="relative z-10 flex flex-col space-y-2">
+      {[
+        ["Home", "/"],
+        ["Search", "/search"],
+        ["Add Listing", "/createlisting"],
+      ].map(([name, path]) => (
+        <Link
+          key={path}
+          onClick={() => setOpen(false)}
+          href={path}
+          className="block py-2.5 px-4 rounded-xl text-[#F5EFE6] hover:bg-[#C9A227]/20 hover:text-[#C9A227]"
+        >
+          {name}
+        </Link>
+      ))}
 
-            {!session ? (
-              <Link
-                href="/login"
-                className="block mt-2 text-center bg-[#C9A227] text-black py-3 rounded-xl font-bold"
-              >
-                Login
-              </Link>
-            ) : (
-              <button
-                onClick={() => {
-                  setOpen(false);
-                  signOut({ callbackUrl: "/" });
-                }}
-                className="w-full mt-2 bg-[#E8D49A] text-black py-3 rounded-xl font-bold"
-              >
-                Logout
-              </button>
-            )}
-          </div>
-        </div>
+      {session && (
+        <Link
+          onClick={() => setOpen(false)}
+          href="/userlisting"
+          className="block py-2.5 px-4 rounded-xl text-[#F5EFE6] hover:bg-[#C9A227]/20 hover:text-[#C9A227]"
+        >
+          My Listings
+        </Link>
       )}
+
+      {!session ? (
+        <Link
+          href="/login"
+          onClick={() => setOpen(false)}
+          className="block mt-2 text-center bg-[#C9A227] text-black py-3 rounded-xl font-bold"
+        >
+          Login
+        </Link>
+      ) : (
+        <button
+          onClick={() => {
+            setOpen(false);
+            signOut({ callbackUrl: "/" });
+          }}
+          className="w-full mt-2 bg-[#E8D49A] text-black py-3 rounded-xl font-bold"
+        >
+          Logout
+        </button>
+      )}
+    </div>
+  </div>
+)}
+
+
     </>
   );
 }
