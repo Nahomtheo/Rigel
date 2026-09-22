@@ -501,7 +501,7 @@ const submitRating = async () => {
             <div className="bg-white rounded-xl p-4 shadow-sm">
               <h3 className="font-medium text-gray-900 mb-4">Contact Information</h3>
               
-              <div className="flex items-center space-x-4 mb-4">
+              <Link href={`/user/${listing.owner._id}`} className="flex items-center space-x-4 mb-4 group">
                 <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200">
                   {listing.owner?.profileImage ? (
                     <img
@@ -515,7 +515,10 @@ const submitRating = async () => {
                   )}
                 </div>
                 <div>
-                  <div className="font-medium text-gray-900">{listing.owner?.name}</div>
+                  <div className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+                    {listing.owner?.name}
+                    <span className="text-xs text-gray-500 ml-1.5">View profile</span>
+                  </div>
                   {listing.owner?.isPremium && (
                     <div className="flex items-center text-yellow-600 text-sm">
                       <Crown className="w-3 h-3 mr-1" />
@@ -523,7 +526,7 @@ const submitRating = async () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </Link>
 
               {/* Phone Number with Conditional Display */}
               <div className="space-y-3">
