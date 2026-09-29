@@ -26,6 +26,11 @@ export async function PATCH(req: Request, { params }: ListingParams) {
       updates.isFeatured = body.isFeatured;
     }
 
+    if (["active", "sold", "rented"].includes(body.availability)) {
+      updates.availability = body.availability;
+      updates.availabilityChangedAt = new Date();
+    }
+
     const listing = await Listing.findByIdAndUpdate(listingID, updates, {
       new: true,
       runValidators: true,

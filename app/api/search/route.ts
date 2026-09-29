@@ -19,9 +19,18 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '12');
     const sort = searchParams.get('sort') || 'newest';
+    const includeUnavailable = searchParams.get('includeUnavailable') === 'true';
 
     // Build query
     const filter: any = {};
+
+    // Hide sold/rented listings unless explicitly requested.
+    // Legacy documents have no `availability` field, so treat them as active.
+    if (!includeUnavailable) {
+      filter.$and = [
+        { $or: [{ availability: 'active' }, { availability: { $exists: false } }] },
+      ];
+    }
 
     // Category filter
     if (category) {

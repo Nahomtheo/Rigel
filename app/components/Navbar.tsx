@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import AnimatedLogo from "./AnimatedLogo";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -42,7 +43,7 @@ export default function Navbar() {
 
               {/* Text fitted with zero vertical padding drift */}
               <div className="flex flex-col justify-center leading-none">
-                <span className="font-serif font-extrabold text-xl tracking-widest bg-gradient-to-r from-[#F5E6B8] via-[#C9A227] to-[#8B6B23] text-transparent bg-clip-text drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                <span className="font-serif font-extrabold text-xl tracking-widest bg-gradient-to-r from-[#F5E6B8] via-[#C9A227] to-[#8B6B23] text-transparent bg-clip-text drop-shadow-[var(--logo-shadow)]">
                   Rigel
                 </span>
                 
@@ -89,6 +90,8 @@ export default function Navbar() {
               </Link>
             )}
 
+            <ThemeToggle />
+
             {!session ? (
               <Link
                 href="/login"
@@ -108,12 +111,15 @@ export default function Navbar() {
         </div>
 
         {/* Right Corner: Mobile Toggle Button */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="pointer-events-auto md:hidden p-3 rounded-2xl border border-[#C9A227]/30 bg-[#120B07]/90 text-[#C9A227] backdrop-blur-xl shadow-xl"
-        >
-          ☰
-        </button>
+        <div className="pointer-events-auto md:hidden flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={() => setOpen(!open)}
+            className="p-3 rounded-2xl border border-[#C9A227]/30 bg-[#120B07]/90 text-[#C9A227] backdrop-blur-xl shadow-xl"
+          >
+            ☰
+          </button>
+        </div>
       </header>
 
       {/* Mobile Menu Dropdown */}

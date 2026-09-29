@@ -75,6 +75,16 @@ const ListingSchema = new mongoose.Schema(
       default: "approved",
     },
 
+    availability: {
+      type: String,
+      enum: ["active", "sold", "rented"],
+      default: "active",
+    },
+
+    availabilityChangedAt: {
+      type: Date,
+    },
+
     averageRating: {
       type: Number,
       default: 0,

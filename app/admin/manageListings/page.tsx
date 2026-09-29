@@ -13,6 +13,7 @@ type AdminListing = {
   price?: number;
   pricing?: number;
   isFeatured?: boolean;
+  availability?: string;
 };
 
 export default async function ManageListingsPage({
@@ -50,19 +51,31 @@ export default async function ManageListingsPage({
         </div>
 
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="grid grid-cols-5 gap-4 border-b border-slate-200 px-5 py-3 text-sm font-semibold text-slate-500">
+          <div className="grid grid-cols-6 gap-4 border-b border-slate-200 px-5 py-3 text-sm font-semibold text-slate-500">
             <span>Title</span>
             <span>Owner</span>
             <span>Status</span>
+            <span>Availability</span>
             <span>Price</span>
             <span>Actions</span>
           </div>
 
           {listings.map((listing) => (
-            <div key={listing._id.toString()} className="grid grid-cols-5 gap-4 border-b border-slate-100 px-5 py-4 text-sm last:border-b-0">
+            <div key={listing._id.toString()} className="grid grid-cols-6 gap-4 border-b border-slate-100 px-5 py-4 text-sm last:border-b-0">
               <span className="font-medium text-slate-950">{listing.title}</span>
               <span className="text-slate-600">{listing.owner?.email || "No owner"}</span>
               <span className="text-slate-600">{listing.status}</span>
+              <span
+                className={
+                  listing.availability === "sold"
+                    ? "font-medium text-red-600"
+                    : listing.availability === "rented"
+                      ? "font-medium text-amber-600"
+                      : "text-slate-600"
+                }
+              >
+                {listing.availability || "active"}
+              </span>
               <span className="text-slate-600">{listing.price ?? listing.pricing ?? "Not set"}</span>
               <ListingActions
                 listingID={listing._id.toString()}

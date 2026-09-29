@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   * {
     @apply box-border border-neutral-900;
@@ -8,15 +10,44 @@
   :root {
     --font-inter: var(--font-geist-sans); 
     --font-playfair-display: var(--font-playfair-display);
+
+    /* Light theme: cream + smooth lime/green */
+    --app-bg: #f7f4e8;
+    --app-text: #163a2c;
+    --surface: #ffffff;
+    --surface-soft: #f1ecda;
+    --surface-strong: #f6f3e5;
+    --border: #ddd6be;
+    --accent: #7cb342;
+    --accent-strong: #5d9b2b;
+    --accent-ink: #12301f;
+    --gold: #a97c1e;
+    --muted: #5f6b60;
+    --logo-shadow: 0 1px 2px rgba(22, 58, 44, 0.28);
+  }
+
+  .dark {
+    /* Dark theme: keep the exact current golden/brown look */
+    --app-bg: #040401;
+    --app-text: #f5efe6;
+    --surface: #0c0a03;
+    --surface-soft: #211a14;
+    --surface-strong: #18130e;
+    --border: #2a2518;
+    --accent: #c9a227;
+    --accent-strong: #c9a227;
+    --accent-ink: #000000;
+    --gold: #e0bd4c;
+    --muted: #a8a29e;
+    --logo-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   }
 
   html {
-    @apply scroll-smooth h-full bg-[#040401]; /* Prevents white flashing when loading */
+    @apply scroll-smooth h-full bg-[var(--app-bg)]; /* Prevents white flashing when loading */
   }
   
   body {
-    /* Changed default background from light cream to luxury ultra-dark */
-    @apply bg-[#040401] text-neutral-50 antialiased min-h-full;
+    @apply bg-[var(--app-bg)] text-[var(--app-text)] antialiased min-h-full;
     font-family: var(--font-inter), system-ui, sans-serif;
     font-feature-settings: "cv11", "ss01", "ss02", "cv10";
     font-optical-sizing: auto;
@@ -109,4 +140,203 @@
 /* Placeholder Utility Fixes */
 ::placeholder {
   @apply text-neutral-600 opacity-90;
+}
+
+/* ============================================================
+   LIGHT-MODE REMAP
+   ------------------------------------------------------------
+   Dark mode must stay pixel-identical, so the app keeps its
+   hardcoded golden/brown classes. When the <html> element does
+   NOT have .dark, these unlayered rules re-point every hardcoded
+   dark colour to the light token set (cream + smooth lime/green).
+   Unlayered rules beat Tailwind's layers; :root:not(.dark) kills
+   all of this the moment dark mode is active.
+   ============================================================ */
+
+/* --- Page / surface backgrounds (arbitrary hex utilities) --- */
+:root:not(.dark) [class*="bg-[#040401]"] { background-color: var(--app-bg); }
+:root:not(.dark) [class*="bg-[#0d0a08]"] { background-color: var(--app-bg); }
+:root:not(.dark) [class*="bg-[#0c0a03]"] { background-color: var(--surface); }
+:root:not(.dark) [class*="bg-[#18130e]"] { background-color: var(--surface-strong); }
+:root:not(.dark) [class*="bg-[#211a14]"] { background-color: var(--surface-soft); }
+:root:not(.dark) [class*="bg-[#120f06]"],
+:root:not(.dark) [class*="bg-[#120B07]"],
+:root:not(.dark) [class*="bg-[#141107]"] { background-color: var(--surface-strong); }
+:root:not(.dark) [class*="bg-[#1a1506]"],
+:root:not(.dark) [class*="bg-[#1a160a]"],
+:root:not(.dark) [class*="bg-[#282018]"],
+:root:not(.dark) [class*="bg-[#161204]"] { background-color: var(--surface-soft); }
+:root:not(.dark) [class*="bg-[#C9A227]"],
+:root:not(.dark) [class*="bg-[#E8D49A]"] { background-color: var(--accent); }
+
+/* --- Text colours (arbitrary hex utilities) --- */
+:root:not(.dark) [class*="text-[#F5EFE6]"],
+:root:not(.dark) [class*="text-[#f3efe6]"] { color: var(--app-text); }
+:root:not(.dark) [class*="text-[#120B07]"] { color: var(--accent-ink); }
+:root:not(.dark) [class*="text-[#C9A227]"] { color: var(--accent); }
+:root:not(.dark) [class*="text-[#e0bd4c]"],
+:root:not(.dark) [class*="text-[#e5c158]"] { color: var(--gold); }
+
+/* --- Border colours (arbitrary hex utilities) --- */
+:root:not(.dark) [class*="border-[#C9A227]"] { border-color: var(--accent); }
+
+/* --- Gradient stops (arbitrary hex utilities) --- */
+:root:not(.dark) [class*="from-[#C9A227]"] { --tw-gradient-from: var(--accent); }
+:root:not(.dark) [class*="via-[#C9A227]"] { --tw-gradient-via: var(--accent); }
+:root:not(.dark) [class*="to-[#bfa142]"],
+:root:not(.dark) [class*="to-[#8B6B23]"],
+:root:not(.dark) [class*="to-[#a8841a]"] { --tw-gradient-to: var(--accent-strong); }
+:root:not(.dark) [class*="from-[#F5E6B8]"] { --tw-gradient-from: var(--gold); }
+:root:not(.dark) [class*="from-[#161204]"] { --tw-gradient-from: var(--surface-soft); }
+:root:not(.dark) [class*="via-[#0c0a03]"] { --tw-gradient-via: var(--surface); }
+:root:not(.dark) [class*="to-[#040401]"] { --tw-gradient-to: var(--app-bg); }
+:root:not(.dark) [class*="from-[#fffbf2]"] { --tw-gradient-from: var(--gold); }
+:root:not(.dark) [class*="via-[#e5c158]"] { --tw-gradient-via: var(--accent); }
+:root:not(.dark) [class*="to-[#ab8837]"] { --tw-gradient-to: var(--accent-strong); }
+
+/* --- Shadow / ring / accent (arbitrary hex utilities) --- */
+:root:not(.dark) [class*="shadow-[#C9A227]/"] { --tw-shadow-color: color-mix(in srgb, var(--accent) 15%, transparent); }
+:root:not(.dark) [class*="ring-[#C9A227]"] { --tw-ring-color: var(--accent); }
+:root:not(.dark) [class*="accent-[#C9A227]"] { accent-color: var(--accent); }
+
+/* --- Neutral palette surfaces --- */
+:root:not(.dark) [class*="bg-neutral-800"],
+:root:not(.dark) [class*="bg-neutral-900"] { background-color: var(--surface-soft); }
+
+/* --- Amber accent surfaces + gradients --- */
+:root:not(.dark) [class*="bg-amber-500"] { background-color: var(--accent); }
+:root:not(.dark) [class*="from-amber-500"],
+:root:not(.dark) [class*="from-amber-400"] { --tw-gradient-from: var(--accent); }
+:root:not(.dark) [class*="to-amber-500"],
+:root:not(.dark) [class*="to-amber-600"],
+:root:not(.dark) [class*="to-amber-700"] { --tw-gradient-to: var(--accent-strong); }
+:root:not(.dark) [class*="ring-amber-500"] { --tw-ring-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+
+/* --- Status / badge tinted surfaces (tailwind dark tints) --- */
+:root:not(.dark) [class*="bg-amber-950/"] { background-color: color-mix(in srgb, var(--gold) 16%, transparent); }
+:root:not(.dark) [class*="bg-emerald-950/"] { background-color: color-mix(in srgb, #2e7d32 16%, transparent); }
+:root:not(.dark) [class*="bg-orange-950/"] { background-color: color-mix(in srgb, #b65c12 16%, transparent); }
+:root:not(.dark) [class*="bg-rose-950/"] { background-color: color-mix(in srgb, #b8323c 16%, transparent); }
+
+/* --- Text palette (neutral + stone + status accents) --- */
+:root:not(.dark) [class*="text-neutral-50"],
+:root:not(.dark) [class*="text-neutral-100"],
+:root:not(.dark) [class*="text-neutral-200"],
+:root:not(.dark) [class*="text-neutral-300"] { color: var(--app-text); }
+:root:not(.dark) [class*="text-neutral-400"],
+:root:not(.dark) [class*="text-neutral-500"],
+:root:not(.dark) [class*="text-neutral-600"] { color: var(--muted); }
+:root:not(.dark) [class*="text-stone-100"],
+:root:not(.dark) [class*="text-stone-200"],
+:root:not(.dark) [class*="text-stone-300"] { color: var(--app-text); }
+:root:not(.dark) [class*="text-stone-400"],
+:root:not(.dark) [class*="text-stone-500"],
+:root:not(.dark) [class*="text-stone-600"] { color: var(--muted); }
+:root:not(.dark) [class*="text-amber-200"],
+:root:not(.dark) [class*="text-amber-300"],
+:root:not(.dark) [class*="text-amber-400"] { color: var(--gold); }
+:root:not(.dark) [class*="text-amber-50"] { color: var(--app-text); }
+:root:not(.dark) [class*="text-amber-100"] { color: var(--gold); }
+:root:not(.dark) [class*="text-amber-500"] { color: var(--gold); }
+:root:not(.dark) [class*="text-emerald-200"],
+:root:not(.dark) [class*="text-emerald-300"],
+:root:not(.dark) [class*="text-emerald-400"] { color: #2e7d32; }
+:root:not(.dark) [class*="text-red-300"],
+:root:not(.dark) [class*="text-red-400"] { color: #b8323c; }
+:root:not(.dark) [class*="text-yellow-400"] { color: var(--gold); }
+:root:not(.dark) [class*="text-orange-300"],
+:root:not(.dark) [class*="text-orange-400"],
+:root:not(.dark) [class*="text-orange-500"] { color: #b65c12; }
+:root:not(.dark) [class*="text-rose-300"],
+:root:not(.dark) [class*="text-rose-400"] { color: #b8323c; }
+
+/* --- Border palette --- */
+:root:not(.dark) [class*="border-neutral-800"],
+:root:not(.dark) [class*="border-neutral-900"],
+:root:not(.dark) [class*="border-neutral-700"],
+:root:not(.dark) [class*="border-neutral-600"] { border-color: var(--border); }
+:root:not(.dark) [class*="border-amber-900/"] { border-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+:root:not(.dark) [class*="border-amber-500/"],
+:root:not(.dark) [class*="border-amber-500"] { border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+:root:not(.dark) [class*="border-amber-400/"] { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+:root:not(.dark) [class*="border-amber-200/"] { border-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+
+/* --- Shadow palette --- */
+:root:not(.dark) [class*="shadow-black/"] { --tw-shadow-color: color-mix(in srgb, #163a2c 30%, transparent); }
+:root:not(.dark) [class*="shadow-amber-500/"] { --tw-shadow-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+:root:not(.dark) [class*="shadow-amber-950/"] { --tw-shadow-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+
+/* --- Placeholders --- */
+:root:not(.dark) [class*="placeholder:text-"]::placeholder,
+:root:not(.dark) [class*="placeholder-stone-"]::placeholder,
+:root:not(.dark) [class*="placeholder-neutral-"]::placeholder { color: var(--muted); }
+
+/* --- Generic white text stays readable on light surfaces, except over dark image scrims --- */
+:root:not(.dark) [class*="text-white"] { color: var(--app-text); }
+:root:not(.dark) [class*="bg-black/"] { color: #ffffff; }
+:root:not(.dark) [class*="from-black/"] [class*="text-white"] { color: #ffffff; }
+
+/* --- Lone dark bootstrap buttons get the light treatment --- */
+:root:not(.dark) .bg-black { background-color: var(--surface-strong); }
+:root:not(.dark) .hover\:bg-black:hover { background-color: var(--surface-soft); }
+:root:not(.dark) [class*="hover:bg-black"]:hover { background-color: var(--surface-soft); }
+
+/* --- Blue / yellow CTA buttons become lime in light mode --- */
+:root:not(.dark) [class*="bg-blue-600"],
+:root:not(.dark) [class*="bg-blue-500"] { background-color: var(--accent); }
+:root:not(.dark) [class*="hover:bg-blue-700"]:hover { background-color: var(--accent-strong); }
+:root:not(.dark) [class*="bg-yellow-500"] { background-color: var(--accent); }
+:root:not(.dark) [class*="bg-slate-950"] { background-color: var(--accent); }
+:root:not(.dark) [class*="hover:bg-slate-800"]:hover { background-color: var(--accent-strong); }
+:root:not(.dark) [class*="bg-gray-900"] { background-color: var(--surface-strong); }
+
+/* --- Shared @layer components classes stay readable in light mode --- */
+:root:not(.dark) .btn-primary {
+  --tw-gradient-from: var(--accent);
+  --tw-gradient-to: var(--accent-strong);
+  --tw-gradient-via: var(--accent);
+  --tw-shadow-color: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+:root:not(.dark) .btn-secondary {
+  background-color: color-mix(in srgb, var(--surface-strong) 40%, transparent);
+  border-color: var(--border);
+  color: var(--app-text);
+}
+:root:not(.dark) .btn-outline {
+  border-color: var(--accent);
+  color: var(--accent);
+  background-color: transparent;
+}
+:root:not(.dark) .card {
+  background-color: color-mix(in srgb, var(--surface) 60%, transparent);
+  border-color: var(--border);
+}
+:root:not(.dark) .card-hover {
+  --tw-shadow-color: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+:root:not(.dark) .input {
+  background-color: color-mix(in srgb, var(--surface-strong) 40%, transparent);
+  border-color: color-mix(in srgb, var(--border) 80%, transparent);
+  color: var(--app-text);
+}
+:root:not(.dark) .input-label { color: var(--muted); }
+:root:not(.dark) .badge-primary {
+  background-color: color-mix(in srgb, var(--gold) 16%, transparent);
+  color: #8a6a1e;
+  border-color: color-mix(in srgb, var(--gold) 30%, transparent);
+}
+:root:not(.dark) .badge-success {
+  background-color: color-mix(in srgb, #2e7d32 16%, transparent);
+  color: #2e7d32;
+  border-color: color-mix(in srgb, #2e7d32 25%, transparent);
+}
+:root:not(.dark) .badge-warning {
+  background-color: color-mix(in srgb, #b65c12 16%, transparent);
+  color: #b65c12;
+  border-color: color-mix(in srgb, #b65c12 25%, transparent);
+}
+:root:not(.dark) .badge-danger {
+  background-color: color-mix(in srgb, #b8323c 16%, transparent);
+  color: #b8323c;
+  border-color: color-mix(in srgb, #b8323c 25%, transparent);
 }

@@ -105,6 +105,7 @@ interface Listing {
   subcategory: string;
   isElectric: boolean;
   isFeatured: boolean;
+  availability?: 'active' | 'sold' | 'rented';
   location: {
     city: string;
     region: string;
@@ -470,6 +471,7 @@ export default function HomePage() {
                     subcategory={listing.subcategory}
                     isElectric={listing.isElectric}
                     isFeatured={listing.isFeatured}
+                    availability={listing.availability}
                     location={listing.location}
                     images={listing.images}
                     createdAt={listing.createdAt}
@@ -638,6 +640,7 @@ export default function HomePage() {
                       subcategory={listing.subcategory}
                       isElectric={listing.isElectric}
                       isFeatured={listing.isFeatured}
+                      availability={listing.availability}
                       location={listing.location}
                       images={listing.images}
                       createdAt={listing.createdAt}

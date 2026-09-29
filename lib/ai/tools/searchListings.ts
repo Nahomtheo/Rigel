@@ -76,7 +76,10 @@ interface SearchArgs {
 export async function executeSearchListings(args: SearchArgs) {
   await connectDB();
 
-  const filter: Record<string, unknown> = { status: "approved" };
+  const filter: Record<string, unknown> = {
+    status: "approved",
+    $or: [{ availability: "active" }, { availability: { $exists: false } }],
+  };
 
   if (args.category) {
     filter.category = args.category;

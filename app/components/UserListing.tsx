@@ -1,5 +1,6 @@
 import ListingCard from "./ListingCard";
 import ListingActionMenu from "./ListingActionMenu";
+import ListingAvailabilityControl from "./ListingAvailabilityControl";
 import Link from "next/link";
 
 export default async function UserListing({
@@ -185,6 +186,8 @@ export default async function UserListing({
 
               isFeatured={item.isFeatured}
 
+              availability={item.availability}
+
               location={item.location}
 
               images={item.images}
@@ -197,16 +200,18 @@ export default async function UserListing({
             <div
               className="
               relative
-              flex
-              items-center
-              justify-between
-              px-3
-              py-2
-              bg-[#120f06]/60
-              border-t
-              border-neutral-800
-              rounded-b-2xl
-              "
+                flex
+                flex-wrap
+                items-center
+                justify-between
+                gap-2
+                px-3
+                py-2
+                bg-[#120f06]/60
+                border-t
+                border-neutral-800
+                rounded-b-2xl
+                "
             >
               <span
                 className="
@@ -215,12 +220,22 @@ export default async function UserListing({
                 font-mono
                 "
               >
-                Edit or Delete
+                Status
               </span>
+
+              <div className="flex items-center gap-2">
+                <ListingAvailabilityControl
+                  id={item._id}
+                  availability={item.availability}
+                  compact
+                />
+              </div>
 
               <ListingActionMenu
 
                 id={item._id}
+
+                availability={item.availability}
 
                 ownerId={
                   typeof item.owner === "object"

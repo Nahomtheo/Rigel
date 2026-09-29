@@ -37,13 +37,13 @@ export default function RootLayout({
       className={`${inter.variable} ${playfairDisplay.variable} h-full antialiased scroll-smooth`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#fcfbfa] text-neutral-900 dark:bg-[#040401] dark:text-neutral-50 pb-16 md:pb-0 selection:bg-amber-500/30 selection:text-amber-900 dark:selection:text-amber-200">
+      <body className="min-h-full flex flex-col bg-[var(--app-bg)] text-[var(--app-text)] pb-16 md:pb-0 selection:bg-amber-500/30 selection:text-amber-900 dark:selection:text-amber-200">
         <Provider>
           {/* Header Navigation */}
           <Navbar />
           
           {/* Main Content Area */}
-        <main className="flex-1 w-full bg-[#040401] text-neutral-50">
+        <main className="flex-1 w-full bg-[var(--app-bg)] text-[var(--app-text)]">
   {children}
 </main>
 

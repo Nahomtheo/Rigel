@@ -46,10 +46,10 @@ export default async function Page({
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center p-10">
-          <h1 className="text-2xl font-bold text-neutral-100 mb-2">
+          <h1 className="text-2xl font-bold text-[var(--app-text)] mb-2">
             User not found
           </h1>
-          <p className="text-neutral-500 mb-4">
+          <p className="text-[var(--muted)] mb-4">
             This profile does not exist.
           </p>
         </div>

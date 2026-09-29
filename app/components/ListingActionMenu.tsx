@@ -4,13 +4,18 @@ import { useState } from "react";
 import Link from "next/link";
 import DeleteListing from "./DeleteListing";
 import { EllipsisVertical } from "lucide-react";
+import ListingAvailabilityControl from "./ListingAvailabilityControl";
+
+type Availability = "active" | "sold" | "rented";
 
 export default function ListingActionMenu({
   id,
   ownerId,
+  availability,
 }: {
   id: string;
   ownerId: string;
+  availability?: Availability;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -34,7 +39,7 @@ export default function ListingActionMenu({
             right-0
             top-full
             mt-2
-            w-44
+            w-52
             overflow-hidden
             rounded-xl
             border
@@ -59,6 +64,9 @@ export default function ListingActionMenu({
               Edit Listing
             </button>
           </Link>
+
+          {/* Sold / Rented status */}
+          <ListingAvailabilityControl id={id} availability={availability} />
 
           {/* Delete */}
           <div className="border-t border-neutral-800">

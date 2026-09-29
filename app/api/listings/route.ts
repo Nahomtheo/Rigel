@@ -106,7 +106,9 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const category = searchParams.get('category');
     
-    const filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = {
+      $or: [{ availability: "active" }, { availability: { $exists: false } }],
+    };
     if (category) {
       filter.category = category;
     }

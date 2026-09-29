@@ -13,6 +13,7 @@ interface ListingCardProps {
   subcategory?: string;
   isElectric?: boolean;
   isFeatured?: boolean;
+  availability?: 'active' | 'sold' | 'rented';
   location: {
     city: string;
     region: string;
@@ -54,6 +55,7 @@ export default function ListingCard({
   subcategory,
   isElectric,
   isFeatured,
+  availability,
   location,
   images,
   viewMode = 'grid',
@@ -64,6 +66,8 @@ export default function ListingCard({
   const categoryColor = categoryColors[category as keyof typeof categoryColors] || 'bg-gray-600/90 dark:bg-gray-500/90';
 
   const isListView = viewMode === 'list';
+  const isUnavailable = availability === 'sold' || availability === 'rented';
+  const unavailableLabel = availability === 'sold' ? 'Sold · ተርዟል' : 'Rented · ተከራይቷል';
 
   const getLocationString = () => {
     const parts = [];
@@ -142,22 +146,36 @@ export default function ListingCard({
           </button>
         </div>
 
+        {isUnavailable && (
+          <div className="absolute inset-0 z-20 bg-black/55 backdrop-blur-[1px] flex items-center justify-center pointer-events-none">
+            <span
+              className={`px-4 py-1.5 rounded-full text-sm font-black uppercase tracking-widest border-2 shadow-2xl ${
+                availability === 'sold'
+                  ? 'bg-red-600/90 border-red-400 text-white'
+                  : 'bg-amber-600/90 border-amber-300 text-white'
+              }`}
+            >
+              {unavailableLabel}
+            </span>
+          </div>
+        )}
+
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
 
       {/* Content Side */}
       <div 
-        className={`p-5 flex flex-col flex-grow bg-[#0c0a03]/60 backdrop-blur-md justify-between leading-normal mt-0 border-t-0 border-l-0 ${
+        className={`p-5 flex flex-col flex-grow bg-[var(--surface)] backdrop-blur-md justify-between leading-normal mt-0 border-t-0 border-l-0 ${
           isListView ? 'rounded-b-xl sm:rounded-bl-none sm:rounded-r-xl' : 'rounded-b-xl'
         }`}
       >
         <motion.div variants={childVariants as any} className="mb-2">
           <div className="flex items-start justify-between gap-4">
-            <h3 className="font-bold text-neutral-100 line-clamp-2 group-hover:text-[#e0bd4c] transition-colors text-base md:text-lg tracking-tight flex-1">
+            <h3 className="font-bold text-[var(--app-text)] line-clamp-2 group-hover:text-[var(--accent)] transition-colors text-base md:text-lg tracking-tight flex-1">
               {title}
             </h3>
             {subcategory && (
-              <span className="text-[10px] font-bold text-[#e0bd4c] uppercase tracking-wider bg-[#C9A227]/10 px-1.5 py-0.5 rounded whitespace-nowrap self-start mt-1">
+              <span className="text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider bg-[var(--accent)]/10 px-1.5 py-0.5 rounded whitespace-nowrap self-start mt-1">
                 {subcategory.replace("_", " ")}
               </span>
             )}
@@ -166,20 +184,20 @@ export default function ListingCard({
 
         <div className="mt-auto space-y-3.5">
           <motion.div variants={childVariants as any} className="flex items-baseline justify-between">
-            <div className="text-xl md:text-2xl font-black text-[#e0bd4c] tracking-tight">
+            <div className="text-xl md:text-2xl font-black text-[var(--gold)] tracking-tight">
               {price.toLocaleString()}{" "}
-              <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider ml-0.5">
+              <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider ml-0.5">
                 ETB
               </span>
             </div>
-            <div className="text-[11px] font-medium text-neutral-500">
+            <div className="text-[11px] font-medium text-[var(--muted)]">
               {formatDate(createdAt)}
             </div>
           </motion.div>
 
-          <motion.div variants={childVariants as any} className="pt-2 border-t border-neutral-800">
-            <div className="flex items-center text-xs font-medium text-neutral-400">
-              <MapPin className="w-3.5 h-3.5 mr-1 text-neutral-500 flex-shrink-0" />
+          <motion.div variants={childVariants as any} className="pt-2 border-t border-[var(--border)]">
+            <div className="flex items-center text-xs font-medium text-[var(--muted)]">
+              <MapPin className="w-3.5 h-3.5 mr-1 text-[var(--muted)] flex-shrink-0" />
               <span className="truncate">{getLocationString()}</span>
             </div>
           </motion.div>

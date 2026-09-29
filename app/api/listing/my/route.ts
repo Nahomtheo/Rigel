@@ -11,8 +11,9 @@ export async function GET(req: Request) {
     return Response.json({ error: "Owner ID required" }, { status: 400 });
   }
 
-  const listings = await Listing.find({ owner: ownerId })
-    .sort({ createdAt: -1 });
+    const listings = await Listing.find({ owner: ownerId })
+      .sort({ createdAt: -1 })
+      .lean();
 
   return Response.json(listings);
 }

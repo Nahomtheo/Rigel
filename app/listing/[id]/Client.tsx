@@ -72,6 +72,7 @@ interface Listing {
   views: number;
   averageRating: number;
   ratingCount: number;
+  availability?: 'active' | 'sold' | 'rented';
 }
 
 interface RatingItem {
@@ -320,6 +321,17 @@ const submitRating = async () => {
                   <span>Electric</span>
                 </div>
               )}
+              {listing.availability && listing.availability !== 'active' && (
+                <div
+                  className={`absolute inset-0 bg-black/50 flex items-center justify-center ${
+                    listing.availability === 'sold' ? 'text-red-300' : 'text-amber-300'
+                  }`}
+                >
+                  <span className="text-3xl font-black uppercase tracking-widest border-4 border-current px-6 py-2 rounded-xl transform -rotate-6">
+                    {listing.availability === 'sold' ? 'Sold' : 'Rented'}
+                  </span>
+                </div>
+              )}
             </div>
             
             {listing.images.length > 1 && (
@@ -357,6 +369,15 @@ const submitRating = async () => {
           <div className="space-y-6">
             {/* Title and Price */}
             <div>
+              {listing.availability && listing.availability !== 'active' && (
+                <div
+                  className={`mb-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white ${
+                    listing.availability === 'sold' ? 'bg-red-600' : 'bg-amber-600'
+                  }`}
+                >
+                  {listing.availability === 'sold' ? 'Sold · ተርዟል' : 'Rented · ተከራይቷል'}
+                </div>
+              )}
               <div className="flex items-start justify-between mb-2">
                 <h1 className="text-2xl font-bold text-gray-900">{listing.title}</h1>
                 <div className="text-2xl font-bold text-blue-600 ml-4">

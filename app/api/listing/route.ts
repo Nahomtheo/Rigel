@@ -11,6 +11,7 @@ export async function GET(req: Request) {
 
   const query: any = {
     status: { $in: ["approved", "pending"] }, // Only show approved or pending listings
+    $or: [{ availability: "active" }, { availability: { $exists: false } }],
   };
 
   // 🔹 Basic filters

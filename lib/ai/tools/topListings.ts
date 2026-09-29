@@ -44,6 +44,7 @@ export async function executeTopListings(args: TopListingsArgs) {
     status: "approved",
     averageRating: { $gte: minRating },
     ratingCount: { $gte: 1 },
+    $or: [{ availability: "active" }, { availability: { $exists: false } }],
   };
 
   if (args.category) {

@@ -20,7 +20,11 @@ export async function GET(
       );
     }
 
-    const listings = await Listing.find({ owner: id, status: "approved" })
+    const listings = await Listing.find({
+      owner: id,
+      status: "approved",
+      $or: [{ availability: "active" }, { availability: { $exists: false } }],
+    })
       .sort({ createdAt: -1 })
       .lean();
 
