@@ -17,12 +17,31 @@
     --surface: #ffffff;
     --surface-soft: #f1ecda;
     --surface-strong: #f6f3e5;
+    --bar-surface: #ffffff;    /* bottom bar must read as a bar, not the page */
     --border: #ddd6be;
-    --accent: #7cb342;
-    --accent-strong: #5d9b2b;
-    --accent-ink: #12301f;
-    --gold: #a97c1e;
-    --muted: #5f6b60;
+
+    /* Ink accents - these are read as TEXT on the light surfaces above,
+       so they must clear 4.5:1 (verified: 5.1 / 5.6 / 4.8 / 5.1). */
+    --accent: #46731a;        /* 5.11 on --app-bg, 4.76 on --surface-soft */
+    --accent-strong: #2f5d12; /* 7.07 on --app-bg */
+    --gold: #7a5a12;          /* 5.78 on --app-bg */
+    --gold-deep: #6b4e14;     /* 6.99 on --app-bg, for amber-600/800 */
+    --info: #1d4ed8;          /* 6.08 on --app-bg */
+    --muted: #5f6b60;         /* 5.07 on --app-bg */
+
+    /* Fill accents - backgrounds only, always paired with a dark ink.
+       The bright lime fails as text but is the right button colour. */
+    --accent-fill: #7cb342;
+    --accent-fill-hover: #6ba336;
+    --accent-ink: #12301f;    /* 5.71 on --accent-fill */
+
+    --success: #2e7d32;
+    --warning: #8a4b0d;
+    --danger: #b8323c;
+    --danger-fill: #fdecec;
+    --success-fill: #eaf5ea;
+    --warning-fill: #fdf1e3;
+
     --logo-shadow: 0 1px 2px rgba(22, 58, 44, 0.28);
   }
 
@@ -33,12 +52,23 @@
     --surface: #0c0a03;
     --surface-soft: #211a14;
     --surface-strong: #18130e;
+    --bar-surface: #18130e;
     --border: #2a2518;
     --accent: #c9a227;
     --accent-strong: #c9a227;
     --accent-ink: #000000;
+    --accent-fill: #c9a227;
+    --accent-fill-hover: #e2bd42;
     --gold: #e0bd4c;
+    --gold-deep: #e0bd4c;
+    --info: #60a5fa;
     --muted: #a8a29e;
+    --success: #34d399;
+    --warning: #fb923c;
+    --danger: #fb7185;
+    --danger-fill: #4c1d1d;
+    --success-fill: #14532d;
+    --warning-fill: #4a2c0a;
     --logo-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   }
 
@@ -146,159 +176,351 @@
    LIGHT-MODE REMAP
    ------------------------------------------------------------
    Dark mode must stay pixel-identical, so the app keeps its
-   hardcoded golden/brown classes. When the <html> element does
-   NOT have .dark, these unlayered rules re-point every hardcoded
-   dark colour to the light token set (cream + smooth lime/green).
-   Unlayered rules beat Tailwind's layers; :root:not(.dark) kills
-   all of this the moment dark mode is active.
+   hardcoded golden/brown classes. When <html> does NOT have
+   .dark, these unlayered rules re-point every hardcoded dark
+   colour to the light token set (cream + green).
+
+   Two rules of thumb when editing this block:
+
+   1. Selectors use [class~="..."] (whole-token match), never
+      [class*="..."]. A substring selector for "text-[#C9A227]"
+      also matches "hover:text-[#C9A227]", and because unlayered
+      rules beat every Tailwind layer, that pinned the mobile
+      menu links to the accent colour permanently. Token
+      variants that exist with a state prefix (hover:, focus:,
+      file:, group-hover:) get their own explicit rule below.
+
+   2. --accent / --gold are *ink*: they are read as text on the
+      cream surfaces, so they clear 4.5:1. Solid button fills use
+      --accent-fill / --accent-fill-hover instead, because the
+      bright lime fails as text but is the right button colour.
+
+   Every value below was checked against --app-bg, --surface,
+   --surface-soft and --surface-strong.
    ============================================================ */
 
 /* --- Page / surface backgrounds (arbitrary hex utilities) --- */
-:root:not(.dark) [class*="bg-[#040401]"] { background-color: var(--app-bg); }
-:root:not(.dark) [class*="bg-[#0d0a08]"] { background-color: var(--app-bg); }
-:root:not(.dark) [class*="bg-[#0c0a03]"] { background-color: var(--surface); }
-:root:not(.dark) [class*="bg-[#18130e]"] { background-color: var(--surface-strong); }
-:root:not(.dark) [class*="bg-[#211a14]"] { background-color: var(--surface-soft); }
-:root:not(.dark) [class*="bg-[#120f06]"],
-:root:not(.dark) [class*="bg-[#120B07]"],
-:root:not(.dark) [class*="bg-[#141107]"] { background-color: var(--surface-strong); }
-:root:not(.dark) [class*="bg-[#1a1506]"],
-:root:not(.dark) [class*="bg-[#1a160a]"],
-:root:not(.dark) [class*="bg-[#282018]"],
-:root:not(.dark) [class*="bg-[#161204]"] { background-color: var(--surface-soft); }
-:root:not(.dark) [class*="bg-[#C9A227]"],
-:root:not(.dark) [class*="bg-[#E8D49A]"] { background-color: var(--accent); }
+:root:not(.dark) [class~="bg-[#040401]"],
+:root:not(.dark) [class~="bg-[#0d0a08]"] { background-color: var(--app-bg); }
+:root:not(.dark) [class~="bg-[#0c0a03]"],
+:root:not(.dark) [class~="bg-[#0c0a03]/40"],
+:root:not(.dark) [class~="bg-[#0c0a03]/60"],
+:root:not(.dark) [class~="bg-[#0c0a03]/80"],
+:root:not(.dark) [class~="bg-[#0c0a03]/90"],
+:root:not(.dark) [class~="bg-[#0c0a03]/95"] { background-color: var(--surface); }
+:root:not(.dark) [class~="bg-[#18130e]"],
+:root:not(.dark) [class~="bg-[#120B07]"],
+:root:not(.dark) [class~="bg-[#120B07]/90"],
+:root:not(.dark) [class~="bg-[#120B07]/95"],
+:root:not(.dark) [class~="bg-[#120f06]"],
+:root:not(.dark) [class~="bg-[#120f06]/40"],
+:root:not(.dark) [class~="bg-[#120f06]/50"],
+:root:not(.dark) [class~="bg-[#120f06]/60"],
+:root:not(.dark) [class~="bg-[#120f06]/70"],
+:root:not(.dark) [class~="bg-[#141107]/40"],
+:root:not(.dark) [class~="bg-[#141107]/60"] { background-color: var(--surface-strong); }
+:root:not(.dark) [class~="bg-[#1a1506]/60"],
+:root:not(.dark) [class~="bg-[#1a160a]"],
+:root:not(.dark) [class~="bg-[#282018]"],
+:root:not(.dark) [class~="bg-[#161204]"] { background-color: var(--surface-soft); }
+:root:not(.dark) [class~="hover:bg-[#211a14]"]:hover,
+:root:not(.dark) [class~="hover:bg-[#282018]"]:hover,
+:root:not(.dark) [class~="hover:bg-[#1a160a]"]:hover { background-color: var(--surface-soft); }
 
-/* --- Text colours (arbitrary hex utilities) --- */
-:root:not(.dark) [class*="text-[#F5EFE6]"],
-:root:not(.dark) [class*="text-[#f3efe6]"] { color: var(--app-text); }
-:root:not(.dark) [class*="text-[#120B07]"] { color: var(--accent-ink); }
-:root:not(.dark) [class*="text-[#C9A227]"] { color: var(--accent); }
-:root:not(.dark) [class*="text-[#e0bd4c]"],
-:root:not(.dark) [class*="text-[#e5c158]"] { color: var(--gold); }
+/* --- Solid CTA fills: bright lime carrying dark ink --- */
+:root:not(.dark) [class~="bg-[#C9A227]"],
+:root:not(.dark) [class~="bg-[#E8D49A]"],
+:root:not(.dark) [class~="bg-amber-500"],
+:root:not(.dark) [class~="bg-amber-600"],
+:root:not(.dark) [class~="bg-blue-500"],
+:root:not(.dark) [class~="bg-blue-600"],
+:root:not(.dark) [class~="bg-yellow-500"],
+:root:not(.dark) [class~="bg-slate-950"],
+:root:not(.dark) [class~="file:bg-slate-950"] { background-color: var(--accent-fill); }
+:root:not(.dark) [class~="hover:bg-[#C9A227]"]:hover,
+:root:not(.dark) [class~="hover:bg-[#e2bd42]"]:hover,
+:root:not(.dark) [class~="hover:bg-amber-600"]:hover,
+:root:not(.dark) [class~="hover:bg-blue-700"]:hover,
+:root:not(.dark) [class~="hover:bg-slate-800"]:hover,
+:root:not(.dark) [class~="hover:file:bg-slate-800"]:hover { background-color: var(--accent-fill-hover); }
 
-/* --- Border colours (arbitrary hex utilities) --- */
-:root:not(.dark) [class*="border-[#C9A227]"] { border-color: var(--accent); }
-
-/* --- Gradient stops (arbitrary hex utilities) --- */
-:root:not(.dark) [class*="from-[#C9A227]"] { --tw-gradient-from: var(--accent); }
-:root:not(.dark) [class*="via-[#C9A227]"] { --tw-gradient-via: var(--accent); }
-:root:not(.dark) [class*="to-[#bfa142]"],
-:root:not(.dark) [class*="to-[#8B6B23]"],
-:root:not(.dark) [class*="to-[#a8841a]"] { --tw-gradient-to: var(--accent-strong); }
-:root:not(.dark) [class*="from-[#F5E6B8]"] { --tw-gradient-from: var(--gold); }
-:root:not(.dark) [class*="from-[#161204]"] { --tw-gradient-from: var(--surface-soft); }
-:root:not(.dark) [class*="via-[#0c0a03]"] { --tw-gradient-via: var(--surface); }
-:root:not(.dark) [class*="to-[#040401]"] { --tw-gradient-to: var(--app-bg); }
-:root:not(.dark) [class*="from-[#fffbf2]"] { --tw-gradient-from: var(--gold); }
-:root:not(.dark) [class*="via-[#e5c158]"] { --tw-gradient-via: var(--accent); }
-:root:not(.dark) [class*="to-[#ab8837]"] { --tw-gradient-to: var(--accent-strong); }
-
-/* --- Shadow / ring / accent (arbitrary hex utilities) --- */
-:root:not(.dark) [class*="shadow-[#C9A227]/"] { --tw-shadow-color: color-mix(in srgb, var(--accent) 15%, transparent); }
-:root:not(.dark) [class*="ring-[#C9A227]"] { --tw-ring-color: var(--accent); }
-:root:not(.dark) [class*="accent-[#C9A227]"] { accent-color: var(--accent); }
+/* --- Tinted accent surfaces (keep their alpha) --- */
+:root:not(.dark) [class~="bg-[#C9A227]/70"],
+:root:not(.dark) [class~="bg-amber-500/70"] { background-color: color-mix(in srgb, var(--accent-fill) 70%, transparent); }
+:root:not(.dark) [class~="bg-[#C9A227]/50"] { background-color: color-mix(in srgb, var(--accent-fill) 50%, transparent); }
+:root:not(.dark) [class~="bg-[#C9A227]/40"] { background-color: color-mix(in srgb, var(--accent-fill) 40%, transparent); }
+:root:not(.dark) [class~="bg-[#C9A227]/20"],
+:root:not(.dark) [class~="file:bg-amber-500/20"] { background-color: color-mix(in srgb, var(--accent-fill) 20%, transparent); }
+:root:not(.dark) [class~="hover:bg-[#C9A227]/20"]:hover { background-color: color-mix(in srgb, var(--accent-fill) 20%, transparent); }
+:root:not(.dark) [class~="hover:file:bg-amber-500/30"]:hover { background-color: color-mix(in srgb, var(--accent-fill) 30%, transparent); }
+:root:not(.dark) [class~="bg-[#C9A227]/10"],
+:root:not(.dark) [class~="hover:bg-amber-500/10"]:hover { background-color: color-mix(in srgb, var(--accent) 12%, transparent); }
+:root:not(.dark) [class~="hover:bg-[#C9A227]/10"]:hover { background-color: color-mix(in srgb, var(--accent) 12%, transparent); }
+:root:not(.dark) [class~="bg-[#C9A227]/5"],
+:root:not(.dark) [class~="hover:bg-[#C9A227]/5"]:hover { background-color: color-mix(in srgb, var(--accent) 8%, transparent); }
+:root:not(.dark) [class~="bg-[#a38031]/10"] { background-color: color-mix(in srgb, var(--gold) 12%, transparent); }
 
 /* --- Neutral palette surfaces --- */
-:root:not(.dark) [class*="bg-neutral-800"],
-:root:not(.dark) [class*="bg-neutral-900"] { background-color: var(--surface-soft); }
+:root:not(.dark) [class~="bg-neutral-800"],
+:root:not(.dark) [class~="bg-neutral-900"],
+:root:not(.dark) [class~="bg-neutral-800/50"],
+:root:not(.dark) [class~="hover:bg-neutral-800/50"]:hover,
+:root:not(.dark) [class~="bg-gray-900"],
+:root:not(.dark) [class~="bg-black"] { background-color: var(--surface-soft); }
+:root:not(.dark) [class~="hover:bg-black"]:hover,
+:root:not(.dark) [class~="hover:bg-gray-200"]:hover { background-color: var(--surface-soft); }
 
-/* --- Amber accent surfaces + gradients --- */
-:root:not(.dark) [class*="bg-amber-500"] { background-color: var(--accent); }
-:root:not(.dark) [class*="from-amber-500"],
-:root:not(.dark) [class*="from-amber-400"] { --tw-gradient-from: var(--accent); }
-:root:not(.dark) [class*="to-amber-500"],
-:root:not(.dark) [class*="to-amber-600"],
-:root:not(.dark) [class*="to-amber-700"] { --tw-gradient-to: var(--accent-strong); }
-:root:not(.dark) [class*="ring-amber-500"] { --tw-ring-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+/* --- Status button fills: light tints, so remapped text-white ink reads --- */
+:root:not(.dark) [class~="bg-red-600"],
+:root:not(.dark) [class~="bg-red-500"],
+:root:not(.dark) [class~="hover:bg-red-600"]:hover,
+:root:not(.dark) [class~="hover:bg-red-500"]:hover { background-color: var(--danger-fill); }
+:root:not(.dark) [class~="bg-emerald-600"],
+:root:not(.dark) [class~="hover:bg-emerald-700"]:hover { background-color: var(--success-fill); }
+:root:not(.dark) [class~="bg-gray-500"] { background-color: var(--surface-soft); }
+:root:not(.dark) [class~="bg-red-500/10"],
+:root:not(.dark) [class~="hover:bg-red-500/10"]:hover { background-color: color-mix(in srgb, var(--danger) 12%, transparent); }
 
 /* --- Status / badge tinted surfaces (tailwind dark tints) --- */
-:root:not(.dark) [class*="bg-amber-950/"] { background-color: color-mix(in srgb, var(--gold) 16%, transparent); }
-:root:not(.dark) [class*="bg-emerald-950/"] { background-color: color-mix(in srgb, #2e7d32 16%, transparent); }
-:root:not(.dark) [class*="bg-orange-950/"] { background-color: color-mix(in srgb, #b65c12 16%, transparent); }
-:root:not(.dark) [class*="bg-rose-950/"] { background-color: color-mix(in srgb, #b8323c 16%, transparent); }
+:root:not(.dark) [class~="bg-amber-950/20"],
+:root:not(.dark) [class~="bg-amber-950/30"] { background-color: color-mix(in srgb, var(--gold) 16%, transparent); }
+:root:not(.dark) [class~="bg-emerald-950/30"] { background-color: var(--success-fill); }
+:root:not(.dark) [class~="bg-orange-950/30"] { background-color: var(--warning-fill); }
+:root:not(.dark) [class~="bg-rose-950/30"] { background-color: var(--danger-fill); }
+
+/* --- Text colours (arbitrary hex utilities) --- */
+:root:not(.dark) [class~="text-[#F5EFE6]"],
+:root:not(.dark) [class~="text-[#F5EFE6]/70"],
+:root:not(.dark) [class~="text-[#f3efe6]"] { color: var(--app-text); }
+:root:not(.dark) [class~="text-[#120B07]"] { color: var(--accent-ink); }
+:root:not(.dark) [class~="text-[#C9A227]"],
+:root:not(.dark) [class~="text-[#C9A227]/60"],
+:root:not(.dark) [class~="text-[#C9A227]/70"] { color: var(--accent); }
+/* hover text sits on an accent-tinted surface, so it needs the deeper ink */
+:root:not(.dark) [class~="hover:text-[#C9A227]"]:hover { color: var(--accent-strong); }
+:root:not(.dark) .group:hover [class~="group-hover:text-[#C9A227]"] { color: var(--accent); }
+:root:not(.dark) [class~="text-[#e0bd4c]"],
+:root:not(.dark) [class~="hover:text-[#e0bd4c]"]:hover,
+:root:not(.dark) [class~="text-[#e5c158]"] { color: var(--gold); }
+:root:not(.dark) [class~="text-black"],
+:root:not(.dark) [class~="hover:text-black"]:hover { color: var(--accent-ink); }
 
 /* --- Text palette (neutral + stone + status accents) --- */
-:root:not(.dark) [class*="text-neutral-50"],
-:root:not(.dark) [class*="text-neutral-100"],
-:root:not(.dark) [class*="text-neutral-200"],
-:root:not(.dark) [class*="text-neutral-300"] { color: var(--app-text); }
-:root:not(.dark) [class*="text-neutral-400"],
-:root:not(.dark) [class*="text-neutral-500"],
-:root:not(.dark) [class*="text-neutral-600"] { color: var(--muted); }
-:root:not(.dark) [class*="text-stone-100"],
-:root:not(.dark) [class*="text-stone-200"],
-:root:not(.dark) [class*="text-stone-300"] { color: var(--app-text); }
-:root:not(.dark) [class*="text-stone-400"],
-:root:not(.dark) [class*="text-stone-500"],
-:root:not(.dark) [class*="text-stone-600"] { color: var(--muted); }
-:root:not(.dark) [class*="text-amber-200"],
-:root:not(.dark) [class*="text-amber-300"],
-:root:not(.dark) [class*="text-amber-400"] { color: var(--gold); }
-:root:not(.dark) [class*="text-amber-50"] { color: var(--app-text); }
-:root:not(.dark) [class*="text-amber-100"] { color: var(--gold); }
-:root:not(.dark) [class*="text-amber-500"] { color: var(--gold); }
-:root:not(.dark) [class*="text-emerald-200"],
-:root:not(.dark) [class*="text-emerald-300"],
-:root:not(.dark) [class*="text-emerald-400"] { color: #2e7d32; }
-:root:not(.dark) [class*="text-red-300"],
-:root:not(.dark) [class*="text-red-400"] { color: #b8323c; }
-:root:not(.dark) [class*="text-yellow-400"] { color: var(--gold); }
-:root:not(.dark) [class*="text-orange-300"],
-:root:not(.dark) [class*="text-orange-400"],
-:root:not(.dark) [class*="text-orange-500"] { color: #b65c12; }
-:root:not(.dark) [class*="text-rose-300"],
-:root:not(.dark) [class*="text-rose-400"] { color: #b8323c; }
+:root:not(.dark) [class~="text-neutral-50"],
+:root:not(.dark) [class~="text-neutral-100"],
+:root:not(.dark) [class~="text-neutral-200"],
+:root:not(.dark) [class~="text-neutral-300"],
+:root:not(.dark) [class~="hover:text-neutral-200"]:hover,
+:root:not(.dark) [class~="hover:text-neutral-300"]:hover,
+:root:not(.dark) [class~="text-stone-100"],
+:root:not(.dark) [class~="text-stone-200"],
+:root:not(.dark) [class~="text-stone-300"] { color: var(--app-text); }
+:root:not(.dark) [class~="text-neutral-400"],
+:root:not(.dark) [class~="text-neutral-500"],
+:root:not(.dark) [class~="text-neutral-600"],
+:root:not(.dark) [class~="hover:text-neutral-500"]:hover,
+:root:not(.dark) [class~="text-stone-400"],
+:root:not(.dark) [class~="text-stone-500"],
+:root:not(.dark) [class~="text-stone-600"],
+:root:not(.dark) [class~="text-slate-500"],
+:root:not(.dark) [class~="text-gray-500"],
+:root:not(.dark) [class~="hover:text-gray-600"]:hover,
+:root:not(.dark) [class~="hover:text-slate-950"]:hover,
+:root:not(.dark) [class~="text-gray-200"],
+:root:not(.dark) [class~="text-gray-300"] { color: var(--muted); }
+:root:not(.dark) [class~="text-amber-50"],
+:root:not(.dark) [class~="text-amber-100"],
+:root:not(.dark) [class~="text-amber-100/90"],
+:root:not(.dark) [class~="text-amber-200"],
+:root:not(.dark) [class~="text-amber-200/60"],
+:root:not(.dark) [class~="text-amber-200/80"],
+:root:not(.dark) [class~="text-amber-300"],
+:root:not(.dark) [class~="text-amber-400"],
+:root:not(.dark) [class~="text-amber-400/60"],
+:root:not(.dark) [class~="text-amber-400/70"],
+:root:not(.dark) [class~="text-amber-500"],
+:root:not(.dark) [class~="text-yellow-400"],
+:root:not(.dark) [class~="hover:text-amber-200"]:hover,
+:root:not(.dark) [class~="hover:text-amber-300"]:hover,
+:root:not(.dark) [class~="hover:text-amber-400"]:hover,
+:root:not(.dark) [class~="hover:text-amber-500"]:hover,
+:root:not(.dark) [class~="file:text-amber-300"] { color: var(--gold); }
+:root:not(.dark) [class~="text-amber-600"],
+:root:not(.dark) [class~="text-amber-800"],
+:root:not(.dark) [class~="hover:text-amber-600"]:hover,
+:root:not(.dark) [class~="text-yellow-600"],
+:root:not(.dark) [class~="text-yellow-800"],
+:root:not(.dark) [class~="text-orange-500"] { color: var(--gold-deep); }
+:root:not(.dark) [class~="text-emerald-200"],
+:root:not(.dark) [class~="text-emerald-300/70"],
+:root:not(.dark) [class~="text-emerald-400"],
+:root:not(.dark) [class~="text-green-500"],
+:root:not(.dark) [class~="text-green-600"],
+:root:not(.dark) [class~="text-emerald-600"] { color: var(--success); }
+:root:not(.dark) [class~="text-red-300"],
+:root:not(.dark) [class~="text-red-400"],
+:root:not(.dark) [class~="text-red-400/70"],
+:root:not(.dark) [class~="hover:text-red-300"]:hover,
+:root:not(.dark) [class~="text-rose-300"],
+:root:not(.dark) [class~="text-rose-400"],
+:root:not(.dark) [class~="text-red-500"],
+:root:not(.dark) [class~="text-red-600"],
+:root:not(.dark) [class~="hover:text-red-700"]:hover { color: var(--danger); }
+:root:not(.dark) [class~="text-blue-500"],
+:root:not(.dark) [class~="text-blue-600"],
+:root:not(.dark) [class~="hover:text-blue-600"]:hover,
+:root:not(.dark) [class~="hover:text-blue-700"]:hover { color: var(--info); }
+:root:not(.dark) [class~="text-orange-300"],
+:root:not(.dark) [class~="text-orange-400"] { color: var(--warning); }
+
+/* --- Border colours (arbitrary hex utilities) --- */
+:root:not(.dark) [class~="border-[#C9A227]"],
+:root:not(.dark) [class~="focus:border-[#C9A227]"]:focus { border-color: var(--accent); }
+:root:not(.dark) [class~="border-[#C9A227]/70"],
+:root:not(.dark) [class~="hover:border-[#C9A227]/70"]:hover { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+:root:not(.dark) [class~="border-[#C9A227]/50"],
+:root:not(.dark) [class~="hover:border-[#C9A227]/50"]:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+:root:not(.dark) [class~="border-[#C9A227]/40"],
+:root:not(.dark) [class~="hover:border-[#C9A227]/40"]:hover { border-color: color-mix(in srgb, var(--accent) 38%, transparent); }
+:root:not(.dark) [class~="border-[#C9A227]/30"],
+:root:not(.dark) [class~="border-[#C9A227]/25"],
+:root:not(.dark) [class~="border-[#C9A227]/20"],
+:root:not(.dark) [class~="hover:border-[#C9A227]/30"]:hover,
+:root:not(.dark) [class~="hover:border-[#C9A227]"]:hover { border-color: color-mix(in srgb, var(--accent) 28%, transparent); }
 
 /* --- Border palette --- */
-:root:not(.dark) [class*="border-neutral-800"],
-:root:not(.dark) [class*="border-neutral-900"],
-:root:not(.dark) [class*="border-neutral-700"],
-:root:not(.dark) [class*="border-neutral-600"] { border-color: var(--border); }
-:root:not(.dark) [class*="border-amber-900/"] { border-color: color-mix(in srgb, var(--accent) 25%, transparent); }
-:root:not(.dark) [class*="border-amber-500/"],
-:root:not(.dark) [class*="border-amber-500"] { border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
-:root:not(.dark) [class*="border-amber-400/"] { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
-:root:not(.dark) [class*="border-amber-200/"] { border-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+:root:not(.dark) [class~="border-neutral-600"],
+:root:not(.dark) [class~="border-neutral-700"],
+:root:not(.dark) [class~="border-neutral-700/40"],
+:root:not(.dark) [class~="border-neutral-700/50"],
+:root:not(.dark) [class~="border-neutral-700/60"],
+:root:not(.dark) [class~="border-neutral-800"],
+:root:not(.dark) [class~="border-neutral-800/50"],
+:root:not(.dark) [class~="border-neutral-800/60"],
+:root:not(.dark) [class~="border-neutral-800/70"],
+:root:not(.dark) [class~="border-neutral-800/80"],
+:root:not(.dark) [class~="border-neutral-900"],
+:root:not(.dark) [class~="border-gray-200"],
+:root:not(.dark) [class~="border-gray-300"],
+:root:not(.dark) [class~="border-slate-200"],
+:root:not(.dark) [class~="border-slate-300"],
+:root:not(.dark) [class~="hover:border-neutral-600"]:hover,
+:root:not(.dark) [class~="hover:border-neutral-700"]:hover,
+:root:not(.dark) [class~="hover:border-neutral-800"]:hover,
+:root:not(.dark) [class~="hover:border-gray-300"]:hover,
+:root:not(.dark) [class~="hover:border-slate-200"]:hover { border-color: var(--border); }
+:root:not(.dark) [class~="border-amber-300"],
+:root:not(.dark) [class~="hover:border-amber-300"]:hover { border-color: color-mix(in srgb, var(--accent) 32%, transparent); }
+:root:not(.dark) [class~="border-amber-400/30"],
+:root:not(.dark) [class~="hover:border-amber-400/30"]:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+:root:not(.dark) [class~="border-amber-500"],
+:root:not(.dark) [class~="border-amber-500/80"],
+:root:not(.dark) [class~="border-amber-500/40"],
+:root:not(.dark) [class~="border-amber-500/30"],
+:root:not(.dark) [class~="focus:border-amber-500"]:focus,
+:root:not(.dark) [class~="hover:border-amber-500/40"]:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+:root:not(.dark) [class~="border-amber-900/20"],
+:root:not(.dark) [class~="border-amber-900/30"],
+:root:not(.dark) [class~="border-amber-900/40"],
+:root:not(.dark) [class~="border-amber-900/50"],
+:root:not(.dark) [class~="border-amber-800/30"],
+:root:not(.dark) [class~="hover:border-amber-900/50"]:hover { border-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+:root:not(.dark) [class~="border-blue-500"],
+:root:not(.dark) [class~="hover:border-blue-500"]:hover { border-color: color-mix(in srgb, var(--info) 45%, transparent); }
+:root:not(.dark) [class~="border-emerald-800/40"] { border-color: color-mix(in srgb, var(--success) 30%, transparent); }
+:root:not(.dark) [class~="border-emerald-200/30"] { border-color: color-mix(in srgb, var(--success) 30%, transparent); }
+:root:not(.dark) [class~="border-orange-200/30"] { border-color: color-mix(in srgb, var(--warning) 30%, transparent); }
+:root:not(.dark) [class~="border-rose-200/30"] { border-color: color-mix(in srgb, var(--danger) 30%, transparent); }
 
-/* --- Shadow palette --- */
-:root:not(.dark) [class*="shadow-black/"] { --tw-shadow-color: color-mix(in srgb, #163a2c 30%, transparent); }
-:root:not(.dark) [class*="shadow-amber-500/"] { --tw-shadow-color: color-mix(in srgb, var(--accent) 25%, transparent); }
-:root:not(.dark) [class*="shadow-amber-950/"] { --tw-shadow-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+/* --- Gradient stops --- */
+:root:not(.dark) [class~="from-[#040401]"],
+:root:not(.dark) [class~="to-[#040401]"] { --tw-gradient-from: var(--app-bg); --tw-gradient-to: var(--app-bg); }
+:root:not(.dark) [class~="from-[#0c0a03]/60"] { --tw-gradient-from: var(--surface); }
+:root:not(.dark) [class~="via-[#0c0a03]"],
+:root:not(.dark) [class~="to-[#0c0a03]"] { --tw-gradient-via: var(--surface); --tw-gradient-to: var(--surface); }
+:root:not(.dark) [class~="from-[#120B07]"] { --tw-gradient-from: var(--surface-strong); }
+:root:not(.dark) [class~="from-[#161204]"],
+:root:not(.dark) [class~="via-[#1a1506]"] { --tw-gradient-from: var(--surface-soft); --tw-gradient-via: var(--surface-soft); }
+/* fill gradients (buttons, glowing orbs) keep the bright lime */
+:root:not(.dark) [class~="from-[#C9A227]"],
+:root:not(.dark) [class~="from-amber-500"],
+:root:not(.dark) [class~="from-amber-600"] { --tw-gradient-from: var(--accent-fill); }
+:root:not(.dark) [class~="to-[#bfa142]"],
+:root:not(.dark) [class~="to-[#a8841a]"],
+:root:not(.dark) [class~="to-amber-600"],
+:root:not(.dark) [class~="to-amber-700"],
+:root:not(.dark) [class~="to-amber-800"] { --tw-gradient-to: var(--accent-fill-hover); }
+/* text gradients need the readable ink ramp */
+:root:not(.dark) [class~="from-[#F5E6B8]"],
+:root:not(.dark) [class~="from-[#fffbf2]"] { --tw-gradient-from: var(--gold); }
+:root:not(.dark) [class~="via-[#C9A227]"],
+:root:not(.dark) [class~="via-[#C9A227]/40"],
+:root:not(.dark) [class~="via-[#e5c158]"] { --tw-gradient-via: var(--accent); }
+:root:not(.dark) [class~="to-[#8B6B23]"],
+:root:not(.dark) [class~="via-[#8B6B23]"],
+:root:not(.dark) [class~="to-[#ab8837]"] { --tw-gradient-to: var(--accent-strong); --tw-gradient-via: var(--accent-strong); }
+:root:not(.dark) [class~="from-[#C9A227]/20"] { --tw-gradient-from: color-mix(in srgb, var(--accent) 20%, transparent); }
+
+/* --- Shadow / ring / accent --- */
+:root:not(.dark) [class~="shadow-[#C9A227]/10"],
+:root:not(.dark) [class~="shadow-[#C9A227]/25"],
+:root:not(.dark) [class~="hover:shadow-[#C9A227]/10"]:hover { --tw-shadow-color: color-mix(in srgb, var(--accent) 22%, transparent); }
+:root:not(.dark) [class~="shadow-amber-500/25"],
+:root:not(.dark) [class~="shadow-amber-500/30"],
+:root:not(.dark) [class~="hover:shadow-amber-500/50"]:hover { --tw-shadow-color: color-mix(in srgb, var(--accent) 25%, transparent); }
+:root:not(.dark) [class~="shadow-amber-950/20"],
+:root:not(.dark) [class~="shadow-amber-950/40"] { --tw-shadow-color: color-mix(in srgb, var(--gold) 22%, transparent); }
+:root:not(.dark) [class~="shadow-black/30"],
+:root:not(.dark) [class~="shadow-black/40"],
+:root:not(.dark) [class~="shadow-black/50"],
+:root:not(.dark) [class~="shadow-black/80"] { --tw-shadow-color: color-mix(in srgb, var(--app-text) 22%, transparent); }
+:root:not(.dark) [class~="ring-[#C9A227]"],
+:root:not(.dark) [class~="focus:ring-[#C9A227]"]:focus,
+:root:not(.dark) [class~="focus:ring-black"]:focus { --tw-ring-color: var(--accent); }
+:root:not(.dark) [class~="ring-amber-500"],
+:root:not(.dark) [class~="focus:ring-amber-500"]:focus,
+:root:not(.dark) [class~="focus:ring-amber-500/50"]:focus { --tw-ring-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+:root:not(.dark) [class~="focus:ring-blue-500"]:focus { --tw-ring-color: color-mix(in srgb, var(--info) 45%, transparent); }
+:root:not(.dark) [class~="accent-[#C9A227]"],
+:root:not(.dark) [class~="accent-amber-500"] { accent-color: var(--accent); }
 
 /* --- Placeholders --- */
-:root:not(.dark) [class*="placeholder:text-"]::placeholder,
-:root:not(.dark) [class*="placeholder-stone-"]::placeholder,
-:root:not(.dark) [class*="placeholder-neutral-"]::placeholder { color: var(--muted); }
+:root:not(.dark) ::placeholder { color: var(--muted); }
+:root:not(.dark) [class~="placeholder:text-neutral-500"]::placeholder,
+:root:not(.dark) [class~="placeholder:text-stone-500"]::placeholder,
+:root:not(.dark) [class~="placeholder:text-slate-400"]::placeholder,
+:root:not(.dark) [class~="placeholder:text-neutral-600"]::placeholder,
+:root:not(.dark) [class~="placeholder:text-stone-600"]::placeholder,
+:root:not(.dark) [class~="placeholder-neutral-600"]::placeholder { color: var(--muted); }
 
-/* --- Generic white text stays readable on light surfaces, except over dark image scrims --- */
-:root:not(.dark) [class*="text-white"] { color: var(--app-text); }
-:root:not(.dark) [class*="bg-black/"] { color: #ffffff; }
-:root:not(.dark) [class*="from-black/"] [class*="text-white"] { color: #ffffff; }
+/* --- Selection: light gold highlight needs dark ink on top --- */
+:root:not(.dark) ::selection {
+  background-color: color-mix(in srgb, var(--accent-fill) 38%, transparent);
+  color: var(--app-text);
+}
 
-/* --- Lone dark bootstrap buttons get the light treatment --- */
-:root:not(.dark) .bg-black { background-color: var(--surface-strong); }
-:root:not(.dark) .hover\:bg-black:hover { background-color: var(--surface-soft); }
-:root:not(.dark) [class*="hover:bg-black"]:hover { background-color: var(--surface-soft); }
-
-/* --- Blue / yellow CTA buttons become lime in light mode --- */
-:root:not(.dark) [class*="bg-blue-600"],
-:root:not(.dark) [class*="bg-blue-500"] { background-color: var(--accent); }
-:root:not(.dark) [class*="hover:bg-blue-700"]:hover { background-color: var(--accent-strong); }
-:root:not(.dark) [class*="bg-yellow-500"] { background-color: var(--accent); }
-:root:not(.dark) [class*="bg-slate-950"] { background-color: var(--accent); }
-:root:not(.dark) [class*="hover:bg-slate-800"]:hover { background-color: var(--accent-strong); }
-:root:not(.dark) [class*="bg-gray-900"] { background-color: var(--surface-strong); }
+/* --- White ink: darken on light surfaces, keep white over media scrims --- */
+:root:not(.dark) [class~="text-white"],
+:root:not(.dark) [class~="file:text-white"],
+:root:not(.dark) [class~="hover:text-white"]:hover { color: var(--app-text); }
+:root:not(.dark) [class~="bg-black/"],
+:root:not(.dark) [class~="from-black/"] { color: #ffffff; }
+:root:not(.dark) [class~="bg-white/20"],
+:root:not(.dark) [class~="bg-white/40"],
+:root:not(.dark) [class~="hover:bg-white/40"]:hover { color: #ffffff; }
+:root:not(.dark) [class~="from-black/"] [class~="text-white"] { color: #ffffff; }
+:root:not(.dark) [class~="bg-black/"] [class~="text-white"] { color: #ffffff; }
 
 /* --- Shared @layer components classes stay readable in light mode --- */
 :root:not(.dark) .btn-primary {
-  --tw-gradient-from: var(--accent);
-  --tw-gradient-to: var(--accent-strong);
-  --tw-gradient-via: var(--accent);
-  --tw-shadow-color: color-mix(in srgb, var(--accent) 10%, transparent);
+  --tw-gradient-from: var(--accent-fill);
+  --tw-gradient-to: var(--accent-fill-hover);
+  --tw-gradient-via: var(--accent-fill);
+  color: var(--accent-ink);
+  --tw-shadow-color: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 :root:not(.dark) .btn-secondary {
-  background-color: color-mix(in srgb, var(--surface-strong) 40%, transparent);
+  background-color: var(--surface-strong);
   border-color: var(--border);
   color: var(--app-text);
 }
@@ -312,31 +534,31 @@
   border-color: var(--border);
 }
 :root:not(.dark) .card-hover {
-  --tw-shadow-color: color-mix(in srgb, var(--accent) 5%, transparent);
+  --tw-shadow-color: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 :root:not(.dark) .input {
-  background-color: color-mix(in srgb, var(--surface-strong) 40%, transparent);
+  background-color: var(--surface-strong);
   border-color: color-mix(in srgb, var(--border) 80%, transparent);
   color: var(--app-text);
 }
 :root:not(.dark) .input-label { color: var(--muted); }
 :root:not(.dark) .badge-primary {
   background-color: color-mix(in srgb, var(--gold) 16%, transparent);
-  color: #8a6a1e;
+  color: var(--gold-deep);
   border-color: color-mix(in srgb, var(--gold) 30%, transparent);
 }
 :root:not(.dark) .badge-success {
-  background-color: color-mix(in srgb, #2e7d32 16%, transparent);
-  color: #2e7d32;
-  border-color: color-mix(in srgb, #2e7d32 25%, transparent);
+  background-color: var(--success-fill);
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 25%, transparent);
 }
 :root:not(.dark) .badge-warning {
-  background-color: color-mix(in srgb, #b65c12 16%, transparent);
-  color: #b65c12;
-  border-color: color-mix(in srgb, #b65c12 25%, transparent);
+  background-color: var(--warning-fill);
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 25%, transparent);
 }
 :root:not(.dark) .badge-danger {
-  background-color: color-mix(in srgb, #b8323c 16%, transparent);
-  color: #b8323c;
-  border-color: color-mix(in srgb, #b8323c 25%, transparent);
+  background-color: var(--danger-fill);
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 25%, transparent);
 }

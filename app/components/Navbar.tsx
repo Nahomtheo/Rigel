@@ -115,7 +115,9 @@ export default function Navbar() {
           <ThemeToggle />
           <button
             onClick={() => setOpen(!open)}
-            className="p-3 rounded-2xl border border-[#C9A227]/30 bg-[#120B07]/90 text-[#C9A227] backdrop-blur-xl shadow-xl"
+            aria-expanded={open}
+            aria-label="Toggle menu"
+            className="p-3 rounded-2xl border border-[#C9A227]/30 bg-[#120B07]/90 text-[#C9A227] backdrop-blur-xl shadow-xl hover:bg-[#C9A227]/10 active:scale-95 transition-all"
           >
             ☰
           </button>

@@ -27,7 +27,7 @@ export default function BottomNavbar() {
   ];
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 bg-[var(--surface-strong)] border-t border-[var(--border)] shadow-2xl md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 bg-[var(--bar-surface)] border-t border-[var(--border)] shadow-2xl md:hidden">
       <div className="flex h-16 items-center justify-around px-2">
         {navItems.map((item) => {
           // Only render authRequired items if session exists
@@ -41,10 +41,11 @@ export default function BottomNavbar() {
             <Link
               key={item.name}
               href={item.href}
+              aria-current={isActive ? "page" : undefined}
               className={clsx(
                 "flex flex-col items-center justify-center gap-1 text-xs font-medium py-1 px-2 rounded-lg transition-all",
                 isActive
-                  ? "text-[var(--accent)] font-semibold"
+                  ? "text-[var(--accent)] font-semibold bg-[var(--accent)]/10"
                   : "text-[var(--muted)] hover:text-[var(--gold)] hover:bg-[var(--surface-soft)]"
               )}
             >
