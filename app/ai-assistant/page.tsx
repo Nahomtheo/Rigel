@@ -101,7 +101,7 @@ export default function AiAssistantPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#040401] flex flex-col">
+    <div className="min-h-screen bg-[#040401] flex flex-col pt-[var(--page-top)]">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-neutral-800 bg-[#0c0a03]/80 backdrop-blur-xl">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">

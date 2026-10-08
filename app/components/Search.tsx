@@ -15,12 +15,13 @@ import {
   Home,
   Shirt,
   Calendar,
-  Zap,
   Grid,
   List,
   Map,
   SlidersHorizontal,
   PackageSearch,
+  Star,
+  BadgeCheck,
   ChevronDown,
   RotateCcw,
 } from 'lucide-react';
@@ -31,21 +32,39 @@ import { motion, Variants } from 'framer-motion';
 const MapView = dynamic(() => import('./MapView'), { ssr: false });
 
 const categories = [
-  { id: 'car', name: 'Cars', icon: Car },
-  { id: 'rental', name: 'Rentals', icon: Calendar },
-  { id: 'housing', name: 'Housing', icon: Home },
-  { id: 'clothes', name: 'Clothes', icon: Shirt },
+  { id: 'car', name: 'Vehicles', icon: Car, color: 'bg-blue-500' },
+  { id: 'rental', name: 'Rentals', icon: Calendar, color: 'bg-purple-500' },
+  { id: 'housing', name: 'Housing', icon: Home, color: 'bg-orange-500' },
+  { id: 'clothes', name: 'Clothing', icon: Shirt, color: 'bg-pink-500' },
+  { id: 'cosmetics', name: 'Cosmetics', icon: Star, color: 'bg-rose-500' },
+  { id: 'electronics', name: 'Electronics', icon: BadgeCheck, color: 'bg-indigo-500' },
+  { id: 'household', name: 'Household & Equip', icon: Home, color: 'bg-yellow-500' },
+  { id: 'shoes', name: 'Shoes', icon: Grid, color: 'bg-green-500' },
+  { id: 'perfumes', name: 'Perfumes', icon: Star, color: 'bg-purple-600' },
+  { id: 'furniture', name: 'Furniture', icon: Home, color: 'bg-amber-500' },
+  { id: 'jewelry', name: 'Jewelry', icon: Star, color: 'bg-yellow-400' },
+  { id: 'accessories', name: 'Accessories', icon: Grid, color: 'bg-teal-500' },
+  { id: 'bags', name: 'Bags & Luggage', icon: Grid, color: 'bg-cyan-500' },
+  { id: 'sports', name: 'Sports & Outdoors', icon: BadgeCheck, color: 'bg-lime-500' },
+  { id: 'toys', name: 'Toys & Games', icon: Star, color: 'bg-orange-600' },
+  { id: 'books', name: 'Books & Stationery', icon: Grid, color: 'bg-sky-500' },
+  { id: 'tools', name: 'Tools & Hardware', icon: BadgeCheck, color: 'bg-gray-500' },
+  { id: 'beauty', name: 'Beauty & Care', icon: Star, color: 'bg-fuchsia-500' },
+  { id: 'health', name: 'Health & Medical', icon: BadgeCheck, color: 'bg-red-500' },
+  { id: 'other', name: 'Other', icon: Grid, color: 'bg-neutral-500' },
 ];
 
 const subcategories = {
   car: [
-    { value: '', label: 'All Cars' },
+    { value: '', label: 'All Vehicles' },
     { value: 'sedan', label: 'Sedan' },
     { value: 'suv', label: 'SUV' },
     { value: 'truck', label: 'Truck' },
     { value: 'motorcycle', label: 'Motorcycle' },
     { value: 'electric', label: 'Electric' },
     { value: 'hybrid', label: 'Hybrid' },
+    { value: 'van', label: 'Van' },
+    { value: 'classic', label: 'Classic' },
   ],
   rental: [
     { value: '', label: 'All Rentals' },
@@ -54,8 +73,12 @@ const subcategories = {
     { value: 'business_vehicle', label: 'Business' },
     { value: 'daily_rental', label: 'Daily Rental' },
     { value: 'luxury_rental', label: 'Luxury' },
-    { value: 'housing', label: 'House/appartama/land' },
-    { value: 'cloth', label: 'Bridal/Costume' },
+    { value: 'equipment_rental', label: 'Equipment' },
+    { value: 'event_rental', label: 'Event' },
+    { value: 'house_rental', label: 'House' },
+    { value: 'apartment_rental', label: 'Apartment' },
+    { value: 'room_rental', label: 'Room' },
+    { value: 'car_rental', label: 'Car' },
   ],
   housing: [
     { value: '', label: 'All Housing' },
@@ -63,6 +86,11 @@ const subcategories = {
     { value: 'house', label: 'House' },
     { value: 'office', label: 'Office' },
     { value: 'land', label: 'Land' },
+    { value: 'villa', label: 'Villa' },
+    { value: 'condo', label: 'Condo' },
+    { value: 'commercial', label: 'Commercial' },
+    { value: 'warehouse', label: 'Warehouse' },
+    { value: 'guesthouse', label: 'Guesthouse' },
   ],
   clothes: [
     { value: '', label: 'All Clothes' },
@@ -71,6 +99,170 @@ const subcategories = {
     { value: 'kids', label: "Kids'" },
     { value: 'traditional', label: 'Traditional' },
     { value: 'sports', label: 'Sports' },
+    { value: 'formal', label: 'Formal' },
+    { value: 'casual', label: 'Casual' },
+    { value: 'underwear', label: 'Underwear' },
+    { value: 'winter', label: 'Winter' },
+    { value: 'summer', label: 'Summer' },
+  ],
+  cosmetics: [
+    { value: '', label: 'All Cosmetics' },
+    { value: 'makeup', label: 'Makeup' },
+    { value: 'skincare', label: 'Skin Care' },
+    { value: 'haircare', label: 'Hair Care' },
+    { value: 'nails', label: 'Nails' },
+    { value: 'bodycare', label: 'Body Care' },
+    { value: 'lipstick', label: 'Lipstick' },
+    { value: 'foundation', label: 'Foundation' },
+    { value: 'mascara', label: 'Mascara' },
+  ],
+  electronics: [
+    { value: '', label: 'All Electronics' },
+    { value: 'mobile', label: 'Phones' },
+    { value: 'laptop', label: 'Laptops' },
+    { value: 'tv', label: 'TVs' },
+    { value: 'camera', label: 'Cameras' },
+    { value: 'headphone', label: 'Headphones' },
+    { value: 'speaker', label: 'Speakers' },
+    { value: 'gaming', label: 'Gaming' },
+    { value: 'tablet', label: 'Tablets' },
+    { value: 'watch', label: 'Smart Watches' },
+    { value: 'home_appliance', label: 'Home Appliances' },
+    { value: 'computer_parts', label: 'Computer Parts' },
+  ],
+  household: [
+    { value: '', label: 'All Household' },
+    { value: 'kitchen', label: 'Kitchen' },
+    { value: 'cleaning', label: 'Cleaning' },
+    { value: 'utensils', label: 'Utensils' },
+    { value: 'appliance', label: 'Appliances' },
+    { value: 'decoration', label: 'Decoration' },
+    { value: 'lighting', label: 'Lighting' },
+    { value: 'garden', label: 'Garden' },
+    { value: 'bedding', label: 'Bedding' },
+    { value: 'bathroom', label: 'Bathroom' },
+  ],
+  shoes: [
+    { value: '', label: 'All Shoes' },
+    { value: 'men_shoes', label: 'Men' },
+    { value: 'women_shoes', label: 'Women' },
+    { value: 'kids_shoes', label: 'Kids' },
+    { value: 'sports_shoes', label: 'Sports' },
+    { value: 'formal_shoes', label: 'Formal' },
+    { value: 'casual_shoes', label: 'Casual' },
+    { value: 'boots', label: 'Boots' },
+    { value: 'sneakers', label: 'Sneakers' },
+    { value: 'heels', label: 'Heels' },
+    { value: 'sandals', label: 'Sandals' },
+  ],
+  perfumes: [
+    { value: '', label: 'All Perfumes' },
+    { value: 'men_perfume', label: 'Men' },
+    { value: 'women_perfume', label: 'Women' },
+    { value: 'unisex', label: 'Unisex' },
+    { value: 'edp', label: 'EDP' },
+    { value: 'edt', label: 'EDT' },
+    { value: 'body_spray', label: 'Body Spray' },
+    { value: 'gift_set', label: 'Gift Set' },
+  ],
+  furniture: [
+    { value: '', label: 'All Furniture' },
+    { value: 'sofa', label: 'Sofa' },
+    { value: 'bed', label: 'Bed' },
+    { value: 'table', label: 'Table' },
+    { value: 'chair', label: 'Chair' },
+    { value: 'cabinet', label: 'Cabinet' },
+    { value: 'wardrobe', label: 'Wardrobe' },
+    { value: 'desk', label: 'Desk' },
+    { value: 'dining', label: 'Dining' },
+    { value: 'mattress', label: 'Mattress' },
+  ],
+  jewelry: [
+    { value: '', label: 'All Jewelry' },
+    { value: 'necklace', label: 'Necklace' },
+    { value: 'ring', label: 'Ring' },
+    { value: 'bracelet', label: 'Bracelet' },
+    { value: 'earring', label: 'Earring' },
+    { value: 'watch', label: 'Watch' },
+    { value: 'gold', label: 'Gold' },
+    { value: 'silver', label: 'Silver' },
+    { value: 'diamond', label: 'Diamond' },
+  ],
+  accessories: [
+    { value: '', label: 'All Accessories' },
+    { value: 'belt', label: 'Belt' },
+    { value: 'hat', label: 'Hat' },
+    { value: 'scarf', label: 'Scarf' },
+    { value: 'sunglasses', label: 'Sunglasses' },
+    { value: 'wallet', label: 'Wallet' },
+    { value: 'watch_accessory', label: 'Watch Access' },
+  ],
+  bags: [
+    { value: '', label: 'All Bags' },
+    { value: 'backpack', label: 'Backpack' },
+    { value: 'handbag', label: 'Handbag' },
+    { value: 'wallet', label: 'Wallet' },
+    { value: 'luggage', label: 'Luggage' },
+    { value: 'school_bag', label: 'School Bag' },
+    { value: 'tote', label: 'Tote' },
+  ],
+  sports: [
+    { value: '', label: 'All Sports' },
+    { value: 'gym', label: 'Gym' },
+    { value: 'football', label: 'Football' },
+    { value: 'basketball', label: 'Basketball' },
+    { value: 'tennis', label: 'Tennis' },
+    { value: 'cycling', label: 'Cycling' },
+    { value: 'outdoor', label: 'Outdoor' },
+  ],
+  toys: [
+    { value: '', label: 'All Toys' },
+    { value: 'educational', label: 'Educational' },
+    { value: 'action_figures', label: 'Action Figures' },
+    { value: 'dolls', label: 'Dolls' },
+    { value: 'board_games', label: 'Board Games' },
+    { value: 'outdoor_toys', label: 'Outdoor Toys' },
+    { value: 'baby_toys', label: 'Baby Toys' },
+  ],
+  books: [
+    { value: '', label: 'All Books' },
+    { value: 'textbook', label: 'Textbooks' },
+    { value: 'novel', label: 'Novels' },
+    { value: 'comic', label: 'Comics' },
+    { value: 'magazine', label: 'Magazines' },
+    { value: 'academic', label: 'Academic' },
+    { value: 'story', label: 'Story Books' },
+  ],
+  tools: [
+    { value: '', label: 'All Tools' },
+    { value: 'hand_tool', label: 'Hand Tools' },
+    { value: 'power_tool', label: 'Power Tools' },
+    { value: 'measuring', label: 'Measuring' },
+    { value: 'welding', label: 'Welding' },
+    { value: 'plumbing', label: 'Plumbing' },
+    { value: 'electrical', label: 'Electrical' },
+    { value: 'gardening_tool', label: 'Gardening' },
+  ],
+  beauty: [
+    { value: '', label: 'All Beauty' },
+    { value: 'hair', label: 'Hair' },
+    { value: 'skin', label: 'Skin' },
+    { value: 'supplement', label: 'Supplements' },
+    { value: 'medicine', label: 'Medicine' },
+    { value: 'personal_care', label: 'Personal Care' },
+    { value: 'massage', label: 'Massage' },
+  ],
+  health: [
+    { value: '', label: 'All Health' },
+    { value: 'supplement', label: 'Supplements' },
+    { value: 'medicine', label: 'Medicine' },
+    { value: 'equipment', label: 'Medical Equipment' },
+    { value: 'personal_care', label: 'Personal Care' },
+  ],
+  other: [
+    { value: '', label: 'All Other' },
+    { value: 'general', label: 'General' },
+    { value: 'misc', label: 'Miscellaneous' },
   ],
 };
 
@@ -246,7 +438,7 @@ export default function Searching() {
           }}
         />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-12">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[var(--page-top)] pb-12">
           <div className="flex flex-col items-center text-center">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C9A227]/30 bg-[#1a1506]/60 backdrop-blur-md text-[#e0bd4c] text-[10px] sm:text-xs tracking-[0.25em] uppercase font-medium">
               Discover · ፈልግ
@@ -293,38 +485,30 @@ export default function Searching() {
 
       {/* Body */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Category Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <button
-            onClick={() => handleCategorySelect('')}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm font-semibold transition-all ${
-              selectedCategory === ''
-                ? 'bg-[#C9A227] text-black border-[#C9A227] shadow-lg shadow-[#C9A227]/25'
-                : 'bg-[#120f06]/40 text-neutral-400 border-neutral-800 hover:border-[#C9A227]/40 hover:text-neutral-200'
-            }`}
-          >
-            <PackageSearch className="w-4 h-4" />
-            All Categories
-          </button>
-
-          {categories.map((category) => {
-            const Icon = category.icon;
-            const isActive = selectedCategory === category.id;
-            return (
-              <button
-                key={category.id}
-                onClick={() => handleCategorySelect(category.id)}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm font-semibold transition-all ${
-                  isActive
-                    ? 'bg-[#C9A227] text-black border-[#C9A227] shadow-lg shadow-[#C9A227]/25'
-                    : 'bg-[#120f06]/40 text-neutral-400 border-neutral-800 hover:border-[#C9A227]/40 hover:text-neutral-200'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {category.name}
-              </button>
-            );
-          })}
+        {/* Category Cards — horizontal scroller */}
+        <div className="-mx-4 px-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex flex-nowrap gap-3 w-max mx-auto py-2">
+            {categories.map((category) => {
+              const Icon = category.icon;
+              const isSelected = selectedCategory === category.id;
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategorySelect(category.id)}
+                  className={`group relative shrink-0 w-24 rounded-2xl py-4 px-2 border text-center transition-all duration-300 overflow-hidden ${
+                    isSelected
+                      ? 'bg-gradient-to-b from-[#C9A227] to-[#bfa142] text-neutral-950 border-[#C9A227] shadow-xl shadow-yellow-950/30 font-bold scale-[1.02]'
+                      : 'bg-[#141107]/40 border-neutral-800/60 hover:bg-[#1a160a]/60 hover:border-neutral-700 text-neutral-300'
+                  }`}
+                >
+                  <Icon className={`w-6 h-6 mx-auto mb-2 transition-transform duration-300 group-hover:scale-110 ${isSelected ? 'text-neutral-950' : 'text-[#e5c158]'}`} />
+                  <span className="text-xs font-semibold uppercase tracking-wider block leading-tight">
+                    {category.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Subcategory Chips */}
@@ -332,24 +516,26 @@ export default function Searching() {
           <motion.div
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-5 flex flex-wrap justify-center gap-2"
+            className="mt-5 -mx-4 px-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            {(subcategories[selectedCategory as keyof typeof subcategories] || []).map((sub) => (
-              <button
-                key={sub.value}
-                onClick={() => {
-                  setSelectedSubcategory(sub.value);
-                  setCurrentPage(1);
-                }}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-                  selectedSubcategory === sub.value
-                    ? 'bg-[#e0bd4c]/20 text-[#e0bd4c] border-[#C9A227]/50'
-                    : 'bg-transparent text-neutral-500 border-neutral-800 hover:text-neutral-300 hover:border-neutral-600'
-                }`}
-              >
-                {sub.label}
-              </button>
-            ))}
+            <div className="flex flex-nowrap gap-2 w-max mx-auto justify-center py-1">
+              {(subcategories[selectedCategory as keyof typeof subcategories] || []).map((sub) => (
+                <button
+                  key={sub.value}
+                  onClick={() => {
+                    setSelectedSubcategory(sub.value);
+                    setCurrentPage(1);
+                  }}
+                  className={`shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-semibold border backdrop-blur-md transition-all duration-300 ${
+                    selectedSubcategory === sub.value
+                      ? 'bg-[#C9A227]/20 text-[#e0bd4c] border-[#C9A227]/60 shadow-[0_6px_20px_-8px_rgba(201,162,39,0.5)]'
+                      : 'bg-white/[0.03] text-neutral-500 border-white/10 hover:text-neutral-200 hover:border-[#C9A227]/40 hover:-translate-y-0.5'
+                  }`}
+                >
+                  {sub.label}
+                </button>
+              ))}
+            </div>
           </motion.div>
         )}
 

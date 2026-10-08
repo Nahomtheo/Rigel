@@ -130,7 +130,7 @@ export default function EditUser() {
   
 
  return (
-  <div className="min-h-screen bg-slate-100 p-6">
+    <div className="min-h-screen bg-slate-100 px-6 pb-6 pt-[var(--page-top)]">
 
     <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-6">
 

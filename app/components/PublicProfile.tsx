@@ -58,7 +58,7 @@ export default function PublicProfile({
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[var(--page-top)] pb-10 min-h-screen">
       <Link
         href="/"
         className="inline-flex items-center gap-2 text-[var(--muted)] hover:text-[var(--app-text)] transition-colors text-sm mb-6"

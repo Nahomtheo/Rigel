@@ -41,7 +41,7 @@ export default async  function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-950">
+    <div className="min-h-screen bg-slate-100 text-slate-950 pt-[var(--page-top)]">
       <div className="flex flex-col lg:flex-row">
         {/* Sidebar */}
         <aside className="border-b border-slate-200 bg-white/95 p-5 shadow-sm lg:sticky lg:top-0 lg:min-h-screen lg:w-72 lg:border-b-0 lg:border-r">

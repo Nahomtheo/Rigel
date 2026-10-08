@@ -69,7 +69,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#18130e] text-stone-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#18130e] text-stone-100 flex items-center justify-center pt-[var(--page-top)] pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         {/* Header */}
         <div className="text-center mb-8">

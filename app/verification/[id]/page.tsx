@@ -113,7 +113,7 @@ export default function Verification({params}:{params: Promise<{id:string}>}) {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 pt-[var(--page-top)]">
 
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
 

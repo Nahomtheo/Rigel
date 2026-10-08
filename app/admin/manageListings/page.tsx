@@ -36,7 +36,7 @@ export default async function ManageListingsPage({
     .lean<AdminListing[]>();
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
+    <div className="min-h-screen bg-slate-100 px-6 pb-6 pt-[var(--page-top)]">
       <div className="mx-auto max-w-6xl space-y-6">
         <div>
           <Link href="/admin" className="text-sm font-medium text-slate-500 hover:text-slate-950">

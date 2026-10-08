@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function PaymentsPage() {
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 px-6 pb-6 pt-[var(--page-top)]">
       <div className="mx-auto max-w-5xl">
         <Link href="/admin" className="text-sm font-medium text-gray-500 hover:text-black">
           Back to admin

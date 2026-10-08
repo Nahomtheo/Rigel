@@ -50,7 +50,7 @@ export default function ResetPasswordClient({ token }: { token?: string }) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4">
+    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4 pt-[var(--page-top)]">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-sm border">
 
         <h2 className="text-xl font-bold mb-6">Reset Password</h2>

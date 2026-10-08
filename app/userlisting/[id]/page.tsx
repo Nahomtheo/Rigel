@@ -325,7 +325,7 @@ export default function UpdateListingPage({ params }: { params: Promise<{ id: st
   const totalImages = images.length + existingImages.length;
 
   return (
-    <div className="min-h-screen bg-[#040401]">
+    <div className="min-h-screen bg-[#040401] pt-[var(--page-top)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header */}
         <div className="mb-8">

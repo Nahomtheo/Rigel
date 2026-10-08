@@ -15,7 +15,7 @@ export default async function Userlistings(){
     }
     
     return(
-        <div className="min-h-screen bg-[#040401]">
+        <div className="min-h-screen bg-[#040401] pt-[var(--page-top)]">
             <UserListing ownerId={ownerid}/>
         </div>
     )

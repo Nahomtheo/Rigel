@@ -89,7 +89,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-200px)] bg-[#18130e] text-stone-100 flex items-center justify-center px-4 py-12">
+    <div className="min-h-[calc(100vh-200px)] bg-[#18130e] text-stone-100 flex items-center justify-center px-4 pt-[var(--page-top)] pb-12">
       <div className="w-full max-w-md">
 
         {/* Header */}

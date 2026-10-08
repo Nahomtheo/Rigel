@@ -269,7 +269,7 @@ const submitRating = async () => {
   const isVideo = (listing.images[currentImageIndex] as any)?.url.match(/\.(mp4|webm|ogg)$/i);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-[var(--page-top)]">
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

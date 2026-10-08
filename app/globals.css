@@ -11,6 +11,16 @@
     --font-inter: var(--font-geist-sans); 
     --font-playfair-display: var(--font-playfair-display);
 
+    /* Tells the browser to render native widgets (select popups, spinners,
+       date pickers, scrollbars) in the active theme's colours. */
+    color-scheme: light;
+
+    /* The single knob for "how far page content starts below the Navbar".
+       Navbar is `fixed top-2` and `pointer-events-none`, so it takes up no
+       flow space — every page root has to reserve this gap itself. 4.5rem
+       clears the ~44px capsule plus its 8px offset on mobile; 5rem on md+. */
+    --page-top: 4.5rem;
+
     /* Light theme: cream + smooth lime/green */
     --app-bg: #f7f4e8;
     --app-text: #163a2c;
@@ -46,6 +56,8 @@
   }
 
   .dark {
+    color-scheme: dark;
+
     /* Dark theme: keep the exact current golden/brown look */
     --app-bg: #040401;
     --app-text: #f5efe6;
@@ -70,6 +82,12 @@
     --success-fill: #14532d;
     --warning-fill: #4a2c0a;
     --logo-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --page-top: 5rem;
+    }
   }
 
   html {
@@ -223,6 +241,10 @@
 :root:not(.dark) [class~="bg-[#1a160a]"],
 :root:not(.dark) [class~="bg-[#282018]"],
 :root:not(.dark) [class~="bg-[#161204]"] { background-color: var(--surface-soft); }
+/* #211a14 was only remapped on :hover, so every form control that hardcodes
+   it (createlisting, dashboard, chat, signup checkbox) stayed near-black in
+   light mode while its text was remapped to the dark --app-text ink. */
+:root:not(.dark) [class~="bg-[#211a14]"] { background-color: var(--surface); }
 :root:not(.dark) [class~="hover:bg-[#211a14]"]:hover,
 :root:not(.dark) [class~="hover:bg-[#282018]"]:hover,
 :root:not(.dark) [class~="hover:bg-[#1a160a]"]:hover { background-color: var(--surface-soft); }
@@ -484,6 +506,30 @@
 :root:not(.dark) [class~="accent-[#C9A227]"],
 :root:not(.dark) [class~="accent-amber-500"] { accent-color: var(--accent); }
 
+/* --- Form controls ------------------------------------------------------
+   The app hardcodes six different field backgrounds across as many UI
+   generations (#120f06, #0c0a03, #211a14, #18130e, neutral-800/40 and
+   nothing at all), and the remap above can only chase the ones it knows
+   about. Chasing them one at a time is how a dark field ends up carrying
+   remapped dark text. So pin the field itself instead of its colour class:
+   white surface, --border edge, --app-text ink, accent caret. That is
+   11.0:1 for the ink, 1.3:1 for the edge against the page, and it matches
+   --surface so fields read as cards rather than as holes.
+
+   Checkboxes and radios are excluded: they are painted by `accent-color`,
+   not by a background, and pinning one would erase their checked state.
+   The two :not() attributes also lift this rule to (0,4,1), which beats
+   the (0,3,0) class remaps above without needing !important. */
+:root:not(.dark) :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]) {
+  background-color: var(--surface);
+  border-color: var(--border);
+  color: var(--app-text);
+  caret-color: var(--accent);
+}
+:root:not(.dark) :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):focus {
+  border-color: var(--accent);
+}
+
 /* --- Placeholders --- */
 :root:not(.dark) ::placeholder { color: var(--muted); }
 :root:not(.dark) [class~="placeholder:text-neutral-500"]::placeholder,
@@ -537,9 +583,10 @@
   --tw-shadow-color: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 :root:not(.dark) .input {
-  background-color: var(--surface-strong);
-  border-color: color-mix(in srgb, var(--border) 80%, transparent);
+  background-color: var(--surface);
+  border-color: var(--border);
   color: var(--app-text);
+  caret-color: var(--accent);
 }
 :root:not(.dark) .input-label { color: var(--muted); }
 :root:not(.dark) .badge-primary {

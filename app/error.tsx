@@ -11,7 +11,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
   const router = useRouter();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 pt-[var(--page-top)]">
       <div className="max-w-xl w-full p-8 bg-white rounded-xl shadow-lg text-center">
         <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
         <p className="text-gray-600 mb-6">{error?.message || 'An unexpected error occurred.'}</p>

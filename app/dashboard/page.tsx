@@ -389,7 +389,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0a08] text-stone-100">
+    <div className="min-h-screen bg-[#0d0a08] text-stone-100 pt-[var(--page-top)]">
       {/* Header */}
       <header className="bg-[#18130e] border-b border-amber-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

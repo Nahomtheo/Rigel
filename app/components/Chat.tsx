@@ -148,7 +148,7 @@ export default function Chat({
 
 
   return (
-    <div className="max-w-2xl mx-auto h-screen flex flex-col">
+    <div className="max-w-2xl mx-auto h-screen flex flex-col pt-[var(--page-top)]">
       {/* messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((m) => {
