@@ -16,7 +16,7 @@ const OPTIONS: {
   {
     value: "sold",
     label: "Mark as Sold",
-    sub: "ተርዟል",
+    sub: "ተሽጧል",
     className: "text-red-400 hover:bg-red-500/10",
     activeClassName: "bg-red-500/10 text-red-400 border-red-500/40",
   },
@@ -30,7 +30,7 @@ const OPTIONS: {
   {
     value: "active",
     label: "Mark as Available",
-    sub: "እንደሚገኝ",
+    sub: "ይገኛል",
     className: "text-emerald-400 hover:bg-emerald-500/10",
     activeClassName: "bg-emerald-500/10 text-emerald-400 border-emerald-500/40",
   },
